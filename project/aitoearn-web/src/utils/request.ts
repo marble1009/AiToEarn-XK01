@@ -16,8 +16,12 @@ type RequestParamsWithSilent = RequestParams & {
   silent?: boolean // 是否静默处理错误，不显示提示
 }
 
+const API_URL = process.env.NEXT_PUBLIC_EVN === 'prod' 
+  ? 'https://aitoearn-xk01-production.up.railway.app' 
+  : process.env.NEXT_PUBLIC_API_URL;
+
 const fetchService = new FetchService({
-  baseURL: `${process.env.NEXT_PUBLIC_API_URL}/`,
+  baseURL: `${API_URL}/`,
   requestInterceptor(requestParams) {
     const token = useUserStore.getState().token
     requestParams.headers = {
