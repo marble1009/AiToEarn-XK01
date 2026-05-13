@@ -1,4 +1,4 @@
-FROM node:20-slim
+FROM node:24-slim
 
 # 安装必要的基础依赖并启用 pnpm
 RUN apt-get update && apt-get install -y python3 build-essential && rm -rf /var/lib/apt/lists/*
