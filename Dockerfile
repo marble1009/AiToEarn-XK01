@@ -9,7 +9,7 @@ COPY . .
 
 WORKDIR /app/project/aitoearn-backend
 RUN pnpm install --no-frozen-lockfile
-RUN pnpm add -D ts-node tsconfig-paths
+RUN pnpm add -D -w ts-node tsconfig-paths
 
 # ============ 阶段2：精简运行镜像 ============
 FROM node:24-slim AS runner
