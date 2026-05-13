@@ -5,12 +5,26 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { GlassCard } from '@/components/ui/glass-card'
 import { ArrowRight } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useUserStore } from '@/store/user'
+import { navigateToLogin } from '@/utils/auth'
 
 interface HubContentProps {
   lng: string
 }
 
-const modules = [
+interface ModuleItem {
+  id: string
+  title: string
+  subtitle: string
+  description: string
+  icon: string
+  color: string
+  shadow: string
+  path: string
+}
+
+const modules: ModuleItem[] = [
   {
     id: 'monetize',
     title: 'Monetize',
@@ -19,6 +33,7 @@ const modules = [
     icon: '/assets/icons/hub/monetize.png',
     color: 'from-[#FF9D6C] to-[#FFC85E]',
     shadow: 'shadow-orange-200/50',
+    path: '/brand-promotion',
   },
   {
     id: 'publish',
@@ -28,6 +43,7 @@ const modules = [
     icon: '/assets/icons/hub/publish.png',
     color: 'from-[#FFD97D] to-[#FFB347]',
     shadow: 'shadow-yellow-200/50',
+    path: '/accounts',
   },
   {
     id: 'engage',
@@ -37,6 +53,7 @@ const modules = [
     icon: '/assets/icons/hub/engage.png',
     color: 'from-[#FFA17F] to-[#FFCCBB]',
     shadow: 'shadow-red-200/50',
+    path: '/ai-social',
   },
   {
     id: 'create',
@@ -46,10 +63,25 @@ const modules = [
     icon: '/assets/icons/hub/create.png',
     color: 'from-[#FFE29F] to-[#FFA99F]',
     shadow: 'shadow-peach-200/50',
+    path: '/chat',
   },
 ]
 
 export default function HubContent({ lng }: HubContentProps) {
+  const router = useRouter()
+  const token = useUserStore(state => state.token)
+
+  const handleCardClick = (path: string) => {
+    // 检查是否登录
+    if (!token) {
+      // 未登录则弹出全局登录弹窗，并设置登录后重定向路径
+      navigateToLogin(`/${lng}${path}`)
+      return
+    }
+    // 已登录则直接跳转
+    router.push(`/${lng}${path}`)
+  }
+
   const container = {
     hidden: { opacity: 0 },
     show: {
@@ -90,7 +122,10 @@ export default function HubContent({ lng }: HubContentProps) {
       >
         {modules.map((m) => (
           <motion.div key={m.id} variants={item}>
-            <GlassCard className="h-full flex flex-col group relative overflow-hidden">
+            <GlassCard 
+              className="h-full flex flex-col group relative overflow-hidden cursor-pointer transition-all active:scale-[0.98]"
+              onClick={() => handleCardClick(m.path)}
+            >
               {/* Background Glow */}
               <div className={`absolute -right-12 -top-12 w-32 h-32 bg-gradient-to-br ${m.color} blur-3xl opacity-20 group-hover:opacity-40 transition-opacity`} />
               

@@ -27,7 +27,7 @@ export const routerData: IRouterDataItem[] = [
   {
     name: 'Content Management',
     translationKey: 'header.draftBox',
-    path: '/',
+    path: '/draft-box',
     icon: <Home size={20} />,
   },
   {

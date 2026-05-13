@@ -9,6 +9,7 @@ const {
   MONGODB_PORT,
   MONGODB_USERNAME,
   MONGODB_PASSWORD,
+  MONGODB_URI, // 新增
 } = process.env
 
 const {
@@ -81,7 +82,7 @@ module.exports = {
     },
   },
   mongodb: {
-    uri: `mongodb://${MONGODB_USERNAME}:${encodeURIComponent(MONGODB_PASSWORD)}@${MONGODB_HOST}:${MONGODB_PORT}/?authSource=admin&directConnection=true`,
+    uri: MONGODB_URI || `mongodb://${MONGODB_USERNAME}:${encodeURIComponent(MONGODB_PASSWORD)}@${MONGODB_HOST}:${MONGODB_PORT}/?authSource=admin&directConnection=true`,
     dbName: 'aitoearn',
   },
   auth: {

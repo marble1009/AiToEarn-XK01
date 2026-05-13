@@ -1,7 +1,11 @@
+/**
+ * 草稿箱页面 - 内容管理
+ */
+
+import dynamic from 'next/dynamic'
 import { useTranslation } from '@/app/i18n'
 import { fallbackLng, languages } from '@/lib/i18n/languageConfig'
 import { getMetadata } from '@/utils/general'
-import HubContent from './hub/HubContent'
 
 interface PageParams {
   params: Promise<{ lng: string }>
@@ -20,11 +24,14 @@ export async function generateMetadata({ params }: PageParams) {
       keywords: t('header.draftBoxSeoKeywords'),
     },
     lng,
-    '/',
+    '/draft-box',
   )
 }
 
-export default async function HomePage({ params }: PageParams) {
-  const { lng } = await params
-  return <HubContent lng={lng} />
+const DraftBoxCore = dynamic(() => import('./DraftBoxCore'), {
+  ssr: false,
+})
+
+export default function DraftBoxPage() {
+  return <DraftBoxCore />
 }
