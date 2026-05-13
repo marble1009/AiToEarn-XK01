@@ -1,0 +1,26 @@
+# Git
+.git
+.github
+.gitattributes
+
+# 前端和桌面端（后端部署完全不需要）
+project/aitoearn-web
+project/aitoearn-electron
+
+# 文档、演示、展示资源
+demo
+presentation
+nginx
+scripts
+.claude
+
+# 文档文件
+*.md
+LICENSE.txt
+docker-compose.yml
+
+# 后端构建产物和缓存（Docker 里重新生成）
+project/aitoearn-backend/node_modules
+project/aitoearn-backend/dist
+project/aitoearn-backend/tmp
+project/aitoearn-backend/.nx
