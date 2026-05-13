@@ -104,30 +104,56 @@ module.exports = {
 
   // 数据库
   mongodb: {
-    uri: MONGODB_URI || `mongodb://${MONGODB_USERNAME}:${encodeURIComponent(MONGODB_PASSWORD)}@${MONGODB_HOST}:${MONGODB_PORT}/?authSource=admin&directConnection=true`,
+    uri: MONGODB_URI || process.env.MONGO_URL || `mongodb://${MONGODB_USERNAME}:${encodeURIComponent(MONGODB_PASSWORD)}@${MONGODB_HOST}:${MONGODB_PORT}/?authSource=admin&directConnection=true`,
     dbName: 'aitoearn',
   },
 
   // 缓存/队列
-  redis: {
-    host: REDIS_HOST,
-    port: Number(REDIS_PORT),
-    username: 'default',
-    password: REDIS_PASSWORD,
-  },
-  redlock: {
-    redis: {
-      host: REDIS_HOST,
-      port: Number(REDIS_PORT),
+  redis: (() => {
+    if (process.env.REDIS_URL) {
+      try {
+        const url = new URL(process.env.REDIS_URL);
+        return {
+          host: url.hostname,
+          port: Number(url.port) || 6379,
+          username: url.username || 'default',
+          password: url.password || process.env.REDIS_PASSWORD,
+        };
+      } catch(e) {}
+    }
+    return {
+      host: process.env.REDIS_HOST,
+      port: Number(process.env.REDIS_PORT) || 6379,
       username: 'default',
-      password: REDIS_PASSWORD,
-    },
+      password: process.env.REDIS_PASSWORD,
+    };
+  })(),
+  redlock: {
+    redis: (() => {
+      if (process.env.REDIS_URL) {
+        try {
+          const url = new URL(process.env.REDIS_URL);
+          return {
+            host: url.hostname,
+            port: Number(url.port) || 6379,
+            username: url.username || 'default',
+            password: url.password || process.env.REDIS_PASSWORD,
+          };
+        } catch(e) {}
+      }
+      return {
+        host: process.env.REDIS_HOST,
+        port: Number(process.env.REDIS_PORT) || 6379,
+        username: 'default',
+        password: process.env.REDIS_PASSWORD,
+      };
+    })(),
   },
 
   // Channel
   channel: {
     channelDb: {
-      uri: MONGODB_URI || `mongodb://${MONGODB_USERNAME}:${encodeURIComponent(MONGODB_PASSWORD)}@${MONGODB_HOST}:${MONGODB_PORT}/?authSource=admin&directConnection=true`,
+      uri: MONGODB_URI || process.env.MONGO_URL || `mongodb://${MONGODB_USERNAME}:${encodeURIComponent(MONGODB_PASSWORD)}@${MONGODB_HOST}:${MONGODB_PORT}/?authSource=admin&directConnection=true`,
       dbName: 'aitoearn_channel',
     },
     moreApi: {
