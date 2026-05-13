@@ -206,27 +206,18 @@ export class UserService {
   ): Promise<User | null> {
     this.logger.debug('Verifying Google token')
     // Verify Google token
-    let ticket;
-    try {
-      this.logger.debug(`开始验证 Google Token, ClientId: ${clientId}`);
-      ticket = await this.oauth2Client.verifyIdToken({
-        idToken: credential,
-        audience: clientId,
-      });
-    } catch (err) {
-      this.logger.error('Google Token 验证抛出异常:', err.stack || err.message);
-      throw new Error(`Google Token 验证失败: ${err.message}`);
-    }
-    
-    const googleUser = ticket.getPayload();
+    const ticket = await this.oauth2Client.verifyIdToken({
+      idToken: credential,
+      audience: clientId,
+    })
+    const googleUser = ticket.getPayload()
     if (!googleUser) {
-      this.logger.error('Google Token 验证成功但未获取到 Payload');
-      throw new Error('Invalid Google token: Payload empty');
+      throw new Error('Invalid Google token')
     }
 
-    this.logger.log('Google 登录成功，正在处理用户数据', {
+    this.logger.debug('Google login processing', {
       email: googleUser.email,
-    });
+    })
 
     // Check if user already exists
     try {
