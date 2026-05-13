@@ -127,11 +127,11 @@ export default function BrandPromotionContent({ lng }: BrandPromotionContentProp
                     </div>
 
                     <div className="flex flex-wrap gap-2 pt-2">
-                      {plan.platforms?.length > 0 ? plan.platforms.map(p => (
-                        <span key={p} className="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-500 rounded uppercase font-bold">
-                          {p}
+                      {plan.platform ? (
+                        <span className="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-500 rounded uppercase font-bold">
+                          {plan.platform}
                         </span>
-                      )) : (
+                      ) : (
                         <span className="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-400 rounded uppercase font-bold italic">
                           All Platforms
                         </span>
