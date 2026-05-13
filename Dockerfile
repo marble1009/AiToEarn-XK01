@@ -9,12 +9,15 @@ RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 WORKDIR /app
 COPY . .
 
-# 进入后端目录，安装所有依赖（保留 monorepo 结构）
+# 进入后端目录，安装所有依赖
 WORKDIR /app/project/aitoearn-backend
 RUN pnpm install --no-frozen-lockfile
+
+# 安装轻量级 TypeScript 运行环境 tsx
+RUN npm install -g tsx
 
 # 暴露端口
 EXPOSE 3002
 
-# 使用 Nx 官方命令直接启动生产环境（最无脑、最稳妥）
-CMD ["pnpm", "nx", "serve", "aitoearn-server", "--configuration=prod"]
+# 使用 tsx 直接启动源码（内存占用极低，完美解析 monorepo 路径，避免 OOM）
+CMD ["tsx", "apps/aitoearn-server/src/main.ts", "-c", "apps/aitoearn-server/config/prod.config.js"]
