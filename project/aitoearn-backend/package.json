@@ -55,7 +55,8 @@
   "pnpm": {
     "overrides": {
       "fast-xml-parser": "5.3.4"
-    }
+    },
+    "onlyBuiltDependencies": ["*"]
   },
   "nx": {
     "includedScripts": []
