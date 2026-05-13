@@ -215,7 +215,7 @@ export class UserService {
       });
     } catch (err) {
       this.logger.error('Google Token 验证抛出异常:', err.stack || err.message);
-      throw new AppException(ResponseCode.ValidationFailed, `Google Token 验证失败: ${err.message}`);
+      throw new Error(`Google Token 验证失败: ${err.message}`);
     }
     
     const googleUser = ticket.getPayload();
