@@ -100,7 +100,7 @@ export function Providers({ children, lng, autoLoginToken }: { children: React.R
   return (
     <>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-        <GoogleOAuthProvider clientId="1094109734611-flskoscgp609mecqk9ablvc6i3205vqk.apps.googleusercontent.com">
+        <GoogleOAuthProvider clientId="694668121384-96gnemgllcc1uadfdc7re6cqpplnsro7.apps.googleusercontent.com">
           <Toaster position="top-center" richColors />
           {/* 专用右上角通知中心（不影响现有 toast） */}
           <NotificationCenter />
