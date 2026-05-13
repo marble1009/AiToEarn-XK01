@@ -28,7 +28,7 @@ const nextConfig = {
     forceSwcTransforms: true,
     outputFileTracingRoot: undefined,
   },
-  // output: 'standalone', // Temporarily disabled to avoid symlink issues on Windows
+  output: 'standalone', // Temporarily disabled to avoid symlink issues on Windows -> RE-ENABLED FOR DOCKER BUILD
   productionBrowserSourceMaps: process.env.NEXT_PUBLIC_EVN === 'dev',
   rewrites: async () => {
     const rewrites = []
