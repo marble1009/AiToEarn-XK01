@@ -14,7 +14,12 @@ COPY . .
 
 # 进入后端目录，安装依赖并打包
 WORKDIR /app/project/aitoearn-backend
-RUN pnpm install
+
+# 允许所有构建脚本运行（解决 ERR_PNPM_IGNORED_BUILDS）
+RUN pnpm config set ignore-scripts false
+RUN pnpm approve-builds --global || true
+RUN pnpm install --no-frozen-lockfile
+
 RUN pnpm nx build aitoearn-server
 
 # 暴露后端端口
