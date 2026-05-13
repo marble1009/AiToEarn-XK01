@@ -255,7 +255,7 @@ module.exports = {
   },
 
   // 外部服务
-  assets: JSON.parse(ASSETS_CONFIG),
+  assets: ASSETS_CONFIG ? JSON.parse(ASSETS_CONFIG) : {},
   mail: {
     transport: {
       host: 'email-smtp.ap-southeast-1.amazonaws.com',
