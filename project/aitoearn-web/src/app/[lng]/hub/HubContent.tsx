@@ -56,6 +56,16 @@ const modules: ModuleItem[] = [
     path: '/ai-social',
   },
   {
+    id: 'revenue',
+    title: 'Revenue',
+    subtitle: '收益提现',
+    description: '查看您的内容变现收益明细，管理余额并快速提现至您的账户。',
+    icon: '/assets/icons/hub/monetize.png', // 暂时使用现有图标
+    color: 'from-[#4ADE80] to-[#22C55E]',
+    shadow: 'shadow-green-200/50',
+    path: '/revenue',
+  },
+  {
     id: 'create',
     title: 'Create',
     subtitle: '内容创作',
@@ -118,7 +128,7 @@ export default function HubContent({ lng }: HubContentProps) {
         variants={container}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 w-full max-w-7xl"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 w-full max-w-7xl"
       >
         {modules.map((m) => (
           <motion.div key={m.id} variants={item}>
