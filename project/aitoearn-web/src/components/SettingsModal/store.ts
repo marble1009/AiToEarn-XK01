@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-type SettingsTab = 'profile' | 'general'
+type SettingsTab = 'profile' | 'wallet' | 'general'
 
 interface SettingsModalState {
   /** 设置弹框是否可见 */
