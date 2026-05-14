@@ -20,10 +20,11 @@ import { useSettingsModalStore } from './store'
 import {
   GeneralTab,
   ProfileTab,
+  WalletTab,
 } from './tabs'
 
 /** 设置页面类型 */
-type SettingsTab = 'profile' | 'general'
+type SettingsTab = 'profile' | 'wallet' | 'general'
 
 /** Tab 配置项类型 */
 interface TabConfig {
@@ -118,6 +119,12 @@ export function SettingsModal({ open, onClose, defaultTab }: SettingsModalProps)
       label: t('tabs.profile'),
       requireAuth: true,
     },
+    {
+      key: 'wallet',
+      icon: <Wallet className="h-4 w-4" />,
+      label: t('tabs.wallet'),
+      requireAuth: true,
+    },
     { key: 'general', icon: <Globe className="h-4 w-4" />, label: t('tabs.general') },
   ]
 
@@ -133,6 +140,8 @@ export function SettingsModal({ open, onClose, defaultTab }: SettingsModalProps)
     switch (activeTab) {
       case 'profile':
         return isLoggedIn ? <ProfileTab onClose={onClose} /> : <GeneralTab />
+      case 'wallet':
+        return isLoggedIn ? <WalletTab /> : <GeneralTab />
       case 'general':
         return <GeneralTab />
       default:
