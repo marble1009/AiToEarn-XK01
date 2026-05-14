@@ -5,7 +5,15 @@ import { config } from './config'
 
 startApplication(AppModule, config, {
   setupApp: (app) => {
-    app.enableCors()
+    app.enableCors({
+      origin: [
+        'https://xiaok.up.railway.app',
+        'https://aitoearn-xk01-production.up.railway.app'
+      ],
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+      credentials: true,
+      allowedHeaders: 'Content-Type, Accept, Authorization, x-request-id',
+    })
 
     app.setViewEngine('ejs')
     app.setBaseViewsDir(join(__dirname, 'views'))

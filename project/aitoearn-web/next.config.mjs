@@ -69,20 +69,19 @@ nextConfig.headers = async () => {
       headers: CorsHeaders,
     },
     {
-      // 为所有页面添加 SEO 相关的 headers + Google OAuth COOP 策略
       source: '/:path*',
       headers: [
         {
           key: 'Content-Signal',
-          value: 'search=yes, ai-train=yes', // 注意：逗号后面有空格，这是正确的语法
+          value: 'search=yes, ai-train=yes',
         },
         {
-          // 允许 Google OAuth 弹窗通过 postMessage 将凭证传回主窗口
+          // 核心修复：允许 Google OAuth 弹窗与主窗口通信
           key: 'Cross-Origin-Opener-Policy',
           value: 'same-origin-allow-popups',
         },
         {
-          // 允许跨域资源共享
+          // 核心修复：允许跨域加载 Google 的脚本和资源
           key: 'Cross-Origin-Resource-Policy',
           value: 'cross-origin',
         },
