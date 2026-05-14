@@ -81,6 +81,11 @@ nextConfig.headers = async () => {
           key: 'Cross-Origin-Opener-Policy',
           value: 'same-origin-allow-popups',
         },
+        {
+          // 允许跨域资源共享
+          key: 'Cross-Origin-Resource-Policy',
+          value: 'cross-origin',
+        },
       ],
     },
   ]
