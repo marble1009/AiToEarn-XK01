@@ -1,6 +1,7 @@
 import { McpServerConfig } from '@anthropic-ai/claude-agent-sdk'
 import { AIMessage, HumanMessage } from '@langchain/core/messages'
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
+import { ChatOpenAI } from '@langchain/openai'
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common'
 import { QueueService } from '@yikart/aitoearn-queue'
 import { AssetsService, VideoMetadataService } from '@yikart/assets'
@@ -597,12 +598,24 @@ Generate TikTok metadata for a video based on the user's prompt and images:
 - **IMPORTANT**: Do NOT generate any content featuring children, minors, or anyone appearing under 18. If the user's prompt mentions minors, replace them with adults in the output.
 Return the result as JSON.`
 
-    const model = new ChatGoogleGenerativeAI({
-      model: modelName,
-      apiKey: config.ai.gemini.apiKey,
-      baseUrl: config.ai.gemini.baseUrl,
-      temperature: 1.2, // 提高创意多样性
-    })
+    const useNvidia = !!config.ai.nvidia.apiKey
+    const plannerModel = useNvidia ? 'meta/llama-3.1-405b-instruct' : modelName
+
+    const model = useNvidia 
+      ? new ChatOpenAI({
+          modelName: plannerModel,
+          apiKey: config.ai.nvidia.apiKey,
+          configuration: {
+            baseURL: config.ai.nvidia.baseUrl,
+          },
+          temperature: 0.7,
+        })
+      : new ChatGoogleGenerativeAI({
+          model: modelName,
+          apiKey: config.ai.gemini.apiKey,
+          baseUrl: config.ai.gemini.baseUrl,
+          temperature: 1.2, // 提高创意多样性
+        })
 
     const messageContent: Array<{ type: 'image_url', image_url: string } | { type: 'text', text: string }> = []
 
@@ -986,12 +999,24 @@ Generate metadata and ${imageCount} image prompts for a social media image-text 
 
 Return the result as JSON.`
 
-    const model = new ChatGoogleGenerativeAI({
-      model: modelName,
-      apiKey: config.ai.gemini.apiKey,
-      baseUrl: config.ai.gemini.baseUrl,
-      temperature: 1.2,
-    })
+    const useNvidia = !!config.ai.nvidia.apiKey
+    const plannerModel = useNvidia ? 'meta/llama-3.1-405b-instruct' : modelName
+
+    const model = useNvidia 
+      ? new ChatOpenAI({
+          modelName: plannerModel,
+          apiKey: config.ai.nvidia.apiKey,
+          configuration: {
+            baseURL: config.ai.nvidia.baseUrl,
+          },
+          temperature: 0.7,
+        })
+      : new ChatGoogleGenerativeAI({
+          model: modelName,
+          apiKey: config.ai.gemini.apiKey,
+          baseUrl: config.ai.gemini.baseUrl,
+          temperature: 1.2,
+        })
 
     const messageContent: Array<{ type: 'image_url', image_url: string } | { type: 'text', text: string }> = []
 
