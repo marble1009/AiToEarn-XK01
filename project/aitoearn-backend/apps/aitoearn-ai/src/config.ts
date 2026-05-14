@@ -172,6 +172,10 @@ export const aiConfigSchema = z.object({
   grok: grokConfigSchema,
   aideo: aideoPricingConfigSchema,
   gemini: geminiConfigSchema,
+  nvidia: z.object({
+    baseUrl: z.string().default('https://integrate.api.nvidia.com/v1'),
+    apiKey: z.string(),
+  }),
   anthropic: z.object({
     baseUrl: z.string(),
     apiKey: z.string(),

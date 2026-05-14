@@ -5,6 +5,7 @@ import { AssetsModule } from './assets'
 import { ChatModule } from './chat'
 import { ImageModule } from './image'
 import { OpenaiModule } from './libs/openai'
+import { NvidiaModule } from './libs/nvidia'
 import { LogsModule } from './logs'
 import { ModelsConfigModule } from './models-config'
 import { VideoModule } from './video'
@@ -12,6 +13,7 @@ import { VideoModule } from './video'
 @Module({
   imports: [
     OpenaiModule.forRoot(config.ai.openai),
+    NvidiaModule.forRoot(config.ai.nvidia),
     ChatModule,
     LogsModule,
     ImageModule,

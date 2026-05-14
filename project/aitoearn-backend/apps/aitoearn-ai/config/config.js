@@ -29,6 +29,7 @@ const {
   GROK_API_KEY,
   GEMINI_API_KEY,
   GEMINI_BASE_URL,
+  AI_NVIDIA_API_KEY,
 } = process.env
 
 const {
@@ -122,6 +123,10 @@ module.exports = {
       location: GEMINI_LOCATION || 'us-central1',
       apiKey: GEMINI_API_KEY,
       baseUrl: GEMINI_BASE_URL,
+    },
+    nvidia: {
+      baseUrl: 'https://integrate.api.nvidia.com/v1',
+      apiKey: AI_NVIDIA_API_KEY,
     },
     aideo: {
       vCreative: {
@@ -263,6 +268,20 @@ module.exports = {
             tiers: [
               {
                 input: { text: '0', image: '0' },
+                output: { text: '0' },
+              },
+            ],
+          },
+        },
+        {
+          name: 'meta/llama-3.1-405b-instruct',
+          description: 'Llama 3.1 405B (NVIDIA)',
+          inputModalities: ['text'],
+          outputModalities: ['text'],
+          pricing: {
+            tiers: [
+              {
+                input: { text: '0' },
                 output: { text: '0' },
               },
             ],

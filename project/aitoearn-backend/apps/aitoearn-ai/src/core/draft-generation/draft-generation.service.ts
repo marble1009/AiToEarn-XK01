@@ -28,6 +28,8 @@ import { AgentService } from '../agent/agent.service'
 import { MediaMcp } from '../agent/mcp/media.mcp'
 import { UtilMcp } from '../agent/mcp/util.mcp'
 import { VideoUtilsMcp } from '../agent/mcp/video-utils.mcp'
+import { ChatService } from '../ai/chat'
+import { NvidiaService } from '../ai/libs/nvidia'
 import { ImageService } from '../ai/image/image.service'
 import { calculatePricingPoints, ChatPricing } from '../ai/pricing/pricing-calculator'
 import { VideoService } from '../ai/video/video.service'
@@ -103,6 +105,8 @@ export class DraftGenerationService implements OnModuleDestroy {
     private readonly videoMetadataService: VideoMetadataService,
     private readonly imageService: ImageService,
     private readonly mediaRepository: MediaRepository,
+    private readonly chatService: ChatService,
+    private readonly nvidiaService: NvidiaService,
   ) { }
 
   /** 优雅关机：等待所有正在运行的生成任务完成后再销毁模块 */

@@ -14,6 +14,7 @@ import { catchError, concatMap, ignoreElements, last, share } from 'rxjs/operato
 import { config } from '../../../config'
 import { GeminiService } from '../libs/gemini/gemini.service'
 import { OpenaiService } from '../libs/openai'
+import { NvidiaService } from '../libs/nvidia'
 import { ModelsConfigService } from '../models-config'
 import { calculatePricingPoints, ChatPricing, isFlatPricing, TokenUsageDetails } from '../pricing/pricing-calculator'
 import {
@@ -42,6 +43,7 @@ export class ChatService {
     private readonly modelsConfigService: ModelsConfigService,
     private readonly assetsService: AssetsService,
     private readonly geminiService: GeminiService,
+    private readonly nvidiaService: NvidiaService,
   ) {}
 
   /**
@@ -116,12 +118,20 @@ export class ChatService {
       return new ChatMessage(message)
     })
 
-    const result = await this.openaiService.createChatCompletion({
-      model,
-      messages: langchainMessages,
-      ...params,
-      modalities: params.modalities as OpenAIClient.Chat.ChatCompletionModality[],
-    })
+    const isNvidiaModel = model.startsWith('nvidia/') || model.startsWith('meta/') || model.includes('llama') // 简单判定
+    
+    const result = isNvidiaModel 
+      ? await this.nvidiaService.createChatCompletion({
+          model,
+          messages: langchainMessages,
+          ...params,
+        })
+      : await this.openaiService.createChatCompletion({
+          model,
+          messages: langchainMessages,
+          ...params,
+          modalities: params.modalities as OpenAIClient.Chat.ChatCompletionModality[],
+        })
 
     const usage = result.usage_metadata
     if (!usage) {
@@ -320,7 +330,10 @@ export class ChatService {
 
     const startedAt = new Date()
 
-    const stream = await this.openaiService.createRawStream({
+    const isNvidiaModel = model.startsWith('nvidia/') || model.startsWith('meta/') || model.includes('llama')
+    const client = isNvidiaModel ? this.nvidiaService : this.openaiService
+
+    const stream = await client.createRawStream({
       ...body,
       model,
       stream: true,
