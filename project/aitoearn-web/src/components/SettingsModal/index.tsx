@@ -8,7 +8,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { Globe, User } from 'lucide-react'
+import { Globe, User, Wallet } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 import { useTransClient } from '@/app/i18n/client'

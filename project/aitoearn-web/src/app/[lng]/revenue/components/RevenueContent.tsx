@@ -16,7 +16,7 @@ interface RevenueContentProps {
 
 export default function RevenueContent({ lng }: RevenueContentProps) {
   const [withdrawOpen, setWithdrawOpen] = useState(false)
-  const creditsBalance = useUserStore(state => state.creditsBalance)
+  const creditsBalance = useUserStore(state => state.creditsBalance) || 0
 
   const container = {
     hidden: { opacity: 0 },
@@ -75,7 +75,7 @@ export default function RevenueContent({ lng }: RevenueContentProps) {
                 <span className="font-semibold">可提现余额</span>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-4xl font-black text-gray-900">${(creditsBalance / 100).toFixed(2)}</span>
+                <span className="text-4xl font-black text-gray-900">${(Number(creditsBalance) / 100).toFixed(2)}</span>
                 <span className="text-gray-500 text-sm font-medium">USD</span>
               </div>
             </GlassCard>

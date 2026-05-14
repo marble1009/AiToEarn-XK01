@@ -53,7 +53,7 @@ export default function WithdrawModal({ open, onClose, balance }: WithdrawModalP
           <div className="p-8 space-y-8">
             <div className="text-center space-y-2">
               <h2 className="text-2xl font-black text-gray-900 tracking-tight">提现至个人账户</h2>
-              <p className="text-gray-500 text-sm">可用余额: <span className="font-bold text-green-600">${(balance / 100).toFixed(2)} USD</span></p>
+              <p className="text-gray-500 text-sm">可用余额: <span className="font-bold text-green-600">${(Number(balance || 0) / 100).toFixed(2)} USD</span></p>
             </div>
 
             {/* Amount Input */}
