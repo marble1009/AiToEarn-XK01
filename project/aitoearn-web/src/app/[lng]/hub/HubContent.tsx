@@ -25,15 +25,14 @@ interface ModuleItem {
 }
 
 const modules: ModuleItem[] = [
-  {
     id: 'monetize',
     title: 'Monetize',
     subtitle: '内容赚钱',
-    description: '通过 CPS、CPE、CPM 模式，将您的创作变现。高效、透明的内容交易市场。',
+    description: '在任务广场发现高额奖励，通过 CPS、CPE 模式将您的创意变现。',
     icon: '/assets/icons/hub/monetize.png',
     color: 'from-[#FF9D6C] to-[#FFC85E]',
     shadow: 'shadow-orange-200/50',
-    path: '/brand-promotion',
+    path: '/mission-square',
   },
   {
     id: 'publish',

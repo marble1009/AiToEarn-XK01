@@ -31,6 +31,12 @@ export const routerData: IRouterDataItem[] = [
     icon: <Home size={20} />,
   },
   {
+    name: 'Mission Square',
+    translationKey: 'missionSquare',
+    path: '/mission-square',
+    icon: <Sparkles size={20} />,
+  },
+  {
     name: 'AI Publish',
     translationKey: 'aiSocial',
     path: '/ai-social',
