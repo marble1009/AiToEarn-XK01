@@ -228,6 +228,113 @@ export const usePlanDetailStore = create(
         }
       },
 
+      /**
+       * 更新素材信息
+       */
+      updateMaterial: async (
+        materialId: string,
+        data: {
+          title?: string
+          desc?: string
+          mediaList?: any[]
+          coverUrl?: string
+          option?: Record<string, any>
+          accountTypes?: string[]
+        },
+      ): Promise<boolean> => {
+        set({ isSubmitting: true })
+        try {
+          const { apiUpdateMaterial } = await import('@/api/material')
+          const res = await apiUpdateMaterial(materialId, data)
+          if (res?.code !== 0)
+            return false
+
+          // 同步更新本地状态中的素材
+          const { materials, selectedDraft } = get()
+          const updatedMaterials = materials.map(m =>
+            m.id === materialId ? { ...m, ...data } : m,
+          )
+          const updatedSelectedDraft = selectedDraft?.id === materialId
+            ? { ...selectedDraft, ...data }
+            : selectedDraft
+
+          set({
+            materials: updatedMaterials,
+            selectedDraft: updatedSelectedDraft,
+          })
+          return true
+        }
+        catch {
+          return false
+        }
+        finally {
+          set({ isSubmitting: false })
+        }
+      },
+
+      /**
+       * 为特定草稿生成 AI 视频
+       */
+      generateVideoForDraft: async (material: PromotionMaterial) => {
+        const { generateVideo, getVideoTaskStatus } = await import('@/api/ai')
+
+        try {
+          // 1. 发起生成请求
+          const res = await generateVideo({
+            model: 'doubao-seedance-pro', // Using the pro model for better quality
+            prompt: material.desc || material.title || '',
+            metadata: { materialId: material.id },
+          })
+
+          if (res?.code !== 0 || !res?.data?.id) {
+            toast.error('Failed to initiate video generation')
+            return
+          }
+
+          const taskId = res.data.id
+          toast.info('AI Video generation started...')
+
+          // 2. 轮询状态
+          const pollStatus = async () => {
+            try {
+              const statusRes = await getVideoTaskStatus(taskId)
+              if (statusRes?.data?.status === 'succeeded' && statusRes.data.content?.video_url) {
+                const videoUrl = statusRes.data.content.video_url
+
+                // 3. 更新素材 - Prepend the new video so it becomes the featured one
+                const success = await methods.updateMaterial(material.id, {
+                  mediaList: [
+                    { url: videoUrl, type: 'video' },
+                    ...(material.mediaList || []),
+                  ],
+                })
+
+                if (success) {
+                  toast.success('AI Video generated and saved!')
+                }
+              }
+              else if (statusRes?.data?.status === 'failed') {
+                toast.error('Video generation failed')
+              }
+              else {
+                // 继续轮询
+                setTimeout(pollStatus, 5000)
+              }
+            }
+            catch (err) {
+              console.error('Polling error:', err)
+              setTimeout(pollStatus, 10000)
+            }
+          }
+
+          pollStatus()
+        }
+        catch (error) {
+          console.error('Video gen error:', error)
+          toast.error('An error occurred during video generation')
+        }
+      },
+
       // ==================== 弹窗控制 ====================
 
       openCreateMaterialModal: () => {

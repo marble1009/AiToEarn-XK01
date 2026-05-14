@@ -8,7 +8,7 @@
 
 import type { PromotionMaterial } from '@/app/[lng]/brand-promotion/brandPromotionStore/types'
 import type { PlatType } from '@/app/config/platConfig'
-import { Calendar, Edit, Image as ImageIcon, Loader2, Send, Trash2, Video } from 'lucide-react'
+import { Calendar, Edit, Image as ImageIcon, Loader2, Send, Sparkles, Trash2, Video } from 'lucide-react'
 import NextImage from 'next/image'
 import { memo, useCallback, useState } from 'react'
 import { Navigation, Pagination } from 'swiper/modules'
@@ -177,12 +177,13 @@ const DraftDetailContent = memo(({ onClose }: { onClose: () => void }) => {
   const { t } = useTransClient('brandPromotion')
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
 
-  const { selectedDraft, isSubmitting } = usePlanDetailStore(
-    useShallow(state => ({
-      selectedDraft: state.selectedDraft,
-      isSubmitting: state.isSubmitting,
-    })),
-  )
+    const { selectedDraft, isSubmitting, generateVideoForDraft } = usePlanDetailStore(
+      useShallow(state => ({
+        selectedDraft: state.selectedDraft,
+        isSubmitting: state.isSubmitting,
+        generateVideoForDraft: state.generateVideoForDraft,
+      })),
+    )
 
   const {
     openEditMaterialModal,
@@ -229,6 +230,17 @@ const DraftDetailContent = memo(({ onClose }: { onClose: () => void }) => {
     }
     setDeleteConfirmOpen(false)
   }, [selectedDraft, deleteMaterial, closeDraftDetailDialog, t])
+
+  const [isVideoGenerating, setIsVideoGenerating] = useState(false)
+
+  const handleGenerateVideo = useCallback(async () => {
+    if (selectedDraft) {
+      setIsVideoGenerating(true)
+      await generateVideoForDraft(selectedDraft)
+      // We don't wait for polling here as the store handles it async
+      setTimeout(() => setIsVideoGenerating(false), 2000)
+    }
+  }, [selectedDraft, generateVideoForDraft])
 
   if (!selectedDraft)
     return null
@@ -374,6 +386,25 @@ const DraftDetailContent = memo(({ onClose }: { onClose: () => void }) => {
               <Trash2 className="h-4 w-4 mr-2" />
               {t('draft.delete')}
             </Button>
+          </div>
+
+          {/* AI 增强操作 - 一键成片 */}
+          <div className="mt-4">
+            <Button
+              className="w-full h-12 cursor-pointer bg-gradient-to-r from-[#4ade80] to-[#22c55e] hover:from-[#22c55e] hover:to-[#16a34a] text-white border-none shadow-[0_0_15px_rgba(74,222,128,0.3)] transition-all hover:shadow-[0_0_20px_rgba(74,222,128,0.5)] group"
+              onClick={handleGenerateVideo}
+              disabled={isVideoGenerating}
+            >
+              {isVideoGenerating ? (
+                <Loader2 className="h-5 w-5 animate-spin mr-2" />
+              ) : (
+                <Sparkles className="h-5 w-5 mr-2 animate-pulse group-hover:rotate-12 transition-transform" />
+              )}
+              {isVideoGenerating ? 'AI Engine Processing...' : 'Generate AI Digital Video'}
+            </Button>
+            <p className="text-[10px] text-center text-muted-foreground mt-2 italic">
+              Powered by NVIDIA ACE & Doubao-Video Engine
+            </p>
           </div>
         </div>
       </div>
