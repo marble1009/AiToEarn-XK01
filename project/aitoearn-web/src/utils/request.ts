@@ -64,9 +64,9 @@ export async function request<T>(params: RequestParamsWithSilent) {
       return null
     }
 
-    // 已登录、但是登录过期
+    // 已登录、但是登录过期 (临时开发模式：注释掉 401 拦截，防止假 token 被踢出)
     if (data.code === 401) {
-      useUserStore.getState().logout()
+      // useUserStore.getState().logout()
       // 如果是 silent 模式，返回完整响应以便调用方处理
       if (params.silent) {
         return data
