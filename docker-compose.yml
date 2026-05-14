@@ -295,7 +295,7 @@ services:
       aitoearn-ai:
         condition: service_healthy
     ports:
-      - "8081:80"
+      - "80:80"
       - "9010:9000"
     deploy:
       resources:

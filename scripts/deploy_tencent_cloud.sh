@@ -26,12 +26,15 @@ mkdir -p ~/aitoearn
 cd ~/aitoearn
 
 # 4. Clone or Update Repo
+GITHUB_PROXY="https://ghproxy.com/"
+REPO_URL="${GITHUB_PROXY}https://github.com/marble1009/AiToEarn-XK01.git"
+
 if [ -d ".git" ]; then
-    echo "🔄 Updating repository..."
+    echo "🔄 Updating repository using proxy..."
     git pull origin main
 else
-    echo "📥 Cloning repository..."
-    git clone https://github.com/marble1009/AiToEarn-XK01.git .
+    echo "📥 Cloning repository using proxy..."
+    git clone $REPO_URL .
 fi
 
 # 5. Setup Environment Variables
