@@ -80,20 +80,16 @@ export function Providers({ children, lng, autoLoginToken }: { children: React.R
   }, [_hasHydrated, token, pathname])
 
   // 拦截 @react-oauth/google 的脚本加载，添加 ?hl= 参数以设置按钮语言
-  useLayoutEffect(() => {
+  useEffect(() => {
     const hl = lng.replace('-', '_')
     const GIS_URL = 'https://accounts.google.com/gsi/client'
-    const originalAppendChild = document.body.appendChild.bind(document.body)
-
-    document.body.appendChild = function <T extends Node>(node: T): T {
-      if (node instanceof HTMLScriptElement && node.src === GIS_URL) {
-        node.src = `${GIS_URL}?hl=${hl}`
+    
+    // 检查脚本是否已存在
+    const scripts = document.getElementsByTagName('script')
+    for (let i = 0; i < scripts.length; i++) {
+      if (scripts[i].src.includes(GIS_URL) && !scripts[i].src.includes('hl=')) {
+        scripts[i].src = `${GIS_URL}?hl=${hl}`
       }
-      return originalAppendChild(node)
-    }
-
-    return () => {
-      document.body.appendChild = originalAppendChild
     }
   }, [lng])
 
