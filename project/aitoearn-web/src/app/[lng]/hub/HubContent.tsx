@@ -25,6 +25,7 @@ interface ModuleItem {
 }
 
 const modules: ModuleItem[] = [
+  {
     id: 'monetize',
     title: 'Monetize',
     subtitle: '内容赚钱',

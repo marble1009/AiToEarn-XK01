@@ -14,14 +14,20 @@ import CreatePlanModal from '@/app/[lng]/brand-promotion/components/CreatePlanMo
 import PlanTabBar from '@/app/[lng]/brand-promotion/components/PlanTabBar'
 import { usePlanDetailStore } from '@/app/[lng]/brand-promotion/planDetailStore'
 import { usePlanTabStore } from '@/app/[lng]/brand-promotion/planTabStore'
-import { useTransClient } from '@/app/i18n/client'
+import { useMissionStore } from '@/app/[lng]/mission-square/missionStore'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { CheckCircle2, Info } from 'lucide-react'
 import DraftContentModule from './components/DraftContentModule'
 
 export default function DraftBoxCore() {
   const { t } = useTransClient('brandPromotion')
   const searchParams = useSearchParams()
   const urlPlanId = searchParams.get('planId')
+  const missionId = searchParams.get('missionId')
+
+  const { getMissionById } = useMissionStore()
+  const currentMission = missionId ? getMissionById(missionId) : null
 
   const {
     tabPlans,
@@ -63,6 +69,20 @@ export default function DraftBoxCore() {
       initContentData(selectedPlanId)
     }
   }, [selectedPlanId, initContentData])
+
+  // 处理 Mission 自动创建/关联
+  useEffect(() => {
+    if (initialized && missionId && currentMission) {
+      // 检查是否已有同名或关联 Plan
+      const existingPlan = tabPlans.find(p => p.name.includes(currentMission.brand))
+      if (existingPlan) {
+        usePlanTabStore.getState().selectPlan(existingPlan.id)
+      } else {
+        // 实际应用中这里应该调用 API 创建 Plan，现在先提示用户
+        console.log('Should auto-create plan for mission:', currentMission.title)
+      }
+    }
+  }, [initialized, missionId, currentMission, tabPlans])
 
   // Tab 切换回调
   const handlePlanChange = useCallback((planId: string) => {
@@ -123,6 +143,24 @@ export default function DraftBoxCore() {
 
   return (
     <div className="flex flex-col h-full">
+      {/* Mission Banner */}
+      {currentMission && (
+        <div className="bg-orange-50 border-b border-orange-100 px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center border border-orange-200">
+              <CheckCircle2 size={16} className="text-orange-500" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-gray-800">
+                You are creating content for: <span className="text-orange-600">{currentMission.title}</span>
+              </p>
+              <p className="text-[10px] text-gray-400">NVIDIA AI will prioritize brand requirements for {currentMission.brand}.</p>
+            </div>
+          </div>
+          <Badge className="bg-orange-100 text-orange-600 border-none px-3">Mission Active</Badge>
+        </div>
+      )}
+
       {/* Tab 栏 */}
       <div data-testid="draftbox-plan-tabs">
         <PlanTabBar onPlanChange={handlePlanChange} syncUrlQuery />

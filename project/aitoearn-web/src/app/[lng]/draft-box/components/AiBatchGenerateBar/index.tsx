@@ -25,6 +25,8 @@ import { useUserStore } from '@/store/user'
 import { getVideoMeta } from '@/utils/media'
 import { getOssUrl } from '@/utils/oss'
 import { useDraftBoxConfigStore } from '../../draftBoxConfigStore'
+import { useSearchParams } from 'next/navigation'
+import { useMissionStore } from '@/app/[lng]/mission-square/missionStore'
 import styles from './AiBatchGenerateBar.module.scss'
 import {
   DEFAULT_MAX_INPUT_IMAGES,
@@ -69,6 +71,10 @@ interface AiBatchGenerateBarProps {
 const AiBatchGenerateBar = memo(({ groupId, onGenerated, className }: AiBatchGenerateBarProps) => {
   const { t } = useTransClient('brandPromotion')
   const lng = useGetClientLng()
+  const searchParams = useSearchParams()
+  const missionId = searchParams.get('missionId')
+  const { getMissionById } = useMissionStore()
+  const currentMission = useMemo(() => missionId ? getMissionById(missionId) : null, [missionId, getMissionById])
 
   const imageList = EMPTY_IMAGE_LIST
 
@@ -777,7 +783,6 @@ const AiBatchGenerateBar = memo(({ groupId, onGenerated, className }: AiBatchGen
       return
     }
 
-    // 将平台参数限制追加到 prompt，让 AI 感知限制（非草稿模式不需要，因为不生成文案）
     const buildPromptWithLimits = (basePrompt: string): string => {
       if (!isDraftMode)
         return basePrompt
@@ -791,9 +796,15 @@ const AiBatchGenerateBar = memo(({ groupId, onGenerated, className }: AiBatchGen
       if (effectiveLimitsDetailed.topicMax) {
         limits.push(`话题数量限制：${effectiveLimitsDetailed.topicMax.value}`)
       }
+
+      let finalPrompt = basePrompt
+      if (currentMission) {
+        finalPrompt = `[Mission: ${currentMission.title} for ${currentMission.brand}]\n${finalPrompt}\nRequirements: ${currentMission.requirements.join(', ')}`
+      }
+
       if (limits.length === 0)
-        return basePrompt
-      return `${basePrompt}\n\n重要：${limits.join('，')}`
+        return finalPrompt
+      return `${finalPrompt}\n\n重要：${limits.join('，')}`
     }
 
     const imageUrls = [
