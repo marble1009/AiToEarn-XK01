@@ -25,6 +25,7 @@ import { ShortLinkModule } from './core/short-link/short-link.module'
 import { ToolsModule } from './core/tools/tools.module'
 import { UnifiedMcpModule } from './core/unified-mcp/unified-mcp.module'
 import { UserModule } from './core/user/user.module'
+import { MissionModule } from './core/mission/mission.module'
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { UserModule } from './core/user/user.module'
     ApiKeyModule,
     RelayModule,
     UnifiedMcpModule,
+    MissionModule,
   ],
   controllers: [],
   providers: [],

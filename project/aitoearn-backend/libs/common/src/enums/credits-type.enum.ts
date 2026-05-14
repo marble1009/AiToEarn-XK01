@@ -9,4 +9,5 @@ export enum CreditsType {
   Expired = 'expired', // 过期扣减
   Manual = 'manual', // 手动增加
   Refund = 'refund', // 退款
+  MissionReward = 'mission_reward', // 任务奖励
 }

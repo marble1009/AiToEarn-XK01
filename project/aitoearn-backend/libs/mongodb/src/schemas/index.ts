@@ -39,6 +39,10 @@ import {
   User,
   UserSchema,
 } from './user.schema'
+import {
+  MissionSubmission,
+  MissionSubmissionSchema,
+} from './mission-submission.schema'
 
 export * from './account-group.schema'
 export * from './account.schema'
@@ -69,6 +73,7 @@ export * from './reply-comment-record.schema'
 export * from './timestamp.schema'
 export * from './user-notification-control.schema'
 export * from './user.schema'
+export * from './mission-submission.schema'
 
 export const schemas = [
   { name: User.name, schema: UserSchema },
@@ -98,4 +103,5 @@ export const schemas = [
   { name: EngagementSubTask.name, schema: EngagementSubTaskSchema },
   { name: InteractionRecord.name, schema: InteractionRecordSchema },
   { name: ReplyCommentRecord.name, schema: ReplyCommentRecordSchema },
+  { name: MissionSubmission.name, schema: MissionSubmissionSchema },
 ] as const

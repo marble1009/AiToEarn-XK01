@@ -19,6 +19,7 @@ import { PublishRecordRepository } from './publish-record.repository'
 import { QrCodeArtImageRepository } from './qr-code-art-image.repository'
 import { UserNotificationControlRepository } from './user-notification-control.repository'
 import { UserRepository } from './user.repository'
+import { MissionSubmissionRepository } from './mission-submission.repository'
 
 export * from './account-group.repository'
 export * from './account.repository'
@@ -43,6 +44,7 @@ export * from './publish-record.repository'
 export * from './qr-code-art-image.repository'
 export * from './user-notification-control.repository'
 export * from './user.repository'
+export * from './mission-submission.repository'
 
 export const repositories = [
   AiLogRepository,
@@ -66,4 +68,5 @@ export const repositories = [
   ContentGenerationTaskRepository,
   UserNotificationControlRepository,
   QrCodeArtImageRepository,
+  MissionSubmissionRepository,
 ] as const
