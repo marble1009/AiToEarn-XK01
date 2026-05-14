@@ -145,6 +145,7 @@ services:
       ASSETS_CONFIG: '{"provider":"s3","region":"us-east-1","bucketName":"aitoearn","endpoint":"http://rustfs.local:9000","publicEndpoint":"http://127.0.0.1:9000","cdnEndpoint":"http://127.0.0.1:8080/oss","accessKeyId":"rustfsadmin","secretAccessKey":"rustfsadmin","forcePathStyle":true}'
 
       # AI Services
+      AI_NVIDIA_API_KEY: ${AI_NVIDIA_API_KEY:-}
       OPENAI_API_KEY: sk-placeholder
       OPENAI_BASE_URL: https://api.openai.com/v1
       ANTHROPIC_API_KEY: sk-placeholder
