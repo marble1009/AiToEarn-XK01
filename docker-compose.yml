@@ -8,7 +8,11 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     ports:
-      - "27017:27017"
+      - "27018:27017"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     volumes:
       - mongodb-data:/data/db
       - mongodb-config:/data/configdb
@@ -38,7 +42,11 @@ services:
     restart: unless-stopped
     command: redis-server --requirepass password
     ports:
-      - "6379:6379"
+      - "6380:6379"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     volumes:
       - redis-data:/data
     networks:
@@ -121,6 +129,10 @@ services:
         condition: service_healthy
     volumes:
       - ./project/aitoearn-backend/apps/aitoearn-ai/config/config.js:/app/config.js:ro
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
     networks:
       - aitoearn-network
     environment:
@@ -283,8 +295,12 @@ services:
       aitoearn-ai:
         condition: service_healthy
     ports:
-      - "8080:80"
-      - "9000:9000"
+      - "8081:80"
+      - "9010:9000"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     networks:

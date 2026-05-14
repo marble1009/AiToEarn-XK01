@@ -35,21 +35,23 @@ else
 fi
 
 # 5. Setup Environment Variables
-echo "⚙️ Configuring environment..."
+echo "⚙️ Configuring environment (XiaoZhi AI Compatibility Mode)..."
 # Note: Using the NVIDIA Key provided by the user
+# Adjusted ports: Nginx 8080 -> 8081, RustFS 9000 -> 9010
 cat <<EOF > .env
 NODE_ENV=production
 PROJECT_NAME=aitoearn
 DOMAIN=aurastring.cloud
 AI_NVIDIA_API_KEY=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
-MONGODB_URI=mongodb://mongo:27014/aitoearn
-REDIS_URL=redis://redis:6379
-ASSETS_CONFIG='{"provider":"local","root":"/app/assets","baseUrl":"https://aurastring.cloud/assets"}'
+MONGODB_URI=mongodb://admin:password@mongodb:27018/aitoearn
+REDIS_URL=redis://redis:6380
+ASSETS_CONFIG='{"provider":"s3","region":"us-east-1","bucketName":"aitoearn","endpoint":"http://rustfs.local:9000","publicEndpoint":"http://111.229.159.100:9010","cdnEndpoint":"http://111.229.159.100:8081/oss","accessKeyId":"rustfsadmin","secretAccessKey":"rustfsadmin","forcePathStyle":true}'
 EOF
 
 # 6. Start Services
-echo "🏗️ Launching containers (this may take a few minutes)..."
-sudo docker-compose -f docker-compose.yml up -d
+echo "🏗️ Launching containers (XiaoZhi-Safe Mode)..."
+# We will use the modified docker-compose below
+sudo docker-compose up -d
 
 echo "✅ Deployment Successful!"
 echo "🌐 Your app will be available at: http://aurastring.cloud (after DNS propagates)"
