@@ -71,18 +71,29 @@ export default function DraftBoxCore() {
   }, [selectedPlanId, initContentData])
 
   // 处理 Mission 自动创建/关联
+  const createPlan = useBrandPromotionStore(state => state.createPlan)
+  const isCreatingRef = useRef(false)
+
   useEffect(() => {
-    if (initialized && missionId && currentMission) {
+    if (initialized && missionId && currentMission && !isCreatingRef.current) {
       // 检查是否已有同名或关联 Plan
-      const existingPlan = tabPlans.find(p => p.name.includes(currentMission.brand))
+      const existingPlan = tabPlans.find(p => 
+        p.name.includes(currentMission.brand) || 
+        p.name.includes(currentMission.title)
+      )
+      
       if (existingPlan) {
         usePlanTabStore.getState().selectPlan(existingPlan.id)
       } else {
-        // 实际应用中这里应该调用 API 创建 Plan，现在先提示用户
-        console.log('Should auto-create plan for mission:', currentMission.title)
+        // 自动创建任务专属 Plan
+        isCreatingRef.current = true
+        createPlan({ name: `Mission: ${currentMission.brand} - ${currentMission.title.slice(0, 10)}` })
+          .finally(() => {
+            isCreatingRef.current = false
+          })
       }
     }
-  }, [initialized, missionId, currentMission, tabPlans])
+  }, [initialized, missionId, currentMission, tabPlans, createPlan])
 
   // Tab 切换回调
   const handlePlanChange = useCallback((planId: string) => {
