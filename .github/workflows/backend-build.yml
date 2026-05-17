@@ -44,7 +44,7 @@ on:
 permissions:
   contents: read
   actions: write
-
+  packages: write
 env:
   NX_NO_CLOUD: true
   MONOREPO_DIR: project/aitoearn-backend
