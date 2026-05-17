@@ -62,7 +62,39 @@ export class DouyinPubService extends PublishService {
   }
 
   async immediatePublish(publishTask: PublishRecord): Promise<PublishingTaskResult> {
-    const { desc, title, option, topics, videoUrl, imgUrlList } = publishTask
+    const { accountId, desc, title, option, topics, videoUrl, imgUrlList } = publishTask
+
+    if (!accountId) throw new Error('Account ID is required for Douyin publishing')
+
+    // 检查该账号是否保存了 Puppeteer 登录 Cookie
+    const account = await this.douyinService.getAccount(accountId)
+    if (account?.loginCookie) {
+      this.logger.log(`[Douyin] Detected active loginCookie for account ${accountId}. Running automated Puppeteer publishing...`)
+      
+      const isPrivate = option?.douyin?.privateStatus === DouyinPrivateStatus.Self
+      try {
+        const result = await this.douyinService.automatedPublish({
+          accountId,
+          videoUrl: videoUrl || '',
+          title: title || 'AiToEarn Video',
+          desc: desc || '',
+          topics: topics || [],
+          isPrivate
+        })
+
+        return {
+          postId: result.postId,
+          permalink: result.permalink,
+          status: PublishStatus.PUBLISHED,
+        }
+      } catch (error) {
+        this.logger.error(`[Douyin] Automated Puppeteer publishing failed: ${(error as Error).message}`)
+        throw error
+      }
+    }
+
+    // 备用：如果没有保存 Cookie，降级走官方 API 的 Share Schema 生成短链方案
+    this.logger.log(`[Douyin] No loginCookie found. Falling back to Share Schema generation...`)
     const options = {
       downloadType: option?.douyin?.downloadType || DouyinDownloadType.Allow,
       privateStatus: option?.douyin?.privateStatus || DouyinPrivateStatus.All,

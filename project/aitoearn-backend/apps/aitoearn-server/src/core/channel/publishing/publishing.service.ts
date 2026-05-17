@@ -18,6 +18,7 @@ import { PublishService } from './providers/base.service'
 import { BilibiliPubService } from './providers/bilibili.service'
 import { DouyinPubService } from './providers/douyin.service'
 import { TiktokPubService } from './providers/tiktok.service'
+import { XhsPubService } from './providers/xhs.service'
 import { CreatePublishDto, PublishRecordListFilterDto, UpdatePublishTaskDto } from './publish.dto'
 import { TiktokWebhookDto } from './tiktok-webhook.dto'
 import { generatePostMessage } from './util'
@@ -37,6 +38,7 @@ export class PublishingService {
     private readonly tiktokPubService: TiktokPubService,
     private readonly bilibiliPubService: BilibiliPubService,
     private readonly douyinPubService: DouyinPubService,
+    private readonly xhsPubService: XhsPubService,
     private readonly youtubeService: YoutubeService,
     private readonly facebookService: FacebookService,
     @Inject('PUBLISHING_PROVIDERS')

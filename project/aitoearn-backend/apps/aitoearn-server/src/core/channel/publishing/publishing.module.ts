@@ -30,6 +30,7 @@ import { ThreadsPublishService } from './providers/threads.service'
 import { TiktokPubService } from './providers/tiktok.service'
 import { TwitterPubService } from './providers/twitter.service'
 import { WxGzhPubService } from './providers/wx-gzh.service'
+import { XhsPubService } from './providers/xhs.service'
 import { YoutubePubService } from './providers/youtube.service'
 import { PublishingService } from './publishing.service'
 import { EnqueuePublishingTaskScheduler } from './scheduler/enqueue-publishing-task.scheduler'
@@ -70,6 +71,7 @@ import { EnqueuePublishingTaskScheduler } from './scheduler/enqueue-publishing-t
     LinkedinPublishService,
     TwitterPubService,
     DouyinPubService,
+    XhsPubService,
     GoogleBusinessPubService,
     EnqueuePublishingTaskScheduler,
     {
@@ -86,6 +88,7 @@ import { EnqueuePublishingTaskScheduler } from './scheduler/enqueue-publishing-t
         pinterest: PinterestPubService,
         linkedin: LinkedinPublishService,
         douyin: DouyinPubService,
+        xhs: XhsPubService,
         googleBusiness: GoogleBusinessPubService,
       ) => ({
         [AccountType.BILIBILI]: bilibili,
@@ -99,6 +102,7 @@ import { EnqueuePublishingTaskScheduler } from './scheduler/enqueue-publishing-t
         [AccountType.PINTEREST]: pinterest,
         [AccountType.LINKEDIN]: linkedin,
         [AccountType.Douyin]: douyin,
+        [AccountType.Xhs]: xhs,
         [AccountType.GOOGLE_BUSINESS]: googleBusiness,
       }),
       inject: [
@@ -113,6 +117,7 @@ import { EnqueuePublishingTaskScheduler } from './scheduler/enqueue-publishing-t
         PinterestPubService,
         LinkedinPublishService,
         DouyinPubService,
+        XhsPubService,
         GoogleBusinessPubService,
       ],
     },
