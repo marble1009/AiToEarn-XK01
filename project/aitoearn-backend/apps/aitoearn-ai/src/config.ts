@@ -10,6 +10,7 @@ import { geminiConfigSchema } from './core/ai/libs/gemini'
 import { grokConfigSchema } from './core/ai/libs/grok'
 import { openaiConfigSchema } from './core/ai/libs/openai'
 import { volcengineConfigSchema } from './core/ai/libs/volcengine'
+import { nvidiaConfigSchema } from './core/ai/libs/nvidia'
 
 const chatPricingModalitySchema = z.object({
   text: z.string(),
@@ -172,10 +173,7 @@ export const aiConfigSchema = z.object({
   grok: grokConfigSchema,
   aideo: aideoPricingConfigSchema,
   gemini: geminiConfigSchema,
-  nvidia: z.object({
-    baseUrl: z.string().default('https://integrate.api.nvidia.com/v1'),
-    apiKey: z.string(),
-  }),
+  nvidia: nvidiaConfigSchema,
   anthropic: z.object({
     baseUrl: z.string(),
     apiKey: z.string(),

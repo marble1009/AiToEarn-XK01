@@ -113,6 +113,7 @@ export class ChatService {
 
   async chatCompletion(request: ChatCompletionDto, userId: string) {
     const { messages, model, ...params } = request
+    const { modalities, ...otherParams } = params
 
     const langchainMessages: BaseMessage[] = messages.map((message) => {
       return new ChatMessage(message)
@@ -124,13 +125,13 @@ export class ChatService {
       ? await this.nvidiaService.createChatCompletion({
           model,
           messages: langchainMessages,
-          ...params,
+          ...otherParams,
         })
       : await this.openaiService.createChatCompletion({
           model,
           messages: langchainMessages,
-          ...params,
-          modalities: params.modalities as any,
+          ...otherParams,
+          modalities: modalities as any,
         })
 
     const usage = result.usage_metadata
