@@ -19,17 +19,14 @@ RUN for lib in dist/libs/*/; do name=$(basename "$lib"); rm -rf "node_modules/@y
 # ============ 阶段2：精简运行镜像 ============
 FROM node:24-slim AS runner
 
-# 安装 Puppeteer 依赖的 Chrome 和中文字体
+# 安装 Puppeteer 依赖的 Chromium 和中文字体 (支持 amd64 和 arm64)
 RUN apt-get update && apt-get install -y \
     curl \
     ffmpeg \
     gnupg \
     wget \
     fonts-wqy-zenhei \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
+    chromium \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 

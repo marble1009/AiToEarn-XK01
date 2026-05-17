@@ -12,17 +12,14 @@ FROM node:24-slim AS production
 
 ARG APP_NAME
 
-# Install Google Chrome, ffmpeg, curl and Chinese fonts for Puppeteer
+# Install Chromium, ffmpeg, curl and Chinese fonts for Puppeteer (supports both amd64 and arm64)
 RUN apt-get update && apt-get install -y \
     curl \
     ffmpeg \
     gnupg \
     wget \
     fonts-wqy-zenhei \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
+    chromium \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
@@ -38,6 +35,6 @@ ENV NODE_ENV=production
 ENV APP_NAME=$APP_NAME
 # Set Puppeteer to avoid downloading Chrome again and use the installed one
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 CMD ["sh", "-c", "node apps/${APP_NAME}/src/main.js -c config.js"]
