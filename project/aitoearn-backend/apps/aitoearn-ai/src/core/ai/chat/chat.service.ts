@@ -130,7 +130,7 @@ export class ChatService {
           model,
           messages: langchainMessages,
           ...params,
-          modalities: params.modalities as OpenAIClient.Chat.ChatCompletionModality[],
+          modalities: params.modalities as any,
         })
 
     const usage = result.usage_metadata

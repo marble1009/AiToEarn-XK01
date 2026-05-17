@@ -118,7 +118,7 @@ services:
       "
 
   aitoearn-ai:
-    image: aitoearn/aitoearn-ai:latest
+    image: ghcr.io/marble1009/aitoearn-ai:latest
     pull_policy: always
     container_name: aitoearn-ai
     restart: unless-stopped
@@ -179,7 +179,7 @@ services:
       start_period: 60s
 
   aitoearn-server:
-    image: aitoearn/aitoearn-server:latest
+    image: ghcr.io/marble1009/aitoearn-server:latest
     pull_policy: always
     container_name: aitoearn-server
     restart: unless-stopped
@@ -267,7 +267,7 @@ services:
       start_period: 60s
 
   aitoearn-web:
-    image: aitoearn/aitoearn-web:latest
+    image: ghcr.io/marble1009/aitoearn-web:latest
     pull_policy: always
     container_name: aitoearn-web
     restart: unless-stopped
