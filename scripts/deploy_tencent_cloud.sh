@@ -54,7 +54,7 @@ EOF
 # 6. Start Services
 echo "🏗️ Launching containers (XiaoZhi-Safe Mode)..."
 # We will use the modified docker-compose below
-sudo docker-compose up -d
+sudo docker-compose up --build -d
 
 echo "✅ Deployment Successful!"
 echo "🌐 Your app will be available at: http://aurastring.cloud (after DNS propagates)"

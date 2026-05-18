@@ -309,6 +309,11 @@ module.exports = {
     token: INTERNAL_TOKEN,
   },
 
+  // 队列并发限制（多用户高并发调优）
+  queueConcurrency: {
+    publish: Number(process.env.QUEUE_CONCURRENCY_PUBLISH) || 3,
+  },
+
   // 业务
   credits: {
     registerBonus: 50,

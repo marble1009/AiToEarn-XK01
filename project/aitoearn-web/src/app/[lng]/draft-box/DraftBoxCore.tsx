@@ -7,8 +7,9 @@
 
 import { Loader2, Plus, Sparkles } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useShallow } from 'zustand/react/shallow'
+import { useTransClient } from '@/app/i18n/client'
 import { useBrandPromotionStore } from '@/app/[lng]/brand-promotion/brandPromotionStore'
 import CreatePlanModal from '@/app/[lng]/brand-promotion/components/CreatePlanModal'
 import PlanTabBar from '@/app/[lng]/brand-promotion/components/PlanTabBar'

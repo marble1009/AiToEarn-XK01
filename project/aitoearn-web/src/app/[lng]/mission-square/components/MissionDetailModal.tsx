@@ -185,5 +185,3 @@ export function MissionDetailModal({ mission, isOpen, onClose, lng }: MissionDet
     </>
   )
 }
-  )
-}

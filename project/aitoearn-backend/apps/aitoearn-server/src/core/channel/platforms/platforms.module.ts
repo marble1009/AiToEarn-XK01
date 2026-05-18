@@ -27,6 +27,7 @@ import { XiaohongshuModule } from './xiaohongshu/xiaohongshu.module'
 import { XiaohongshuService } from './xiaohongshu/xiaohongshu.service'
 import { YoutubeModule } from './youtube/youtube.module'
 import { YoutubeService } from './youtube/youtube.service'
+import { AccountHealthCron } from './cron/account-health.cron'
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { YoutubeService } from './youtube/youtube.service'
   providers: [
     PlatformService,
     DumpAvatarConsumer,
+    AccountHealthCron,
     {
       provide: 'CHANNEL_PROVIDERS',
       useFactory: (

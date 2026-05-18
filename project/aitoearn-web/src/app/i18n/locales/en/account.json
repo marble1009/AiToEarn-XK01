@@ -26,6 +26,7 @@
   "mcpManagerTit": "MCP Manager",
   "online": "Online",
   "offline": "Offline",
+  "sessionExpiredScan": "Session expired, please re-scan",
   "checkLoginStatus": "Check Login Status",
   "checkAllLoginStatus": "Check All Login Status",
   "nickname": "Nickname",

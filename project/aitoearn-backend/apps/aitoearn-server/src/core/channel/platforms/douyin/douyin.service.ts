@@ -122,6 +122,55 @@ export class DouyinService extends PlatformBaseService {
   }
 
   /**
+   * 轻量级核验抖音扫码 Cookie 的健康状态 (方案 A)
+   * 0.1秒极速响应，完全免浏览器运行，极其节省服务器资源
+   */
+  override async checkCookieHealth(accountId: string): Promise<boolean> {
+    try {
+      const account = await this.accountRepository.getAccountById(accountId)
+      if (!account || !account.loginCookie) {
+        return false
+      }
+
+      let parsedCookies: Array<{ name: string; value: string }>
+      try {
+        parsedCookies = JSON.parse(account.loginCookie)
+      } catch {
+        return false
+      }
+
+      if (!Array.isArray(parsedCookies) || parsedCookies.length === 0) {
+        return false
+      }
+
+      const cookieString = parsedCookies.map(c => `${c.name}=${c.value}`).join('; ')
+
+      // 发送轻量级请求核验 Cookie 有效性
+      const response = await axios.get('https://creator.douyin.com/creator-micro/content/upload', {
+        headers: {
+          'Cookie': cookieString,
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        },
+        maxRedirects: 0,
+        validateStatus: (status) => status === 200 || status === 302
+      })
+
+      if (response.status === 302) {
+        const redirectUrl = response.headers['location'] || ''
+        if (redirectUrl.includes('login') || redirectUrl.includes('passport')) {
+          this.logger.warn(`[Douyin Health] Cookie expired or redirected to login for account: ${accountId}`)
+          return false
+        }
+      }
+
+      return true
+    } catch (error) {
+      this.logger.error(`[Douyin Health] Error checking cookie health for ${accountId}: ${(error as Error).message}`)
+      return false
+    }
+  }
+
+  /**
    * 获取用户的授权信息
    * @param accountId
    * @returns

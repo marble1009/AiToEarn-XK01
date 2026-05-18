@@ -26,6 +26,7 @@
   "mcpManagerTit": "MCP管理",
   "online": "オンライン",
   "offline": "オフライン",
+  "sessionExpiredScan": "セッションが期限切れです、再スキャンしてください",
   "checkLoginStatus": "ログイン状態を確認",
   "checkAllLoginStatus": "すべてのログイン状態を確認",
   "nickname": "ニックネーム",

@@ -25,9 +25,10 @@ import { PublishService } from '../providers/base.service'
 import { PublishingUnrecoverableError } from '../publishing.exception'
 import { PublishingTaskResult } from '../publishing.interface'
 import { PublishingService } from '../publishing.service'
+import { config } from '../../../../config'
 
 @QueueProcessor(QueueName.PostPublish, {
-  concurrency: 3,
+  concurrency: config.queueConcurrency?.publish || 3,
   stalledInterval: 15000,
   maxStalledCount: 1,
 })

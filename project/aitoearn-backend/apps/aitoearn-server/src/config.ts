@@ -173,6 +173,9 @@ export const appConfigSchema = z.object({
   aiClient: aitoearnAiClientConfigSchema,
   credits: creditsConfigSchema,
   newApi: newApiConfigSchema.optional(),
+  queueConcurrency: z.object({
+    publish: z.number().default(3),
+  }).optional(),
   channel: channelConfigSchema,
   relay: relayConfigSchema.optional(),
 })

@@ -91,4 +91,12 @@ export abstract class PlatformBaseService {
   protected async updateAccountStatus(accountId: string, status: number) {
     await this.accountRepository.updateAccountStatus(accountId, status)
   }
+
+  /**
+   * 核验扫码 Cookie 的健康状态 (方案 A)
+   * 默认为不需要 Cookie 核验的官方 API 平台返回 true
+   */
+  async checkCookieHealth(_accountId: string): Promise<boolean> {
+    return true
+  }
 }

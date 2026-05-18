@@ -63,14 +63,6 @@ export function MissionSubmissionModal({ mission, isOpen, onClose }: MissionSubm
     }
   }
 
-    // Close after success
-    setTimeout(() => {
-      onClose()
-      setIsSuccess(false)
-      setUrl('')
-    }, 2500)
-  }
-
   return (
     <AnimatePresence>
       {isOpen && (

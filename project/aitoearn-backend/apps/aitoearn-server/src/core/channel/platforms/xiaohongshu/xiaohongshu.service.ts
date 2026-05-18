@@ -17,6 +17,53 @@ export class XiaohongshuService extends PlatformBaseService {
     return account?.status === 1 ? 1 : 0
   }
 
+  /**
+   * 轻量级核验小红书扫码 Cookie 的健康状态 (方案 A)
+   * 0.1秒极速响应，完全免浏览器运行，极其节省服务器资源
+   */
+  override async checkCookieHealth(accountId: string): Promise<boolean> {
+    try {
+      const account = await this.accountRepository.getAccountById(accountId)
+      if (!account || !account.loginCookie) {
+        return false
+      }
+
+      let parsedCookies: Array<{ name: string; value: string }>
+      try {
+        parsedCookies = JSON.parse(account.loginCookie)
+      } catch {
+        return false
+      }
+
+      if (!Array.isArray(parsedCookies) || parsedCookies.length === 0) {
+        return false
+      }
+
+      const cookieString = parsedCookies.map(c => `${c.name}=${c.value}`).join('; ')
+
+      // 小红书创作者平台的轻量级获取用户信息 API，可以完美用于测试 Cookie 状态
+      const response = await axios.get('https://creator.xiaohongshu.com/api/creator/user/info', {
+        headers: {
+          'Cookie': cookieString,
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Referer': 'https://creator.xiaohongshu.com/publish/publish'
+        },
+        validateStatus: () => true
+      })
+
+      // 如果返回的 JSON data.success === false 或者返回未登录码（如 401 等）
+      if (response.status !== 200 || !response.data || response.data.success === false || response.data.code === -3) {
+        this.logger.warn(`[XHS Health] Cookie expired or invalid response for account ${accountId}: ${JSON.stringify(response.data)}`)
+        return false
+      }
+
+      return true
+    } catch (error) {
+      this.logger.error(`[XHS Health] Error checking cookie health for ${accountId}: ${(error as Error).message}`)
+      return false
+    }
+  }
+
   async getWorkLinkInfo(accountType: AccountType, workLink: string, dataId?: string): Promise<{
     dataId: string
     uniqueId: string
