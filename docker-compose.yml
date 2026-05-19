@@ -179,10 +179,8 @@ services:
       start_period: 60s
 
   aitoearn-server:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: aitoearn-server:local
+    image: ghcr.io/marble1009/aitoearn-server:latest
+    pull_policy: always
     container_name: aitoearn-server
     restart: unless-stopped
     depends_on:
@@ -269,10 +267,8 @@ services:
       start_period: 60s
 
   aitoearn-web:
-    build:
-      context: ./project/aitoearn-web
-      dockerfile: Dockerfile
-    image: aitoearn-web:local
+    image: ghcr.io/marble1009/aitoearn-web:latest
+    pull_policy: always
     container_name: aitoearn-web
     restart: unless-stopped
     depends_on:
