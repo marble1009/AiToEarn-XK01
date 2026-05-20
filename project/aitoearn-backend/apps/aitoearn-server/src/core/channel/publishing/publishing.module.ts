@@ -11,6 +11,7 @@ import { PinterestModule } from '../platforms/pinterest/pinterest.module'
 import { TiktokModule } from '../platforms/tiktok/tiktok.module'
 import { TwitterModule } from '../platforms/twitter/twitter.module'
 import { WxPlatModule } from '../platforms/wx-plat/wx-plat.module'
+import { XiaohongshuModule } from '../platforms/xiaohongshu/xiaohongshu.module'
 import { YoutubeModule } from '../platforms/youtube/youtube.module'
 import { FinalizePublishPostConsumer } from './consumers/finalize-publish.consumer'
 import { ImmediatePublishPostConsumer } from './consumers/immediate-publish.consumer'
@@ -47,7 +48,7 @@ import { EnqueuePublishingTaskScheduler } from './scheduler/enqueue-publishing-t
     MetaModule,
     TiktokModule,
     TwitterModule,
-    PinterestModule,
+    XiaohongshuModule,
     DouyinModule,
     GoogleBusinessModule,
   ],

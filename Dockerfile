@@ -1,6 +1,7 @@
 # ============ 阶段1：构建环境 ============
 FROM node:24-slim AS builder
 
+RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debian.sources
 RUN apt-get update && apt-get install -y python3 build-essential && rm -rf /var/lib/apt/lists/*
 RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 
@@ -20,6 +21,7 @@ RUN for lib in dist/libs/*/; do name=$(basename "$lib"); rm -rf "node_modules/@y
 FROM node:24-slim AS runner
 
 # 安装 Puppeteer 依赖的 Chromium 和中文字体 (支持 amd64 和 arm64)
+RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debian.sources
 RUN apt-get update && apt-get install -y \
     curl \
     ffmpeg \
