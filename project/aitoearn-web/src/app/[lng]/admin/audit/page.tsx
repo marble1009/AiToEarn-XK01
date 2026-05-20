@@ -6,7 +6,7 @@ import { Check, X, ExternalLink, ShieldCheck, Clock, RefreshCw } from 'lucide-re
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { getPendingSubmissionsApi, auditSubmissionApi, WorkSubmission } from '@/api/mission'
-import { toast } from 'react-hot-toast'
+import { toast } from 'sonner'
 
 export default function AdminAuditPage() {
   const [submissions, setSubmissions] = useState<WorkSubmission[]>([])
