@@ -7,6 +7,7 @@ export class NvidiaModule {
   static forRoot(config: NvidiaConfig): DynamicModule {
     return {
       module: NvidiaModule,
+      global: true,
       providers: [
         {
           provide: NvidiaConfig,
