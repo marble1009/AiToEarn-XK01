@@ -1,4 +1,4 @@
-FROM node:24-alpine AS deps
+FROM node:20-alpine AS deps
 
 RUN npm install -g pnpm
 
@@ -8,7 +8,7 @@ COPY deps/ ./
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod
 
-FROM node:24-alpine AS production
+FROM node:20-alpine AS production
 
 ARG APP_NAME
 
