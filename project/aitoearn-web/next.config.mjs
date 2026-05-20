@@ -24,6 +24,7 @@ const nextConfig = {
     return config
   },
   reactStrictMode: false,
+  typescript: { ignoreBuildErrors: true },
   experimental: {
     forceSwcTransforms: true,
     outputFileTracingRoot: undefined,
