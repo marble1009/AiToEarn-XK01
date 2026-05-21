@@ -55,22 +55,16 @@ export interface IUserStore {
 }
 
 const state: IUserStore = {
-  // 临时开发模式：硬编码一个假的 token 和用户信息，绕过登录检测
-  token: 'dev_mock_token_123456789',
-  userInfo: {
-    id: 'mock_user_001',
-    name: 'Dev Developer',
-    mail: 'dev@aitoearn.com',
-    userType: UserType.CREATOR, // 或 BUSINESS_OWNER
-  },
+  token: undefined,
+  userInfo: undefined,
   isAddAccountPorxy: false,
   lang: i18next.language || 'en',
-  creditsBalance: 9999, // 给个大额假余额方便测试
+  creditsBalance: 0, 
   creditsLoading: false,
   creditsInitialized: true,
   sidebarCollapsed: false,
   defaultPlanId: undefined,
-  hasEverLoggedIn: true,
+  hasEverLoggedIn: false,
   countryCode: undefined,
 }
 
