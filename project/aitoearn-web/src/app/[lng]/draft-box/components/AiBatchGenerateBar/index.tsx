@@ -235,7 +235,7 @@ const AiBatchGenerateBar = memo(({ groupId, onGenerated, className }: AiBatchGen
     if (currentMission && !promptValue && _hasHydrated) {
       const missionPrompt = `为 ${currentMission.brand} 创作一段 ${currentMission.platform} 推广内容。
 要求：${currentMission.requirements.join('，')}。
-话题：${currentMission.topics.map(t => `#${t}`).join(' ')}`
+话题：${currentMission.tags.map((t: string) => `#${t}`).join(' ')}`
       
       setPromptValue(missionPrompt)
       updateConfig(configKey, { promptValue: missionPrompt })

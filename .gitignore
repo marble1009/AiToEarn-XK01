@@ -22,7 +22,12 @@ release
 *.njsproj
 *.sln
 *.sw?
-# .env
+# 环境变量（包含敏感凭据，禁止提交）
+.env
+.env.local
+!.env.template
+!.env.deploy.template
+!.env.production
 
 #lockfile
 # package-lock.json

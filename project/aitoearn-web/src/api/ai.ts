@@ -75,12 +75,12 @@ export function generateVideo(data: {
   // if (data.image_tail) {
   //   data.image_tail = getOssUrl(data.image_tail);
   // }
-  return http.post('ai/video/generations', data)
+  return http.post<{ id: string }>('ai/video/generations', data)
 }
 
 // 查询视频任务状态
 export function getVideoTaskStatus(taskId: string) {
-  return http.get(`ai/video/generations/${taskId}`)
+  return http.get<{ status: string, content?: { video_url: string } }>(`ai/video/generations/${taskId}`)
 }
 
 // 获取视频生成历史记录

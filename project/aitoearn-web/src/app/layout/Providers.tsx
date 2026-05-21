@@ -96,8 +96,8 @@ export function Providers({ children, lng, autoLoginToken }: { children: React.R
   return (
     <>
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-        {/* Forced Update: 2026-05-13 - Using new Google Client ID */}
-        <GoogleOAuthProvider clientId="694668121384-96gnemgllcc1uadfdc7re6cqpplnsro7.apps.googleusercontent.com">
+        {/* Google OAuth - Client ID 通过环境变量或使用默认值 */}
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '694668121384-96gnemgllcc1uadfdc7re6cqpplnsro7.apps.googleusercontent.com'}>
           <Toaster position="top-center" richColors />
           {/* 专用右上角通知中心（不影响现有 toast） */}
           <NotificationCenter />

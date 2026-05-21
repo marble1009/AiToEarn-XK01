@@ -15,8 +15,8 @@ export default function AdminAuditPage() {
   const fetchSubmissions = async () => {
     setIsLoading(true)
     try {
-      const data = await getPendingSubmissionsApi()
-      setSubmissions(data || [])
+      const res = await getPendingSubmissionsApi()
+      setSubmissions(res?.data || [])
     } catch (err) {
       toast.error('Failed to fetch submissions')
     } finally {

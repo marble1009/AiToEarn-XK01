@@ -198,7 +198,7 @@ services:
       NODE_ENV: production
       APP_ENV: production
       APP_NAME: aitoearn-server
-      APP_DOMAIN: localhost
+      APP_DOMAIN: ${APP_DOMAIN:-localhost}
 
       MONGODB_HOST: mongodb
       MONGODB_PORT: 27017
@@ -216,14 +216,16 @@ services:
 
       ASSETS_CONFIG: '{"provider":"s3","region":"us-east-1","bucketName":"aitoearn","endpoint":"http://rustfs.local:9000","publicEndpoint":"http://127.0.0.1:9000","cdnEndpoint":"http://127.0.0.1:8080/oss","accessKeyId":"rustfsadmin","secretAccessKey":"rustfsadmin","forcePathStyle":true}'
 
-      MAIL_USER: ""
-      MAIL_PASS: ""
+      MAIL_HOST: ${MAIL_HOST:-email-smtp.ap-southeast-1.amazonaws.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASS: ${MAIL_PASS:-}
 
       # Third-party OAuth
       BILIBILI_CLIENT_ID: ""
       BILIBILI_CLIENT_SECRET: ""
-      GOOGLE_CLIENT_ID: ""
-      GOOGLE_CLIENT_SECRET: ""
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
       KWAI_CLIENT_ID: ""
       KWAI_CLIENT_SECRET: ""
       PINTEREST_CLIENT_ID: ""
@@ -250,10 +252,10 @@ services:
       DOYIN_CLIENT_SECRET: ""
 
       # Aliyun SMS
-      ALI_SMS_ACCESS_KEY_ID: ""
-      ALI_SMS_ACCESS_KEY_SECRET: ""
-      ALI_SMS_SIGN_NAME: ""
-      ALI_SMS_TEMPLATE_CODE: ""
+      ALI_SMS_ACCESS_KEY_ID: ${ALI_SMS_ACCESS_KEY_ID:-}
+      ALI_SMS_ACCESS_KEY_SECRET: ${ALI_SMS_ACCESS_KEY_SECRET:-}
+      ALI_SMS_SIGN_NAME: ${ALI_SMS_SIGN_NAME:-}
+      ALI_SMS_TEMPLATE_CODE: ${ALI_SMS_TEMPLATE_CODE:-}
 
       # Relay (optional)
       RELAY_SERVER_URL: ${RELAY_SERVER_URL:-https://aitoearn.cn/api}
