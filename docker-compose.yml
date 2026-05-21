@@ -280,7 +280,7 @@ services:
       - init-data:/data/init:ro
     networks:
       - aitoearn-network
-    command: ["/bin/sh", "-c", "AUTO_LOGIN_TOKEN=$$(cat /data/init/token.txt 2>/dev/null || echo '') exec node server.js"]
+    command: ["/bin/sh", "-c", "exec node server.js"]
     environment:
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: 1

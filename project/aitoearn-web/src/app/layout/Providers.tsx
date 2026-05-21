@@ -39,10 +39,6 @@ export function Providers({ children, lng, autoLoginToken }: { children: React.R
   useEffect(() => {
     if (!_hasHydrated)
       return
-    // 自动登录：无 token 时使用环境变量注入的 token
-    if (!useUserStore.getState().token && autoLoginToken) {
-      useUserStore.getState().setToken(autoLoginToken)
-    }
     useUserStore.getState().appInit()
   }, [_hasHydrated, autoLoginToken])
 
