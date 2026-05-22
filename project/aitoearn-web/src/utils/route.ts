@@ -11,6 +11,7 @@ const PUBLIC_PATHS = [
   '/blog', // 博客页面
   '/chat', // 分享页面
   '/welcome', // 欢迎页面
+  '/login', // 干净登录页面
 ]
 
 /**

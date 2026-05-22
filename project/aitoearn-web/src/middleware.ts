@@ -50,10 +50,24 @@ export function middleware(req: NextRequest) {
     !languages.some(loc => req.nextUrl.pathname.startsWith(`/${loc}`))
     && !req.nextUrl.pathname.startsWith('/_next')
   ) {
-    // If requesting root "/", we rewrite to "/[lng]/auth/login" (address bar remains "/")
+    // If requesting root "/", we rewrite to "/[lng]/welcome" (address bar remains "/")
     if (req.nextUrl.pathname === '/') {
       return NextResponse.rewrite(
+        new URL(`/${lng}/welcome${req.nextUrl.search}`, req.url),
+      )
+    }
+
+    // If requesting "/login", we rewrite to "/[lng]/auth/login" (address bar remains "/login")
+    if (req.nextUrl.pathname === '/login' || req.nextUrl.pathname === '/login/') {
+      return NextResponse.rewrite(
         new URL(`/${lng}/auth/login${req.nextUrl.search}`, req.url),
+      )
+    }
+
+    // If requesting "/welcome", we rewrite to "/[lng]/welcome" (address bar remains "/welcome")
+    if (req.nextUrl.pathname === '/welcome' || req.nextUrl.pathname === '/welcome/') {
+      return NextResponse.rewrite(
+        new URL(`/${lng}/welcome${req.nextUrl.search}`, req.url),
       )
     }
 

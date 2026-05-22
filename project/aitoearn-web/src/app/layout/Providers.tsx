@@ -65,12 +65,13 @@ export function Providers({ children, lng, autoLoginToken }: { children: React.R
     }
 
     // 强制跳转到登录页面
-    router.replace(`/${lng}/auth/login?redirect=${encodeURIComponent(pathname)}`)
+    router.replace(`/login?redirect=${encodeURIComponent(pathname)}`)
   }, [_hasHydrated, token, pathname, lng, router])
 
-  // 已登录用户在访问根域名 '/' 或空白时，自动跳转进入内容管理后台 '/[lng]'
+  // 已登录用户在访问公开页 '/'、'/login'、'/welcome' 等时，自动跳转进入内容管理后台 '/[lng]'
   useEffect(() => {
-    if (_hasHydrated && token && (pathname === '/' || pathname === '')) {
+    const isPublicEntry = pathname === '/' || pathname === '' || pathname === '/login' || pathname === '/login/' || pathname === '/welcome' || pathname === '/welcome/' || pathname === `/${lng}/welcome` || pathname === `/${lng}/auth/login`
+    if (_hasHydrated && token && isPublicEntry) {
       router.replace(`/${lng}`)
     }
   }, [_hasHydrated, token, pathname, lng, router])
