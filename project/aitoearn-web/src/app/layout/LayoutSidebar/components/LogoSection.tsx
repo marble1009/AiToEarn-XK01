@@ -11,9 +11,14 @@ import Link from 'next/link'
 import logo from '@/assets/images/logo.png'
 import { useGetClientLng } from '@/hooks/useSystem'
 import { cn } from '@/lib/utils'
+import { useUserStore } from '@/store/user'
 
 export function LogoSection({ collapsed, onToggle }: LogoSectionProps) {
   const lng = useGetClientLng()
+  const token = useUserStore(state => state.token)
+  const userInfo = useUserStore(state => state.userInfo)
+  const userId = userInfo?.id || userInfo?._id
+  const logoHref = token ? `/${lng}/${userId || ''}` : '/'
 
   return (
     <div
@@ -27,7 +32,7 @@ export function LogoSection({ collapsed, onToggle }: LogoSectionProps) {
         <div className="relative flex h-8 w-8 items-center justify-center">
           {/* Logo - 默认显示，hover 时隐藏 */}
           <Link
-            href="/"
+            href={logoHref}
             className="flex items-center justify-center transition-opacity group-hover:opacity-0"
             data-testid="sidebar-logo-link"
           >
@@ -45,7 +50,7 @@ export function LogoSection({ collapsed, onToggle }: LogoSectionProps) {
       ) : (
         <>
           <Link
-            href="/"
+            href={logoHref}
             className="flex items-center gap-2 text-foreground no-underline hover:opacity-85"
             data-testid="sidebar-logo-link"
           >

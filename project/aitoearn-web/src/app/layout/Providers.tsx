@@ -68,10 +68,10 @@ export function Providers({ children, lng, autoLoginToken }: { children: React.R
     router.replace(`/login?redirect=${encodeURIComponent(pathname)}`)
   }, [_hasHydrated, token, pathname, lng, router])
 
-  // 已登录用户在访问公开页 '/'、'/login'、'/welcome' 等时，自动跳转进入内容管理后台 '/[lng]'
+  // 已登录用户在访问登录页时，自动跳转进入内容管理后台 '/[lng]'
   useEffect(() => {
-    const isPublicEntry = pathname === '/' || pathname === '' || pathname === '/login' || pathname === '/login/' || pathname === '/welcome' || pathname === '/welcome/' || pathname === `/${lng}/welcome` || pathname === `/${lng}/auth/login`
-    if (_hasHydrated && token && isPublicEntry) {
+    const isLoginEntry = pathname === '/login' || pathname === '/login/' || pathname === `/${lng}/auth/login`
+    if (_hasHydrated && token && isLoginEntry) {
       router.replace(`/${lng}`)
     }
   }, [_hasHydrated, token, pathname, lng, router])

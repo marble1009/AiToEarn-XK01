@@ -1,30 +1,38 @@
-import { useTranslation } from '@/app/i18n'
-import { fallbackLng, languages } from '@/lib/i18n/languageConfig'
-import { getMetadata } from '@/utils/general'
-import HubContent from './hub/HubContent'
+'use client'
+
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useUserStore } from '@/store/user'
 
 interface PageParams {
   params: Promise<{ lng: string }>
 }
 
-export async function generateMetadata({ params }: PageParams) {
-  let { lng } = await params
-  if (!languages.includes(lng))
-    lng = fallbackLng
-  const { t } = await useTranslation(lng, 'common')
+export default function HomePage({ params }: PageParams) {
+  const router = useRouter()
+  const token = useUserStore(state => state.token)
+  const userInfo = useUserStore(state => state.userInfo)
+  const _hasHydrated = useUserStore(state => state._hasHydrated)
 
-  return getMetadata(
-    {
-      title: t('header.draftBoxSeoTitle'),
-      description: t('header.draftBoxSeoDescription'),
-      keywords: t('header.draftBoxSeoKeywords'),
-    },
-    lng,
-    '/',
+  useEffect(() => {
+    if (!_hasHydrated) return
+
+    if (!token) {
+      router.replace('/login')
+      return
+    }
+
+    const userId = userInfo?.id || userInfo?._id
+    if (userId) {
+      params.then(p => {
+        router.replace(`/${p.lng}/${userId}`)
+      })
+    }
+  }, [_hasHydrated, token, userInfo, router, params])
+
+  return (
+    <div className="flex h-screen w-full items-center justify-center bg-background">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
   )
-}
-
-export default async function HomePage({ params }: PageParams) {
-  const { lng } = await params
-  return <HubContent lng={lng} />
 }
