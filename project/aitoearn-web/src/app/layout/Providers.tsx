@@ -68,6 +68,13 @@ export function Providers({ children, lng, autoLoginToken }: { children: React.R
     router.replace(`/${lng}/auth/login?redirect=${encodeURIComponent(pathname)}`)
   }, [_hasHydrated, token, pathname, lng, router])
 
+  // 已登录用户在访问根域名 '/' 或空白时，自动跳转进入内容管理后台 '/[lng]'
+  useEffect(() => {
+    if (_hasHydrated && token && (pathname === '/' || pathname === '')) {
+      router.replace(`/${lng}`)
+    }
+  }, [_hasHydrated, token, pathname, lng, router])
+
   // 拦截 @react-oauth/google 的脚本加载，添加 ?hl= 参数以设置按钮语言
   useEffect(() => {
     const hl = lng.replace('-', '_')
