@@ -216,10 +216,10 @@ services:
 
       ASSETS_CONFIG: '{"provider":"s3","region":"us-east-1","bucketName":"aitoearn","endpoint":"http://rustfs.local:9000","publicEndpoint":"http://127.0.0.1:9000","cdnEndpoint":"http://127.0.0.1:8080/oss","accessKeyId":"rustfsadmin","secretAccessKey":"rustfsadmin","forcePathStyle":true}'
 
-      MAIL_HOST: ${MAIL_HOST:-email-smtp.ap-southeast-1.amazonaws.com}
-      MAIL_PORT: ${MAIL_PORT:-587}
-      MAIL_USER: ${MAIL_USER:-}
-      MAIL_PASS: ${MAIL_PASS:-}
+      MAIL_HOST: ${MAIL_HOST:-smtp.exmail.qq.com}
+      MAIL_PORT: ${MAIL_PORT:-465}
+      MAIL_USER: ${MAIL_USER:-aitoearn@aurastring.cloud}
+      MAIL_PASS: ${MAIL_PASS:-109911lZ}
 
       # Third-party OAuth
       BILIBILI_CLIENT_ID: ""

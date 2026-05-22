@@ -33,6 +33,7 @@ const {
 const {
   MAIL_USER,
   MAIL_PASS,
+  MAIL_SECURE,
 } = process.env
 
 const {
@@ -286,7 +287,7 @@ module.exports = {
     transport: {
       host: process.env.MAIL_HOST || 'email-smtp.ap-southeast-1.amazonaws.com',
       port: Number(process.env.MAIL_PORT) || 587,
-      secure: false,
+      secure: MAIL_SECURE === 'true' || Number(process.env.MAIL_PORT) === 465,
       auth: {
         user: MAIL_USER,
         pass: MAIL_PASS,
