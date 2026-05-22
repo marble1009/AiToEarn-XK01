@@ -19,7 +19,7 @@ export class NvidiaService {
 
   private _createOpenAIClient(): OpenAI {
     return new OpenAI({
-      apiKey: this.config.apiKey,
+      apiKey: this.config.apiKey || 'placeholder-key-for-nvidia',
       baseURL: this.config.baseUrl,
       timeout: this.config.timeout,
     })
@@ -30,7 +30,7 @@ export class NvidiaService {
       ...options,
       maxRetries: 1,
       timeout: options.timeout ?? this.config.timeout,
-      apiKey: options.apiKey ?? this.config.apiKey,
+      apiKey: options.apiKey ?? this.config.apiKey || 'placeholder-key-for-nvidia',
       configuration: {
         baseURL: this.config.baseUrl,
       },

@@ -126,7 +126,7 @@ module.exports = {
     },
     nvidia: {
       baseUrl: 'https://integrate.api.nvidia.com/v1',
-      apiKey: AI_NVIDIA_API_KEY,
+      apiKey: AI_NVIDIA_API_KEY || 'placeholder-key-for-nvidia',
     },
     aideo: {
       vCreative: {
