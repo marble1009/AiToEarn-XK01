@@ -27,10 +27,5 @@ export function isPublicPage(pathname: string): boolean {
     }
   }
 
-  // 首页
-  if (path === '/' || path === '') {
-    return true
-  }
-
   return PUBLIC_PATHS.some(publicPath => path.startsWith(publicPath))
 }

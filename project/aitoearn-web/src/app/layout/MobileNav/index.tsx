@@ -13,6 +13,7 @@ import { useChannelManagerStore } from '@/components/ChannelManager'
 import { useSettingsModalStore } from '@/components/SettingsModal/store'
 import { cn } from '@/lib/utils'
 import { MobileBottomSection, MobileNavList, MobileTopBar } from './components'
+import { useUserStore } from '@/store/user'
 
 /**
  * 移动端导航主组件
@@ -29,8 +30,9 @@ function MobileNav() {
     })),
   )
 
-  // 首页、auth、websit、welcome 页面不显示侧边栏
-  if (isAuthPage) {
+  // 首页、auth、websit、welcome 页面不显示，未登录也绝不显示
+  const token = useUserStore(state => state.token)
+  if (isAuthPage || !token) {
     return null
   }
 

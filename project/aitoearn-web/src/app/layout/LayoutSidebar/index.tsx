@@ -36,8 +36,9 @@ function LayoutSidebar() {
   const [notificationVisible, setNotificationVisible] = useState(false)
   const { openSettings } = useSettingsModalStore()
 
-  // 首页、auth、websit、welcome 页面不显示侧边栏
-  if (isAuthPage) {
+  // 首页、auth、websit、welcome 页面不显示侧边栏，未登录也绝不显示侧边栏
+  const token = useUserStore(state => state.token)
+  if (isAuthPage || !token) {
     return null
   }
 

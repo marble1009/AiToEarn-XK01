@@ -45,7 +45,6 @@ export function Providers({ children, lng, autoLoginToken }: { children: React.R
   useEffect(() => {
     useUserStore.getState().setLang(lng)
   }, [lng])
-
   // 未登录用户访问非公开页面时，跳转到登录页
   useEffect(() => {
     // 等待持久化数据同步完成
@@ -65,15 +64,9 @@ export function Providers({ children, lng, autoLoginToken }: { children: React.R
       return
     }
 
-    // 避免重复跳转
-    if (hasPromptedRef.current) {
-      return
-    }
-
-    // 在当前页面弹出登录框，不跳转
-    hasPromptedRef.current = true
-    useLoginDialogStore.getState().openLoginDialog({ fromGuard: true })
-  }, [_hasHydrated, token, pathname])
+    // 强制跳转到登录页面
+    router.replace(`/${lng}/auth/login?redirect=${encodeURIComponent(pathname)}`)
+  }, [_hasHydrated, token, pathname, lng, router])
 
   // 拦截 @react-oauth/google 的脚本加载，添加 ?hl= 参数以设置按钮语言
   useEffect(() => {
