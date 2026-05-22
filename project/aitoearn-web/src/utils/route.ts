@@ -24,6 +24,9 @@ export function isPublicPage(pathname: string): boolean {
   for (const lang of languages) {
     if (pathname === `/${lang}` || pathname.startsWith(`/${lang}/`)) {
       path = pathname.slice(lang.length + 1) || '/'
+      if (!path.startsWith('/')) {
+        path = '/' + path
+      }
       break
     }
   }
