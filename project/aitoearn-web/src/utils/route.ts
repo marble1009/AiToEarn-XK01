@@ -27,5 +27,9 @@ export function isPublicPage(pathname: string): boolean {
     }
   }
 
+  if (path === '/' || path === '') {
+    return true
+  }
+
   return PUBLIC_PATHS.some(publicPath => path.startsWith(publicPath))
 }
