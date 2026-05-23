@@ -1,7 +1,7 @@
 import { cookies, headers } from 'next/headers'
 import acceptLanguage from 'accept-language'
 import { fallbackLng, languages, cookieName } from '@/app/i18n/settings'
-import WelcomePageContent from './[lng]/(welcome)/welcome/WelcomePageContent'
+import WelcomePageContent from '../[lng]/(welcome)/welcome/WelcomePageContent'
 
 acceptLanguage.languages(languages)
 
