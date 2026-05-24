@@ -1,8 +1,11 @@
 import '@/app/var.css'
 import '../globals.css'
 import { Providers } from '@/app/layout/Providers'
-import { cookies } from 'next/headers'
-import { cookieName, fallbackLng } from '@/app/i18n/settings'
+import { cookies, headers } from 'next/headers'
+import acceptLanguage from 'accept-language'
+import { fallbackLng, languages, cookieName } from '@/app/i18n/settings'
+
+acceptLanguage.languages(languages)
 
 export default function RootPublicLayout({
   children,
@@ -10,7 +13,18 @@ export default function RootPublicLayout({
   children: React.ReactNode
 }) {
   const cookieStore = cookies()
-  const lng = cookieStore.get(cookieName)?.value || fallbackLng
+  const headersList = headers()
+
+  let lng: string | undefined | null
+  if (cookieStore.has(cookieName)) {
+    lng = acceptLanguage.get(cookieStore.get(cookieName)?.value)
+  }
+  if (!lng) {
+    lng = acceptLanguage.get(headersList.get('Accept-Language'))
+  }
+  if (!lng) {
+    lng = fallbackLng
+  }
 
   return (
     <html lang={lng} suppressHydrationWarning>
@@ -22,4 +36,5 @@ export default function RootPublicLayout({
     </html>
   )
 }
+
 
