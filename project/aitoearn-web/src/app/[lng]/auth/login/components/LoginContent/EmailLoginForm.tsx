@@ -7,7 +7,7 @@
 
 import type { GoogleLoginParams } from '@/api/apiReq'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { GoogleLogin } from '@react-oauth/google'
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'
 import { Loader2 } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useRef, useState } from 'react'
@@ -173,18 +173,20 @@ export function EmailLoginForm({ onLoginSuccess, redirectUrl, inviteCode: invite
       {/* Google 登录 */}
       <div ref={googleContainerRef} className="space-y-3">
         {googleBtnWidth > 0 && (
-          <GoogleLogin
-            key={`${i18n.language}-${googleBtnWidth}`}
-            onSuccess={handleGoogleSuccess}
-            onError={() => toast.error(t('googleLoginFailed'))}
-            useOneTap={false}
-            theme="outline"
-            shape="rectangular"
-            text="continue_with"
-            locale={i18n.language.replace('-', '_')}
-            size="large"
-            width={String(googleBtnWidth)}
-          />
+          <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '694668121384-96gnemgllcc1uadfdc7re6cqpplnsro7.apps.googleusercontent.com'}>
+            <GoogleLogin
+              key={`${i18n.language}-${googleBtnWidth}`}
+              onSuccess={handleGoogleSuccess}
+              onError={() => toast.error(t('googleLoginFailed'))}
+              useOneTap={false}
+              theme="outline"
+              shape="rectangular"
+              text="continue_with"
+              locale={i18n.language.replace('-', '_')}
+              size="large"
+              width={String(googleBtnWidth)}
+            />
+          </GoogleOAuthProvider>
         )}
       </div>
 
