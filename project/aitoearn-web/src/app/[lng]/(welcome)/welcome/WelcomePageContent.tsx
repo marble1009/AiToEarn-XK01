@@ -18,7 +18,18 @@ interface WelcomePageContentProps {
 
 export default function WelcomePageContent({ lng }: WelcomePageContentProps) {
   return (
-    <div className="min-h-screen bg-white antialiased">
+    <div className="min-h-screen bg-black text-indigo-100 antialiased relative overflow-hidden selection:bg-[#FF007F] selection:text-white">
+      {/* 极酷炫的赛博霓虹极光粒子背景层 - AuraString 灵动光弦 */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {/* 荧光绿极光 */}
+        <div className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-[radial-gradient(circle,rgba(57,255,20,0.06)_0%,rgba(0,0,0,0)_70%)] animate-pulse" style={{ animationDuration: '8s' }} />
+        {/* 荧光粉极光 */}
+        <div className="absolute bottom-[-10%] right-[-10%] w-[70vw] h-[70vw] rounded-full bg-[radial-gradient(circle,rgba(255,0,127,0.06)_0%,rgba(0,0,0,0)_70%)] animate-pulse" style={{ animationDuration: '12s' }} />
+        {/* 纵向穿梭的“光之弦”（AuraString） */}
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-[2px] h-full bg-gradient-to-b from-transparent via-[#39FF14] to-transparent opacity-20 blur-[1px]" />
+        <div className="absolute top-0 left-[50.5%] transform -translate-x-1/2 w-[1px] h-full bg-gradient-to-b from-transparent via-[#FF007F] to-transparent opacity-15 blur-[2px]" />
+      </div>
+
       {/* 导航栏 */}
       <Navbar />
 

@@ -75,86 +75,75 @@ button {
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  /* 回退到原来的灰色 */
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --success: oklch(0.65 0.2 145);
-  --success-foreground: oklch(0.985 0 0);
-  --warning: oklch(0.75 0.18 70);
-  --warning-foreground: oklch(0.2 0 0);
-  --info: oklch(0.6 0.18 250);
-  --info-foreground: oklch(0.985 0 0);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --background: #000000;
+  --foreground: #e0e7ff;
+  --card: rgba(10, 10, 12, 0.85);
+  --card-foreground: #e0e7ff;
+  --popover: rgba(10, 10, 12, 0.95);
+  --popover-foreground: #e0e7ff;
+  --primary: #39FF14;
+  --primary-foreground: #000000;
+  --secondary: #FF007F;
+  --secondary-foreground: #ffffff;
+  --muted: rgba(20, 20, 25, 0.7);
+  --muted-foreground: #94a3b8;
+  --accent: #FF007F;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --success: #39FF14;
+  --success-foreground: #000000;
+  --warning: #f59e0b;
+  --warning-foreground: #000000;
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+  --border: rgba(57, 255, 20, 0.15);
+  --input: rgba(57, 255, 20, 0.1);
+  --ring: #39FF14;
+  --sidebar: #000000;
+  --sidebar-foreground: #e0e7ff;
+  --sidebar-primary: #39FF14;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: rgba(255, 0, 127, 0.2);
+  --sidebar-accent-foreground: #FF007F;
+  --sidebar-border: rgba(255, 0, 127, 0.15);
+  --sidebar-ring: #FF007F;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --success: oklch(0.7 0.2 145);
-  --success-foreground: oklch(0.15 0 0);
-  --warning: oklch(0.8 0.18 70);
-  --warning-foreground: oklch(0.15 0 0);
-  --info: oklch(0.65 0.18 250);
-  --info-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #000000;
+  --foreground: #e0e7ff;
+  --card: rgba(10, 10, 12, 0.85);
+  --card-foreground: #e0e7ff;
+  --popover: rgba(10, 10, 12, 0.95);
+  --popover-foreground: #e0e7ff;
+  --primary: #39FF14;
+  --primary-foreground: #000000;
+  --secondary: #FF007F;
+  --secondary-foreground: #ffffff;
+  --muted: rgba(20, 20, 25, 0.7);
+  --muted-foreground: #94a3b8;
+  --accent: #FF007F;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --success: #39FF14;
+  --success-foreground: #000000;
+  --warning: #f59e0b;
+  --warning-foreground: #000000;
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+  --border: rgba(57, 255, 20, 0.15);
+  --input: rgba(57, 255, 20, 0.1);
+  --ring: #39FF14;
+  --sidebar: #000000;
+  --sidebar-foreground: #e0e7ff;
+  --sidebar-primary: #39FF14;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: rgba(255, 0, 127, 0.2);
+  --sidebar-accent-foreground: #FF007F;
+  --sidebar-border: rgba(255, 0, 127, 0.15);
+  --sidebar-ring: #FF007F;
 }
 
 @layer base {
@@ -175,9 +164,7 @@ body > div {
 
 /* 添加账号Modal响应式优化 */
 .add-account-responsive-modal {
-  /* 移动端优化 - 确保内容占满宽度 */
   @media (max-width: 640px) {
-    /* 针对 shadcn Dialog 的移动端样式 */
     & [role='dialog'] {
       padding: 16px !important;
     }
@@ -192,10 +179,6 @@ body > div {
 
   .scrollbar-thumb-gray-300 {
     scrollbar-color: #d1d5db #f3f4f6;
-  }
-
-  .scrollbar-track-gray-100 {
-    /* 用于scrollbar-color的第二个值 */
   }
 
   .scrollbar-none {
@@ -214,28 +197,24 @@ body > div {
 }
 
 .add-account-responsive-modal ::-webkit-scrollbar-track {
-  background: #f3f4f6;
+  background: #111;
   border-radius: 10px;
 }
 
 .add-account-responsive-modal ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #39FF14;
   border-radius: 10px;
   transition: background 0.2s;
 }
 
-.add-account-responsive-modal ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
-}
-
-/* 定价页面响应式布局 - 1400px 以上显示4列 */
+/* 定价页面响应式布局 */
 @media (min-width: 1400px) {
   .pricing-grid-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   }
 }
 
-/* Shimmer 渐变动画 - 用于骨架屏 loading 效果 */
+/* Shimmer 渐变动画 */
 @keyframes shimmer {
   0% {
     background-position: 200% 0;
@@ -255,78 +234,97 @@ input::-ms-clear {
   display: none;
 }
 
-/* TaskDetail 动画 */
-@keyframes pulse-ring {
-  0% {
-    opacity: 0.6;
-    transform: scale(0.8);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(2);
-  }
+/* 赛博朋克全局超炫酷重定义层 */
+body::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), linear-gradient(90deg, rgba(255, 0, 127, 0.03), rgba(57, 255, 20, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 99999;
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+  opacity: 0.12;
 }
 
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* 全局卡片玻璃霓虹覆盖 */
+[class*='bg-card'], [class*='card'], [class*='rounded-xl'], [class*='border-sidebar-border'] {
+  background-color: rgba(10, 10, 12, 0.8) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-color: rgba(57, 255, 20, 0.15) !important;
+  box-shadow: 0 0 10px rgba(57, 255, 20, 0.05) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-@keyframes td-shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+/* 卡片悬停发光 */
+[class*='bg-card']:hover, [class*='card']:hover, .group:hover [class*='border-sidebar-border'] {
+  border-color: rgba(255, 0, 127, 0.35) !important;
+  box-shadow: 0 0 18px rgba(255, 0, 127, 0.15) !important;
 }
 
-/* Warm Design System Utilities */
-@layer utilities {
-  .bg-warm-gradient {
-    background: linear-gradient(135deg, #ff9d6c 0%, #ffc85e 100%);
-  }
-
-  .bg-cream {
-    background-color: #fffdf5;
-  }
-
-  .glass-effect {
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px 0 rgba(255, 157, 108, 0.15);
-  }
-
-  .glass-effect-dark {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .text-warm-gold {
-    color: #d97706;
-  }
-
-  .border-warm-peach {
-    border-color: #ff9d6c;
-  }
-  
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
+/* 全局按钮过渡 */
+button, a {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
+button:hover, a:hover {
+  text-shadow: 0 0 8px rgba(57, 255, 20, 0.6) !important;
 }
+
+/* 按钮在 Hover 时产生科幻感 */
+button[type='submit'], [class*='bg-primary'] {
+  background-color: #39FF14 !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+  box-shadow: 0 0 12px rgba(57, 255, 20, 0.3) !important;
+}
+
+button[type='submit']:hover, [class*='bg-primary']:hover {
+  background-color: #FF007F !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 20px rgba(255, 0, 127, 0.6) !important;
+  text-shadow: none !important;
+}
+
+/* 输入表单荧光粉粉边框 */
+input, textarea, select {
+  background-color: rgba(20, 20, 25, 0.8) !important;
+  border: 1px solid rgba(57, 255, 20, 0.2) !important;
+  color: #e0e7ff !important;
+  transition: all 0.25s ease !important;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #FF007F !important;
+  box-shadow: 0 0 12px rgba(255, 0, 127, 0.4) !important;
+  outline: none !important;
+}
+
+/* 隐藏侧边栏的原本背景以适应纯黑 */
+aside {
+  background-color: #000000 !important;
+  border-right: 1px solid rgba(255, 0, 127, 0.15) !important;
+  box-shadow: 5px 0 20px rgba(255, 0, 127, 0.03) !important;
+}
+
+/* 标签文字聚焦或 Hover 产生绿发光 */
+span, p, h1, h2, h3, h4, h5, h6 {
+  transition: color 0.3s ease !important;
+}
+
+/* 侧边栏折叠项微弱故障抖动 */
+@keyframes glitch {
+  0% { transform: translate(0) }
+  20% { transform: translate(-1px, 1px) }
+  40% { transform: translate(-1px, -1px) }
+  60% { transform: translate(1px, 1px) }
+  80% { transform: translate(1px, -1px) }
+  100% { transform: translate(0) }
+}
+
+[class*='nav-item']:hover, aside button:hover {
+  animation: glitch 0.3s linear infinite;
+  color: #39FF14 !important;
+}
+
