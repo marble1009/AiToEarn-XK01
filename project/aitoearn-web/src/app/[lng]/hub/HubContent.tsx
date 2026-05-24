@@ -27,51 +27,51 @@ interface ModuleItem {
 const modules: ModuleItem[] = [
   {
     id: 'monetize',
-    title: 'Monetize',
-    subtitle: '内容赚钱',
-    description: '在任务广场发现高额奖励，通过 CPS、CPE 模式将您的创意变现。',
+    title: '光弦任务空间',
+    subtitle: '创意变现',
+    description: '以创意重构连接，发现霓虹光弦高额任务奖励，将极简创作精准变现。',
     icon: '/assets/icons/hub/monetize.png',
-    color: 'from-[#FF9D6C] to-[#FFC85E]',
-    shadow: 'shadow-orange-200/50',
+    color: 'from-[#39FF14] to-[#00FF7F]',
+    shadow: 'shadow-green-200/50',
     path: '/mission-square',
   },
   {
     id: 'publish',
-    title: 'Publish',
-    subtitle: '内容发布',
-    description: '一键分发至全球 10+ 主流平台，智能排期，让内容分发变得从未如此简单。',
+    title: '光流分发中心',
+    subtitle: '一键发布',
+    description: '一键同步至全网 10+ 顶流内容渠道，智能调度，让发布从未如此轻松。',
     icon: '/assets/icons/hub/publish.png',
-    color: 'from-[#FFD97D] to-[#FFB347]',
-    shadow: 'shadow-yellow-200/50',
+    color: 'from-[#FF007F] to-[#FF69B4]',
+    shadow: 'shadow-pink-200/50',
     path: '/accounts',
   },
   {
     id: 'engage',
-    title: 'Engage',
-    subtitle: '内容互动',
-    description: 'AI 驱动的社交运营 Agent，自动化回复与评论挖掘，精准捕捉每一份转化机会。',
+    title: '智能交互终端',
+    subtitle: '自动互动',
+    description: 'Aura AI 智体驱动的社交运营智能体，全天候全自动交互，精准捕捉转化点。',
     icon: '/assets/icons/hub/engage.png',
-    color: 'from-[#FFA17F] to-[#FFCCBB]',
-    shadow: 'shadow-red-200/50',
+    color: 'from-[#FF007F] to-[#39FF14]',
+    shadow: 'shadow-purple-200/50',
     path: '/ai-social',
   },
   {
     id: 'revenue',
-    title: 'Revenue',
+    title: '灵光资产账户',
     subtitle: '收益提现',
-    description: '查看您的内容变现收益明细，管理余额并快速提现至您的账户。',
-    icon: '/assets/icons/hub/monetize.png', // 暂时使用现有图标
-    color: 'from-[#4ADE80] to-[#22C55E]',
-    shadow: 'shadow-green-200/50',
+    description: '查看您的光弦变现账单明细，安全管理并快速提现至个人账户。',
+    icon: '/assets/icons/hub/monetize.png',
+    color: 'from-[#39FF14] to-[#00E5FF]',
+    shadow: 'shadow-cyan-200/50',
     path: '/revenue',
   },
   {
     id: 'create',
-    title: 'Create',
-    subtitle: '内容创作',
-    description: 'Agent 重构内容生产线，从创意到视频/图文成品，一站式 AI 批量生成。',
+    title: '光弦粒子工厂',
+    subtitle: '批量创作',
+    description: '重构内容生产流水线，从灵光创意到批量视频/图文，一站式极速生产。',
     icon: '/assets/icons/hub/create.png',
-    color: 'from-[#FFE29F] to-[#FFA99F]',
+    color: 'from-[#FF007F] to-[#00E5FF]',
     shadow: 'shadow-peach-200/50',
     path: '/chat',
   },
@@ -108,18 +108,35 @@ export default function HubContent({ lng }: HubContentProps) {
   }
 
   return (
-    <div className="min-h-screen bg-cream selection:bg-orange-100 p-8 md:p-16 flex flex-col items-center">
+    <div className="min-h-screen bg-black selection:bg-[#FF007F]/20 p-8 md:p-16 flex flex-col items-center relative overflow-hidden">
+      {/* 赛博扫描线条滤镜 */}
+      <div 
+        className="pointer-events-none absolute inset-0 z-10 opacity-[0.03]"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
+          backgroundSize: '100% 4px, 6px 100%'
+        }}
+      />
+      {/* 点状网格背景 */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-10"
+        style={{
+          backgroundImage: `radial-gradient(circle, #39FF14 1px, transparent 1px)`,
+          backgroundSize: '24px 24px',
+        }}
+      />
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-16 space-y-4"
+        className="text-center mb-16 space-y-4 relative z-20"
       >
-        <h1 className="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-warm-gradient">
-          AiToEarn Hub
+        <h1 className="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#39FF14] via-[#00E5FF] to-[#FF007F] drop-shadow-[0_0_15px_rgba(57,255,20,0.3)]">
+          AuraString 极简内容实验室
         </h1>
-        <p className="text-gray-500 text-lg max-w-2xl mx-auto">
-          Monetize · Publish · Engage · Create —— 为“一人公司”打造的 AI 内容营销全链路智能体平台。
+        <p className="text-gray-400 text-lg max-w-2xl mx-auto tracking-wide">
+          光弦 · 光流 · 智体 · 批量 —— 专为新一代超级个体打造的赛博智能创作流水线。
         </p>
       </motion.div>
 
@@ -128,16 +145,16 @@ export default function HubContent({ lng }: HubContentProps) {
         variants={container}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 w-full max-w-7xl"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 w-full max-w-7xl relative z-20"
       >
         {modules.map((m) => (
           <motion.div key={m.id} variants={item}>
             <GlassCard 
-              className="h-full flex flex-col group relative overflow-hidden cursor-pointer transition-all active:scale-[0.98]"
+              className="h-full flex flex-col group relative overflow-hidden cursor-pointer transition-all active:scale-[0.98] border border-white/5 hover:border-[#FF007F]/30 hover:shadow-[0_0_20px_rgba(255,0,127,0.15)] bg-black/60 backdrop-blur-xl"
               onClick={() => handleCardClick(m.path)}
             >
               {/* Background Glow */}
-              <div className={`absolute -right-12 -top-12 w-32 h-32 bg-gradient-to-br ${m.color} blur-3xl opacity-20 group-hover:opacity-40 transition-opacity`} />
+              <div className={`absolute -right-12 -top-12 w-32 h-32 bg-gradient-to-br ${m.color} blur-3xl opacity-10 group-hover:opacity-35 transition-opacity`} />
               
               <div className="relative z-10 flex flex-col h-full">
                 <div className="mb-8 w-24 h-24 relative animate-float">
@@ -145,26 +162,26 @@ export default function HubContent({ lng }: HubContentProps) {
                     src={m.icon}
                     alt={m.title}
                     fill
-                    className="object-contain drop-shadow-xl"
+                    className="object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.1)] group-hover:scale-105 transition-transform"
                   />
                 </div>
                 
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-2">
-                    <span className={`w-2 h-2 rounded-full bg-gradient-to-r ${m.color}`} />
-                    <span className="text-sm font-semibold text-orange-400 tracking-wider uppercase">{m.subtitle}</span>
+                    <span className={`w-2 h-2 rounded-full bg-gradient-to-r ${m.color} animate-pulse`} />
+                    <span className="text-xs font-semibold text-[#39FF14] tracking-wider uppercase">{m.subtitle}</span>
                   </div>
-                  <h3 className="text-3xl font-bold text-gray-800">{m.title}</h3>
+                  <h3 className="text-2xl font-bold text-white group-hover:text-[#FF007F] transition-colors">{m.title}</h3>
                 </div>
 
-                <p className="text-gray-500 leading-relaxed flex-grow">
+                <p className="text-gray-400 text-sm leading-relaxed flex-grow">
                   {m.description}
                 </p>
 
-                <div className="mt-8 pt-6 border-t border-white/50 flex items-center justify-between text-orange-500 font-medium group/btn">
-                  <span>立即开始</span>
-                  <div className="w-10 h-10 rounded-full bg-warm-gradient flex items-center justify-center text-white transition-transform group-hover/btn:translate-x-1">
-                    <ArrowRight size={20} />
+                <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between text-[#FF007F] font-medium group/btn">
+                  <span className="text-sm">立即开启</span>
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF007F] to-[#00E5FF] flex items-center justify-center text-white transition-transform group-hover/btn:translate-x-1 shadow-[0_0_10px_rgba(255,0,127,0.3)]">
+                    <ArrowRight size={16} />
                   </div>
                 </div>
               </div>
@@ -178,9 +195,9 @@ export default function HubContent({ lng }: HubContentProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="mt-24 text-center text-gray-400 text-sm"
+        className="mt-24 text-center text-gray-500 text-xs tracking-widest relative z-20"
       >
-        © 2026 AiToEarn.ai | 每一位创作者都值得更好的回报
+        © 2026 AuraString.cloud | 用极简内容粒子，点亮超级个体的赛博未来
       </motion.div>
     </div>
   )

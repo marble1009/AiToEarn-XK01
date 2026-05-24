@@ -1,7 +1,7 @@
 {
   "home": "首页",
-  "tasksHistory": "任务记录",
-  "accounts": "发布",
+  "tasksHistory": "资产账单",
+  "accounts": "光流分发",
   "publish": "发布",
   "hotContent": "热门内容",
   "hotContentNew": "热门内容新",
@@ -17,8 +17,9 @@
   "aiRank": "AI热榜",
   "addChannel": "添加频道",
   "sidebar.more": "更多",
-  "uptime": "服务状态",
-  "aiSocial": "AI发布",
+  "uptime": "系统状态",
+  "aiSocial": "智体交互",
+  "missionSquare": "任务空间",
   "taskSquare": "淘金广场",
   "myTasks": "我的任务",
   "createTask": "创建任务"

@@ -55,7 +55,7 @@ export function LogoSection({ collapsed, onToggle }: LogoSectionProps) {
             data-testid="sidebar-logo-link"
           >
             <Image src={logo} alt="Aitoearn" width={32} height={32} />
-            <span className="text-base font-semibold tracking-tight">Aitoearn</span>
+            <span className="text-base font-semibold tracking-tight">AuraString</span>
           </Link>
           <button
             onClick={onToggle}
