@@ -24,9 +24,20 @@ export default function HomePage({ params }: PageParams) {
 
     const userId = userInfo?.id || userInfo?._id
     if (userId) {
-      params.then(p => {
-        router.replace(`/${p.lng}/${userId}`)
-      })
+      const handleRedirect = (lng: string) => {
+        router.replace(`/${lng}/${userId}`)
+      }
+
+      if (params && typeof (params as any).then === 'function') {
+        (params as any).then((p: any) => {
+          handleRedirect(p.lng)
+        })
+      } else {
+        const p = params as any
+        if (p && p.lng) {
+          handleRedirect(p.lng)
+        }
+      }
     }
   }, [_hasHydrated, token, userInfo, router, params])
 
