@@ -4,15 +4,14 @@ import type { IPublishDialogRef } from '@/components/PublishDialog'
 import { NoSSR } from '@kwooshung/react-no-ssr'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useShallow } from 'zustand/react/shallow'
 import AccountsTopNav from '@/app/[lng]/accounts/components/AccountsTopNav'
-import CalendarTiming from '@/app/[lng]/accounts/components/CalendarTiming'
 import { AccountStatus } from '@/app/config/accountConfig'
 import { AccountPlatInfoMap, PlatType } from '@/app/config/platConfig'
 import { useTransClient } from '@/app/i18n/client'
 import rightArrow from '@/assets/images/jiantou.png'
 import { useChannelManagerStore } from '@/components/ChannelManager'
-import PublishDialog from '@/components/PublishDialog'
 import { VideoGrabFrame } from '@/components/PublishDialog/PublishDialog.util'
 import { usePublishDialog } from '@/components/PublishDialog/usePublishDialog'
 import { useAccountStore } from '@/store/account'
@@ -20,6 +19,14 @@ import { generateUUID } from '@/utils'
 import { useCalendarTiming } from './components/CalendarTiming/useCalendarTiming'
 import { useNewWork } from './hooks/useNewWork'
 import 'driver.js/dist/driver.css'
+
+// Lazy load large interactive components to optimize page loading performance
+const CalendarTiming = dynamic(() => import('@/app/[lng]/accounts/components/CalendarTiming'), {
+  ssr: false,
+})
+const PublishDialog = dynamic(() => import('@/components/PublishDialog'), {
+  ssr: false,
+})
 
 interface AccountPageCoreProps {
   searchParams?: {

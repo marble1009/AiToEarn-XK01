@@ -8,11 +8,11 @@
 
 import type { IPubParams } from '@/components/PublishDialog/publishDialog.type'
 import { useCallback, useEffect, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlanDetailStore } from '@/app/[lng]/brand-promotion/planDetailStore'
 import { AccountPlatInfoMap, isPlatformAvailable } from '@/app/config/platConfig'
 import { PubType } from '@/app/config/publishConfig'
-import PublishDialog from '@/components/PublishDialog'
 import { VideoGrabFrame } from '@/components/PublishDialog/PublishDialog.util'
 import { usePublishDialog } from '@/components/PublishDialog/usePublishDialog'
 import { useAccountStore } from '@/store/account'
@@ -21,10 +21,21 @@ import { generateUUID } from '@/utils'
 import { useGenerationPolling } from '../../hooks/useGenerationPolling'
 import AiBatchGenerateBar from '../AiBatchGenerateBar'
 import { useMediaTabStore } from '../ContentTabs/mediaTabStore'
-import { CreateMaterialModal } from '../CreateMaterialModal'
-import { DraftDetailDialog } from '../DraftDetailDialog'
 import { DraftListSection } from '../DraftListSection'
-import { GenerationDetailDialog } from '../GenerationDetailDialog'
+
+// Dynamically import heavy interactive modals to optimize first-load JS size
+const PublishDialog = dynamic(() => import('@/components/PublishDialog'), {
+  ssr: false,
+})
+const CreateMaterialModal = dynamic(() => import('../CreateMaterialModal').then(mod => mod.CreateMaterialModal), {
+  ssr: false,
+})
+const DraftDetailDialog = dynamic(() => import('../DraftDetailDialog').then(mod => mod.DraftDetailDialog), {
+  ssr: false,
+})
+const GenerationDetailDialog = dynamic(() => import('../GenerationDetailDialog').then(mod => mod.GenerationDetailDialog), {
+  ssr: false,
+})
 
 function DraftContentModule() {
   const {

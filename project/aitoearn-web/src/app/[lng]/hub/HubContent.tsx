@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/user'
 import { navigateToLogin } from '@/utils/auth'
+import CanvasLineChart from './components/CanvasLineChart'
 
 interface HubContentProps {
   lng: string
@@ -166,17 +167,7 @@ const MonetizeDashboard = () => (
       <span className="text-[#39FF14] animate-pulse">● LIVE</span>
     </div>
     <div className="h-16 relative overflow-hidden flex items-end">
-      <svg className="w-full h-full stroke-[#39FF14] fill-none" viewBox="0 0 100 30" preserveAspectRatio="none">
-        <path
-          d="M0,25 Q15,5 30,20 T60,8 T90,22 L100,5"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          className="stroke-[#39FF14]"
-          style={{ filter: 'drop-shadow(0 0 4px rgba(57,255,20,0.6))' }}
-        />
-        <circle cx="100" cy="5" r="2" fill="#FF007F" className="animate-ping" />
-        <circle cx="100" cy="5" r="1.5" fill="#39FF14" />
-      </svg>
+      <CanvasLineChart />
     </div>
     <div className="grid grid-cols-2 gap-2 text-[10px]">
       <div className="bg-white/5 p-1.5 rounded border border-white/5">
