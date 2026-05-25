@@ -391,7 +391,7 @@ const DraftDetailContent = memo(({ onClose }: { onClose: () => void }) => {
           {/* AI 增强操作 - 一键成片 */}
           <div className="mt-4">
             <Button
-              className="w-full h-12 cursor-pointer bg-gradient-to-r from-[#4ade80] to-[#22c55e] hover:from-[#22c55e] hover:to-[#16a34a] text-white border-none shadow-[0_0_15px_rgba(74,222,128,0.3)] transition-all hover:shadow-[0_0_20px_rgba(74,222,128,0.5)] group"
+              className="w-full h-12 cursor-pointer bg-gradient-to-r from-[#39FF14] to-[#FF007F] text-black font-black hover:opacity-90 transition-all border-none shadow-[0_0_15px_rgba(57,255,20,0.4)] group"
               onClick={handleGenerateVideo}
               disabled={isVideoGenerating}
             >
@@ -400,10 +400,10 @@ const DraftDetailContent = memo(({ onClose }: { onClose: () => void }) => {
               ) : (
                 <Sparkles className="h-5 w-5 mr-2 animate-pulse group-hover:rotate-12 transition-transform" />
               )}
-              {isVideoGenerating ? 'AI Engine Processing...' : 'Generate AI Digital Video'}
+              {isVideoGenerating ? 'AI 智体视频引擎处理中...' : '一键生成 AI 灵光视频'}
             </Button>
             <p className="text-[10px] text-center text-muted-foreground mt-2 italic">
-              Powered by NVIDIA ACE & Doubao-Video Engine
+              由 NVIDIA ACE 与 字节跳动火山引擎 提供超强算力支持
             </p>
           </div>
         </div>
@@ -411,17 +411,17 @@ const DraftDetailContent = memo(({ onClose }: { onClose: () => void }) => {
 
       {/* 删除确认弹窗 */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-[#09090b]/95 border border-[#FF007F]/40 shadow-[0_0_25px_rgba(255,0,127,0.2)] text-foreground backdrop-blur-md">
           <AlertDialogHeader>
             <AlertDialogTitle>{t('plan.deleteConfirmTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogDescription className="text-muted-foreground">
               {t('plan.deleteConfirmDesc', { name: selectedDraft.title || '未命名草稿' })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="cursor-pointer">{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogCancel className="cursor-pointer bg-black/60 border border-[#39FF14]/30 text-[#39FF14] hover:bg-[#39FF14]/15">{t('common.cancel')}</AlertDialogCancel>
             <Button
-              className="cursor-pointer bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="cursor-pointer bg-[#FF007F] text-white hover:bg-[#FF007F]/90 border-none shadow-[0_0_10px_rgba(255,0,127,0.3)] font-bold"
               onClick={handleDelete}
               disabled={isSubmitting}
             >
@@ -453,7 +453,7 @@ export const DraftDetailDialog = memo(() => {
 
   return (
     <Dialog open onOpenChange={closeDraftDetailDialog}>
-      <DialogContent data-testid="draftbox-detail-dialog" className="sm:max-w-md md:max-w-6xl">
+      <DialogContent data-testid="draftbox-detail-dialog" className="sm:max-w-md md:max-w-6xl bg-[#09090b]/95 border border-[#39FF14]/30 shadow-[0_0_25px_rgba(57,255,20,0.25)] text-foreground backdrop-blur-md">
         <DraftDetailContent onClose={closeDraftDetailDialog} />
       </DialogContent>
     </Dialog>

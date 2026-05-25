@@ -67,34 +67,34 @@ export default function EarningList() {
       {earnings.map((item) => (
         <div 
           key={item.id} 
-          className="flex items-center justify-between p-4 rounded-2xl hover:bg-white/50 transition-colors border border-transparent hover:border-gray-100 group cursor-pointer"
+          className="flex items-center justify-between p-4 rounded-2xl bg-black/60 border border-[#39FF14]/15 hover:border-[#FF007F]/40 hover:bg-[#FF007F]/5 hover:shadow-[0_0_12px_rgba(255,0,127,0.15)] transition-all duration-300 group cursor-pointer"
         >
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <div className="w-10 h-10 rounded-xl bg-black border border-[#39FF14]/30 shadow-[0_0_8px_rgba(57,255,20,0.15)] flex items-center justify-center group-hover:scale-110 transition-transform">
               {getPlatformIcon(item.platform)}
             </div>
             <div>
-              <h4 className="text-sm font-bold text-gray-800 line-clamp-1">{item.planName}</h4>
+              <h4 className="text-sm font-bold text-foreground line-clamp-1">{item.planName}</h4>
               <div className="flex items-center gap-2 mt-0.5">
-                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{item.platform}</span>
-                <span className="text-[10px] text-gray-300">•</span>
-                <span className="text-[10px] text-gray-400 font-medium">{item.date}</span>
+                <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{item.platform === 'RED' ? '小红书' : item.platform}</span>
+                <span className="text-[10px] text-muted-foreground/30">•</span>
+                <span className="text-[10px] text-muted-foreground font-medium">{item.date}</span>
               </div>
             </div>
           </div>
           
           <div className="text-right">
-            <div className="text-sm font-black text-gray-900">+${item.amount.toFixed(2)}</div>
+            <div className="text-sm font-black text-[#39FF14] drop-shadow-[0_0_6px_rgba(57,255,20,0.4)]">+${item.amount.toFixed(2)}</div>
             <div className="flex items-center justify-end gap-1 mt-0.5">
               {item.status === 'completed' ? (
                 <>
-                  <CheckCircle2 size={10} className="text-green-500" />
-                  <span className="text-[10px] text-green-500 font-bold uppercase tracking-tight">已结算</span>
+                  <CheckCircle2 size={10} className="text-[#FF007F] drop-shadow-[0_0_4px_rgba(255,0,127,0.4)]" />
+                  <span className="text-[10px] text-[#FF007F] font-bold uppercase tracking-tight drop-shadow-[0_0_8px_rgba(255,0,127,0.5)]">已结算</span>
                 </>
               ) : (
                 <>
-                  <Clock size={10} className="text-orange-400" />
-                  <span className="text-[10px] text-orange-400 font-bold uppercase tracking-tight">结算中</span>
+                  <Clock size={10} className="text-muted-foreground/60" />
+                  <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-tight">结算中</span>
                 </>
               )}
             </div>

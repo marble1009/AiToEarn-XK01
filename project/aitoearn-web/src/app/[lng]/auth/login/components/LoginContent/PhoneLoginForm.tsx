@@ -119,7 +119,7 @@ export function PhoneLoginForm({ onLoginSuccess, redirectUrl, inviteCode: _invit
     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
       <div>
         <div className="flex">
-          <span className="inline-flex h-12 items-center rounded-l-xl border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">
+          <span className="inline-flex h-12 items-center rounded-l-xl border border-r-0 border-[#39FF14]/30 bg-black px-3 text-sm text-[#39FF14] font-bold shadow-[0_0_8px_rgba(57,255,20,0.15)]">
             +86
           </span>
           <Input
@@ -128,7 +128,7 @@ export function PhoneLoginForm({ onLoginSuccess, redirectUrl, inviteCode: _invit
             maxLength={11}
             placeholder={t('phonePlaceholder')}
             {...form.register('phone')}
-            className="h-12 rounded-l-none rounded-r-xl border-input bg-background px-4 text-base placeholder:text-muted-foreground/70 focus:border-ring focus:ring-0"
+            className="h-12 rounded-l-none rounded-r-xl border border-[#39FF14]/30 bg-black/60 px-4 text-base text-foreground placeholder:text-muted-foreground/50 focus:border-[#39FF14] focus:ring-[0_0_8px_rgba(57,255,20,0.3)] transition-all outline-none"
           />
         </div>
         {form.formState.errors.phone && (
@@ -146,7 +146,7 @@ export function PhoneLoginForm({ onLoginSuccess, redirectUrl, inviteCode: _invit
             maxLength={6}
             placeholder={t('enterCode')}
             {...form.register('code')}
-            className="h-12 rounded-xl border-input bg-background px-4 text-base placeholder:text-muted-foreground/70 focus:border-ring focus:ring-0"
+            className="h-12 rounded-xl border border-[#39FF14]/20 bg-black/60 px-4 text-base text-foreground placeholder:text-muted-foreground/50 focus:border-[#39FF14] focus:ring-[0_0_8px_rgba(57,255,20,0.3)] transition-all outline-none"
           />
           {form.formState.errors.code && (
             <p className="mt-1 text-xs text-destructive">
@@ -159,7 +159,7 @@ export function PhoneLoginForm({ onLoginSuccess, redirectUrl, inviteCode: _invit
           variant="outline"
           disabled={isCounting || sendingCode}
           onClick={handleSendCode}
-          className="h-12 shrink-0 cursor-pointer rounded-xl px-4"
+          className="h-12 shrink-0 cursor-pointer rounded-xl px-4 border border-[#39FF14]/40 bg-black text-[#39FF14] hover:bg-[#39FF14]/15 hover:text-[#39FF14] shadow-[0_0_8px_rgba(57,255,20,0.15)] transition-all"
         >
           {sendingCode ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -174,7 +174,7 @@ export function PhoneLoginForm({ onLoginSuccess, redirectUrl, inviteCode: _invit
       <Button
         type="submit"
         disabled={form.formState.isSubmitting}
-        className="h-12 w-full cursor-pointer rounded-xl text-base font-medium"
+        className="h-12 w-full cursor-pointer rounded-xl text-base font-bold bg-gradient-to-r from-[#39FF14] to-[#FF007F] text-black hover:opacity-90 transition-all border-none shadow-[0_0_15px_rgba(57,255,20,0.4)]"
       >
         {form.formState.isSubmitting ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />

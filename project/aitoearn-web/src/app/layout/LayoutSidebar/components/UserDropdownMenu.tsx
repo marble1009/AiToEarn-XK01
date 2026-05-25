@@ -8,7 +8,7 @@
 
 import type { SidebarCommonProps } from '../types'
 import type { SettingsTab } from '@/components/SettingsModal'
-import { Bell, BookOpen, ChevronRight, FileText, Globe, LogOut, Mail, ScrollText, Settings, Shield } from 'lucide-react'
+import { Bell, BookOpen, ChevronRight, FileText, Globe, LogIn, LogOut, Mail, ScrollText, Settings, Shield } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useTransClient } from '@/app/i18n/client'
@@ -141,20 +141,20 @@ function LoggedInMenuContent({
       <div className="flex flex-col gap-1 p-2">
         {/* 用户信息区域 */}
         <div className="flex items-center gap-3 px-3 py-2">
-          <Avatar className="h-10 w-10 shrink-0 border border-border">
+          <Avatar className="h-10 w-10 shrink-0 border border-[#39FF14]/40 shadow-[0_0_8px_rgba(57,255,20,0.2)]">
             <AvatarImage src={getOssUrl(userInfo?.avatar) || ''} alt={userInfo?.name || t('common:unknownUser')} />
             <AvatarFallback className="bg-muted-foreground font-semibold text-background">
               {userInfo?.name?.charAt(0)?.toUpperCase() || 'U'}
             </AvatarFallback>
           </Avatar>
           <div className="flex min-w-0 flex-1 flex-col">
-            <span className="truncate text-sm font-medium text-foreground" data-testid="sidebar-user-name">
+            <span className="truncate text-sm font-semibold text-[#39FF14] drop-shadow-[0_0_6px_rgba(57,255,20,0.4)]" data-testid="sidebar-user-name">
               {userInfo?.name || t('common:unknownUser')}
             </span>
           </div>
         </div>
 
-        <div className="my-1 h-px bg-border" />
+        <div className="my-1 h-px bg-white/10" />
 
         {/* 低频：外部链接 */}
         <MenuItem
@@ -274,8 +274,13 @@ export function UserDropdownMenu({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button onClick={handleLogin} size="icon" className="h-9 w-9" data-testid="sidebar-login-btn">
-                <span className="text-sm font-semibold">In</span>
+              <Button
+                onClick={handleLogin}
+                size="icon"
+                className="h-9 w-9 border border-[#39FF14]/40 bg-black text-[#39FF14] hover:bg-[#39FF14]/15 hover:text-[#39FF14] shadow-[0_0_8px_rgba(57,255,20,0.2)]"
+                data-testid="sidebar-login-btn"
+              >
+                <LogIn className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent side="right">
@@ -287,7 +292,11 @@ export function UserDropdownMenu({
     }
 
     return (
-      <Button onClick={handleLogin} className="mt-2 w-full" data-testid="sidebar-login-btn">
+      <Button
+        onClick={handleLogin}
+        className="mt-2 w-full border border-[#39FF14]/40 bg-black text-[#39FF14] hover:bg-[#39FF14]/15 hover:text-[#39FF14] shadow-[0_0_8px_rgba(57,255,20,0.2)]"
+        data-testid="sidebar-login-btn"
+      >
         {t('login')}
       </Button>
     )
@@ -321,7 +330,7 @@ export function UserDropdownMenu({
                     collapsed ? 'justify-center' : 'gap-2',
                   )}
                 >
-                  <Avatar className="h-8 w-8 shrink-0 border border-border">
+                  <Avatar className="h-8 w-8 shrink-0 border border-[#39FF14]/40 shadow-[0_0_8px_rgba(57,255,20,0.2)]">
                     <AvatarImage src={getOssUrl(userInfo?.avatar) || ''} alt={userInfo?.name || t('unknownUser')} />
                     <AvatarFallback className="bg-muted-foreground font-semibold text-background">
                       {userInfo?.name?.charAt(0)?.toUpperCase() || 'U'}
@@ -330,7 +339,7 @@ export function UserDropdownMenu({
 
                   {!collapsed && (
                     <div className="flex min-w-0 flex-1 flex-col items-start">
-                      <span className="w-full truncate text-left text-sm font-medium text-foreground">
+                      <span className="w-full truncate text-left text-sm font-medium text-foreground group-hover:text-[#39FF14] transition-colors">
                         {userInfo?.name || t('unknownUser')}
                       </span>
                     </div>
@@ -338,7 +347,7 @@ export function UserDropdownMenu({
 
                   {/* 未读通知指示器 */}
                   {unreadCount > 0 && (
-                    <div className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-destructive" />
+                    <div className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-destructive shadow-[0_0_8px_#ff0000]" />
                   )}
                 </button>
               </TooltipTrigger>
@@ -354,7 +363,7 @@ export function UserDropdownMenu({
         <PopoverContent
           side={collapsed ? 'right' : 'top'}
           align={collapsed ? 'end' : 'start'}
-          className="w-64 p-0"
+          className="w-64 p-0 bg-[#09090b]/95 border border-[#39FF14]/30 shadow-[0_0_20px_rgba(57,255,20,0.2)] text-foreground backdrop-blur-md"
           sideOffset={4}
           data-testid="sidebar-user-menu"
           onMouseEnter={() => setOpen(true)}

@@ -294,7 +294,7 @@ export const HomeChat = forwardRef<IHomeChatRef, IHomeChatProps>(
 
         {/* 平台工具链接提示 */}
         <div
-          className="flex items-center gap-3 mb-2 cursor-pointer bg-muted rounded-b-xl pt-4 pb-3 px-4 -mt-3 relative"
+          className="flex items-center gap-3 mb-2 cursor-pointer bg-black/60 border-x border-b border-[#39FF14]/20 shadow-[0_4px_12px_rgba(57,255,20,0.1)] rounded-b-xl pt-4 pb-3 px-4 -mt-3 relative backdrop-blur-sm"
           onClick={handleAddChannelClick}
         >
           <span className="text-sm text-muted-foreground whitespace-nowrap">

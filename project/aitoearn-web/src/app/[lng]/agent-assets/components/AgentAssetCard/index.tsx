@@ -55,9 +55,9 @@ export const AgentAssetCard = memo(({ asset, onClick }: AgentAssetCardProps) => 
   return (
     <div
       className={cn(
-        'group relative rounded-lg overflow-hidden bg-muted cursor-pointer min-h-[120px]',
-        'transition-all duration-200',
-        'hover:shadow-lg',
+        'group relative rounded-xl overflow-hidden bg-black/80 cursor-pointer min-h-[120px] border border-[#39FF14]/20',
+        'transition-all duration-300',
+        'hover:border-[#39FF14]/50 hover:shadow-[0_0_15px_rgba(57,255,20,0.25)]',
       )}
       onClick={handleClick}
     >
@@ -69,28 +69,28 @@ export const AgentAssetCard = memo(({ asset, onClick }: AgentAssetCardProps) => 
             alt={asset.filename || 'Agent asset'}
             width={400}
             height={300}
-            className="w-full h-auto block"
+            className="w-full h-auto block opacity-85 group-hover:opacity-100 transition-opacity duration-300"
             unoptimized
           />
 
           {/* 视频播放图标 */}
           {isVideo && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-10 h-10 rounded-full bg-black/50 flex items-center justify-center group-hover:bg-black/70 transition-colors">
-                <Play className="w-5 h-5 text-white fill-white ml-0.5" />
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <div className="w-10 h-10 rounded-full bg-black/60 border border-[#39FF14]/40 flex items-center justify-center group-hover:bg-[#39FF14] group-hover:text-black group-hover:border-[#39FF14] transition-all duration-300 shadow-[0_0_8px_rgba(57,255,20,0.2)]">
+                <Play className="w-5 h-5 text-[#39FF14] fill-[#39FF14] ml-0.5 group-hover:text-black group-hover:fill-black transition-colors" />
               </div>
             </div>
           )}
 
           {/* 视频时长标签 */}
           {isVideo && duration && (
-            <div className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/70 rounded text-xs text-white">
+            <div className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/80 border border-[#39FF14]/20 rounded text-xs text-[#39FF14] font-bold shadow-[0_0_4px_rgba(57,255,20,0.2)]">
               {formatDuration(duration)}
             </div>
           )}
 
           {/* 悬浮遮罩 */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+          <div className="absolute inset-0 transition-all duration-300 pointer-events-none bg-transparent cyber-crt-overlay-trigger" />
         </div>
       ) : (
         // 无封面：固定 16:9 占位
@@ -99,15 +99,15 @@ export const AgentAssetCard = memo(({ asset, onClick }: AgentAssetCardProps) => 
 
           {/* 视频播放图标 */}
           {isVideo && (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-10 h-10 rounded-full bg-black/50 flex items-center justify-center group-hover:bg-black/70 transition-colors">
-                <Play className="w-5 h-5 text-white fill-white ml-0.5" />
+            <div className="absolute inset-0 flex items-center justify-center z-10">
+              <div className="w-10 h-10 rounded-full bg-black/60 border border-[#39FF14]/40 flex items-center justify-center group-hover:bg-[#39FF14] group-hover:text-black group-hover:border-[#39FF14] transition-all duration-300 shadow-[0_0_8px_rgba(57,255,20,0.2)]">
+                <Play className="w-5 h-5 text-[#39FF14] fill-[#39FF14] ml-0.5 group-hover:text-black group-hover:fill-black transition-colors" />
               </div>
             </div>
           )}
 
           {/* 悬浮遮罩 */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+          <div className="absolute inset-0 transition-all duration-300 pointer-events-none bg-transparent cyber-crt-overlay-trigger" />
         </div>
       )}
     </div>

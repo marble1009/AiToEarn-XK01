@@ -4,10 +4,8 @@ import type { MobileTopBarProps } from '../types'
  * 左侧 Logo + 文字，右侧根据登录状态显示用户头像或菜单图标
  */
 import { Menu } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useTransClient } from '@/app/i18n/client'
-import logo from '@/assets/images/logo.png'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useUserStore } from '@/store/user'
 import { getOssUrl } from '@/utils/oss'
@@ -22,8 +20,13 @@ export function MobileTopBar({ onOpen }: MobileTopBarProps) {
   return (
     <div className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between h-14 px-4 bg-background border-b border-border" data-testid="mobile-topbar">
       <Link href="/" className="flex items-center gap-2" data-testid="mobile-topbar-logo">
-        <Image src={logo} alt="Aitoearn" width={32} height={32} />
-        <span className="text-base font-semibold text-foreground">Aitoearn</span>
+        <div className="relative flex size-8 items-center justify-center rounded bg-black border border-[#39FF14]/40 shadow-[0_0_10px_rgba(57,255,20,0.3)]">
+          <span className="text-[#39FF14] text-xs font-black">A</span>
+          <span className="absolute -top-0.5 -right-0.5 size-1.5 rounded-full bg-[#FF007F] animate-ping" />
+        </div>
+        <span className="text-sm font-black tracking-widest text-[#39FF14] drop-shadow-[0_0_8px_rgba(57,255,20,0.6)]">
+          Aura<span className="text-[#FF007F] drop-shadow-[0_0_8px_rgba(255,0,127,0.6)]">String</span>
+        </span>
       </Link>
 
       <div className="flex items-center gap-2">

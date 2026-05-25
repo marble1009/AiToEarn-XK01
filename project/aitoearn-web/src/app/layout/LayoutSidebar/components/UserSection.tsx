@@ -5,6 +5,7 @@
 'use client'
 
 import type { UserSectionProps } from '../types'
+import { LogIn } from 'lucide-react'
 import { useTransClient } from '@/app/i18n/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -39,11 +40,11 @@ function UserAvatar({
           <button
             onClick={handleClick}
             className={cn(
-              'flex w-full cursor-pointer items-center rounded-lg border-none bg-transparent transition-colors hover:bg-accent',
+              'flex w-full cursor-pointer items-center rounded-lg border border-transparent bg-transparent transition-all hover:bg-[#39FF14]/5 hover:border-[#39FF14]/20',
               collapsed ? 'justify-center p-1' : 'gap-2 px-2 py-1.5',
             )}
           >
-            <Avatar className="h-8 w-8 shrink-0 border border-border">
+            <Avatar className="h-8 w-8 shrink-0 border border-[#39FF14]/40 shadow-[0_0_8px_rgba(57,255,20,0.2)]">
               <AvatarImage src={getOssUrl(userInfo.avatar) || ''} alt={userInfo.name || t('unknownUser')} />
               <AvatarFallback className="bg-muted-foreground font-semibold text-background">
                 {userInfo.name?.charAt(0)?.toUpperCase() || 'U'}
@@ -52,7 +53,7 @@ function UserAvatar({
 
             {!collapsed && (
               <div className="flex min-w-0 flex-1 flex-col items-start">
-                <span className="w-full truncate text-sm font-medium text-foreground text-left">
+                <span className="w-full truncate text-sm font-medium text-foreground text-left group-hover:text-[#39FF14] transition-colors">
                   {userInfo.name || t('unknownUser')}
                 </span>
               </div>
@@ -82,8 +83,12 @@ export function UserSection({ collapsed, onLogin, onOpenSettings }: UserSectionP
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button onClick={onLogin} size="icon" className="h-9 w-9">
-              <span className="text-sm font-semibold">In</span>
+            <Button
+              onClick={onLogin}
+              size="icon"
+              className="h-9 w-9 border border-[#39FF14]/40 bg-black text-[#39FF14] hover:bg-[#39FF14]/15 hover:text-[#39FF14] shadow-[0_0_8px_rgba(57,255,20,0.2)]"
+            >
+              <LogIn className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent side="right">
@@ -95,8 +100,12 @@ export function UserSection({ collapsed, onLogin, onOpenSettings }: UserSectionP
   }
 
   return (
-    <Button onClick={onLogin} className="mt-1 w-full">
+    <Button
+      onClick={onLogin}
+      className="mt-1 w-full border border-[#39FF14]/40 bg-black text-[#39FF14] hover:bg-[#39FF14]/15 hover:text-[#39FF14] shadow-[0_0_8px_rgba(57,255,20,0.2)]"
+    >
       {t('login')}
     </Button>
   )
 }
+

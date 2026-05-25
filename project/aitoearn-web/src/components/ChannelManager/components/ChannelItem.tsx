@@ -43,11 +43,13 @@ export function ChannelItem({ channel, onDelete, deleteLoading }: ChannelItemPro
   return (
     <div
       data-testid="cm-channel-item"
-      className={`flex items-center gap-2 sm:gap-3 p-3 sm:p-4 hover:bg-accent/30 transition-colors group relative min-w-0 ${
-        isDeleting ? 'opacity-50 cursor-not-allowed' : ''
-      } ${isOffline ? 'opacity-60' : ''}`}
+      className={`flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl border border-transparent transition-all duration-300 group relative min-w-0 ${
+        isOffline 
+          ? 'hover:border-[#FF007F]/30 hover:bg-[#FF007F]/5 hover:shadow-[0_0_12px_rgba(255,0,127,0.12)] opacity-70' 
+          : 'hover:border-[#39FF14]/30 hover:bg-[#39FF14]/5 hover:shadow-[0_0_12px_rgba(57,255,20,0.15)]'
+      } ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      <Avatar className={`h-10 w-10 shrink-0 ${isOffline ? 'grayscale' : ''}`}>
+      <Avatar className={`h-10 w-10 shrink-0 ${isOffline ? 'grayscale border border-[#FF007F]/30 shadow-[0_0_6px_rgba(255,0,127,0.15)]' : 'border border-[#39FF14]/40 shadow-[0_0_6px_rgba(57,255,20,0.2)]'}`}>
         <AvatarImage src={getOssUrl(channel.avatar)} alt={channel.nickname} />
         <AvatarFallback>{channel.nickname?.[0] || channel.account?.[0]}</AvatarFallback>
       </Avatar>

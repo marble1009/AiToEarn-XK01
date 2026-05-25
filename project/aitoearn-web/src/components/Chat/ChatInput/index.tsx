@@ -178,7 +178,10 @@ export function ChatInput({
         zIndex: 2,
       }}
       className={cn(
-        'w-full rounded-2xl border bg-card transition-all duration-300 border-border shadow-sm hover:border-border/80 hover:shadow-md',
+        'w-full rounded-2xl border bg-[#050505] transition-all duration-300 shadow-[0_0_15px_rgba(57,255,20,0.05)] text-[#39FF14]',
+        isFocused 
+          ? 'border-[#39FF14] shadow-[0_0_20px_rgba(57,255,20,0.2)]' 
+          : 'border-[#39FF14]/20 hover:border-[#39FF14]/40 hover:shadow-[0_0_15px_rgba(57,255,20,0.1)]',
         mode === 'large' ? 'p-4' : 'p-3',
         // 详情页（compact 模式）允许输入区域根据父容器拉伸
         mode === 'compact' && 'h-full flex flex-col',
@@ -215,7 +218,7 @@ export function ChatInput({
           disabled={disabled || isGenerating}
           rows={mode === 'large' ? 3 : 1}
           className={cn(
-            'w-full resize-none border-none outline-none focus:outline-none bg-transparent text-foreground placeholder:text-muted-foreground',
+            'w-full resize-none border-none outline-none focus:outline-none bg-transparent text-[#39FF14] placeholder:text-[#39FF14]/30 caret-[#39FF14] font-mono',
             'disabled:opacity-50 disabled:cursor-not-allowed',
             mode === 'large' ? 'text-base min-h-[80px]' : 'text-sm min-h-[40px]',
           )}
@@ -263,12 +266,12 @@ export function ChatInput({
           onClick={handleButtonClick}
           disabled={!isGenerating && !canSend}
           className={cn(
-            'shrink-0 flex items-center justify-center rounded-full transition-all',
+            'shrink-0 flex items-center justify-center rounded-full transition-all border duration-300',
             mode === 'large' ? 'w-10 h-10' : 'w-8 h-8',
-            // 生成中或无法发送时都显示灰色
+            // 生成中或无法发送时都显示深黑色终端质感，激活时绿粉霓虹
             !isGenerating && !canSend
-              ? 'bg-muted text-muted-foreground cursor-not-allowed'
-              : 'bg-primary hover:bg-primary/90 text-primary-foreground',
+              ? 'bg-[#121214] text-muted-foreground/30 border-white/5 cursor-not-allowed'
+              : 'bg-black border-[#39FF14] text-[#39FF14] hover:bg-[#FF007F] hover:border-[#FF007F] hover:text-white shadow-[0_0_12px_rgba(57,255,20,0.35)]',
           )}
         >
           {isGenerating ? (

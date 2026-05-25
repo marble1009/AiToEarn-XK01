@@ -25,7 +25,7 @@ export function MissionSubmissionModal({ mission, isOpen, onClose }: MissionSubm
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!url) {
-      setError('Please provide a valid social media link')
+      setError('请提供有效的发布链接')
       return
     }
 
@@ -33,7 +33,7 @@ export function MissionSubmissionModal({ mission, isOpen, onClose }: MissionSubm
     try {
       new URL(url)
     } catch {
-      setError('Invalid URL format. Please include http:// or https://')
+      setError('URL 格式无效，请以 http:// 或 https:// 开头')
       return
     }
 
@@ -57,7 +57,7 @@ export function MissionSubmissionModal({ mission, isOpen, onClose }: MissionSubm
         setUrl('')
       }, 2500)
     } catch (err: any) {
-      setError(err.message || 'Failed to submit work. Please try again.')
+      setError(err.message || '提交失败，请重新尝试。')
     } finally {
       setIsSubmitting(false)
     }
@@ -79,11 +79,11 @@ export function MissionSubmissionModal({ mission, isOpen, onClose }: MissionSubm
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-md bg-white rounded-[2rem] shadow-2xl overflow-hidden p-8"
+            className="relative w-full max-w-md bg-[#09090b]/95 border border-[#39FF14]/30 shadow-[0_0_25px_rgba(57,255,20,0.25)] rounded-[2rem] overflow-hidden p-8 text-foreground"
           >
             <button 
               onClick={onClose}
-              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute top-6 right-6 text-[#39FF14] hover:text-[#FF007F] transition-colors"
             >
               <X size={24} />
             </button>
@@ -91,36 +91,36 @@ export function MissionSubmissionModal({ mission, isOpen, onClose }: MissionSubm
             {!isSuccess ? (
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Badge className="bg-orange-100 text-orange-600 border-none mb-2">Submit Your Work</Badge>
-                  <h2 className="text-2xl font-black text-gray-900 leading-tight">
+                  <Badge className="bg-[#39FF14]/10 text-[#39FF14] border border-[#39FF14]/30 mb-2">提交成果</Badge>
+                  <h2 className="text-2xl font-black text-foreground leading-tight">
                     {mission.title}
                   </h2>
-                  <p className="text-gray-500 text-sm">
-                    Paste the link to your published post on Twitter, TikTok, or Instagram to claim your rewards.
+                  <p className="text-muted-foreground text-sm">
+                    粘贴您在小红书、抖音或哔哩哔哩上发布的创作链接，系统审计通过后即可领取灵光奖励。
                   </p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-3">
-                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">
-                      Published Link URL
+                    <label className="text-xs font-black text-[#39FF14] uppercase tracking-widest px-1">
+                      作品发布链接
                     </label>
                     <div className="relative group">
-                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#39FF14]/60 group-focus-within:text-[#FF007F] transition-colors">
                         <LinkIcon size={18} />
                       </div>
                       <Input
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
-                        placeholder="https://twitter.com/user/status/..."
-                        className="h-14 pl-12 rounded-2xl border-gray-100 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-orange-100 transition-all text-sm"
+                        placeholder="https://xiaohongshu.com/discovery/item/..."
+                        className="h-14 pl-12 rounded-2xl border border-[#39FF14]/20 bg-black/80 text-foreground placeholder:text-muted-foreground/40 focus:border-[#39FF14] focus:ring-[0_0_8px_rgba(57,255,20,0.3)] transition-all outline-none text-sm"
                       />
                     </div>
                     {error && (
                       <motion.div 
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="flex items-center gap-2 text-red-500 text-xs font-medium px-1"
+                        className="flex items-center gap-2 text-[#FF007F] text-xs font-semibold px-1"
                       >
                         <AlertCircle size={14} />
                         {error}
@@ -131,13 +131,13 @@ export function MissionSubmissionModal({ mission, isOpen, onClose }: MissionSubm
                   <Button 
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full h-14 rounded-2xl bg-warm-gradient text-white font-bold text-lg shadow-xl shadow-orange-100 flex items-center justify-center gap-2 disabled:opacity-70"
+                    className="w-full h-14 rounded-2xl bg-gradient-to-r from-[#39FF14] to-[#FF007F] text-black font-black text-lg shadow-[0_0_15px_rgba(57,255,20,0.4)] flex items-center justify-center gap-2 border-none hover:opacity-90 transition-all disabled:opacity-70"
                   >
                     {isSubmitting ? (
-                      <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <div className="w-6 h-6 border-2 border-black/30 border-t-black rounded-full animate-spin" />
                     ) : (
                       <>
-                        Confirm Submission
+                        确认提交审核
                         <Send size={18} />
                       </>
                     )}
@@ -150,12 +150,12 @@ export function MissionSubmissionModal({ mission, isOpen, onClose }: MissionSubm
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center justify-center py-10 space-y-4"
               >
-                <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                <div className="w-20 h-20 rounded-full bg-[#39FF14]/10 border border-[#39FF14]/30 flex items-center justify-center text-[#39FF14] shadow-[0_0_15px_rgba(57,255,20,0.3)]">
                   <CheckCircle2 size={40} />
                 </div>
                 <div className="text-center">
-                  <h3 className="text-xl font-bold text-gray-900">Submission Received!</h3>
-                  <p className="text-gray-500 text-sm mt-1">Our brand team will audit your link soon.</p>
+                  <h3 className="text-xl font-bold text-foreground">提交成功！</h3>
+                  <p className="text-muted-foreground text-sm mt-1">系统智体将在短期内对您的发布内容进行自动审计。</p>
                 </div>
               </motion.div>
             )}
