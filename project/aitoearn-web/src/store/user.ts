@@ -62,7 +62,7 @@ const state: IUserStore = {
   creditsBalance: 0, 
   creditsLoading: false,
   creditsInitialized: true,
-  sidebarCollapsed: false,
+  sidebarCollapsed: true,
   defaultPlanId: undefined,
   hasEverLoggedIn: false,
   countryCode: undefined,
