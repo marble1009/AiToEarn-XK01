@@ -57,8 +57,9 @@ export default function LoginContent() {
           href="/"
           className="flex items-center gap-2 text-foreground no-underline hover:opacity-80 transition-opacity"
         >
-          <Image src={logo} alt="AiToEarn" width={28} height={28} />
-          <span className="text-lg font-semibold tracking-tight">AiToEarn</span>
+          <span className="text-lg font-black tracking-widest text-[#39FF14] drop-shadow-[0_0_8px_rgba(57,255,20,0.6)]">
+            Aura<span className="text-[#FF007F] drop-shadow-[0_0_8px_rgba(255,0,127,0.6)]">String</span>
+          </span>
         </Link>
       </div>
 
@@ -75,15 +76,12 @@ export default function LoginContent() {
           <div className="mb-8 flex flex-col items-center">
             <Link
               href="/"
-              className="mb-6 flex h-20 w-20 items-center justify-center hover:opacity-80 transition-opacity"
+              className="mb-6 flex h-20 items-center justify-center hover:opacity-80 transition-opacity"
             >
-              <Image
-                src={logo}
-                alt="AiToEarn"
-                width={72}
-                height={72}
-                className="drop-shadow-md"
-              />
+              <div className="relative flex size-16 items-center justify-center rounded-xl bg-black border border-[#39FF14]/40 shadow-[0_0_15px_rgba(57,255,20,0.3)]">
+                <span className="text-[#39FF14] text-3xl font-black">A</span>
+                <span className="absolute -top-1 -right-1 size-3 rounded-full bg-[#FF007F] animate-ping" />
+              </div>
             </Link>
             <h1 className="text-2xl font-semibold text-foreground">{t('welcomeBack')}</h1>
             <p className="mt-2 text-muted-foreground">{t('loginSubtitle')}</p>
