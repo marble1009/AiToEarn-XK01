@@ -94,6 +94,8 @@ export class ClaudeCodeRouterService implements OnModuleInit, OnModuleDestroy {
           api_base_url: routerConfig.baseUrl,
           api_key: routerConfig.apiKey,
           models: [
+            'MiniMax-M2.7',
+            'MiniMax-M2.5',
             'claude-opus-4-6',
             'claude-haiku-4-5-20251001-thinking',
             'claude-opus-4-5-20251101-thinking',

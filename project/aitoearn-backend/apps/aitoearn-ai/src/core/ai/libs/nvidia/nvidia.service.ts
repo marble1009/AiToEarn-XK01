@@ -30,7 +30,7 @@ export class NvidiaService {
       ...options,
       maxRetries: 1,
       timeout: options.timeout ?? this.config.timeout,
-      apiKey: options.apiKey ?? this.config.apiKey || 'placeholder-key-for-nvidia',
+      apiKey: (options.apiKey ?? this.config.apiKey) || 'placeholder-key-for-nvidia',
       configuration: {
         baseURL: this.config.baseUrl,
       },

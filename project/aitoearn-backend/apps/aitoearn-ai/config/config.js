@@ -157,6 +157,34 @@ module.exports = {
     models: {
       chat: [
         {
+          name: 'MiniMax-M2.7',
+          description: 'MiniMax M2.7',
+          inputModalities: ['text', 'image'],
+          outputModalities: ['text'],
+          pricing: {
+            tiers: [
+              {
+                input: { text: '0', image: '0' },
+                output: { text: '0' },
+              },
+            ],
+          },
+        },
+        {
+          name: 'MiniMax-M2.5',
+          description: 'MiniMax M2.5',
+          inputModalities: ['text', 'image'],
+          outputModalities: ['text'],
+          pricing: {
+            tiers: [
+              {
+                input: { text: '0', image: '0' },
+                output: { text: '0' },
+              },
+            ],
+          },
+        },
+        {
           name: 'gemini-3.1-pro-preview',
           description: 'Gemini 3.1 Pro Preview',
           inputModalities: ['text', 'image', 'audio', 'video'],
@@ -383,7 +411,7 @@ module.exports = {
     },
   },
   agent: {
-    baseUrl: `${OPENAI_BASE_URL}/messages`,
-    apiKey: OPENAI_API_KEY,
+    baseUrl: ANTHROPIC_BASE_URL || `${OPENAI_BASE_URL}/messages`,
+    apiKey: ANTHROPIC_API_KEY || OPENAI_API_KEY,
   },
 }

@@ -2,7 +2,6 @@ import Anthropic from '@anthropic-ai/sdk'
 import { RawMessageStreamEvent } from '@anthropic-ai/sdk/resources'
 import { GenerateContentResponse, GenerateContentResponseUsageMetadata } from '@google/genai'
 import { BaseMessage, ChatMessage } from '@langchain/core/messages'
-import { OpenAIClient } from '@langchain/openai'
 import { Injectable, Logger } from '@nestjs/common'
 import { AssetsService } from '@yikart/assets'
 import { AppException, CreditsType, getErrorMessage, getErrorStack, ResponseCode, UserType } from '@yikart/common'
@@ -13,8 +12,8 @@ import { from, merge, Observable } from 'rxjs'
 import { catchError, concatMap, ignoreElements, last, share } from 'rxjs/operators'
 import { config } from '../../../config'
 import { GeminiService } from '../libs/gemini/gemini.service'
-import { OpenaiService } from '../libs/openai'
 import { NvidiaService } from '../libs/nvidia'
+import { OpenaiService } from '../libs/openai'
 import { ModelsConfigService } from '../models-config'
 import { calculatePricingPoints, ChatPricing, isFlatPricing, TokenUsageDetails } from '../pricing/pricing-calculator'
 import {
@@ -120,8 +119,8 @@ export class ChatService {
     })
 
     const isNvidiaModel = model.startsWith('nvidia/') || model.startsWith('meta/') || model.includes('llama') // 简单判定
-    
-    const result = isNvidiaModel 
+
+    const result = isNvidiaModel
       ? await this.nvidiaService.createChatCompletion({
           model,
           messages: langchainMessages,

@@ -30,8 +30,8 @@ import { MediaMcp } from '../agent/mcp/media.mcp'
 import { UtilMcp } from '../agent/mcp/util.mcp'
 import { VideoUtilsMcp } from '../agent/mcp/video-utils.mcp'
 import { ChatService } from '../ai/chat'
-import { NvidiaService } from '../ai/libs/nvidia'
 import { ImageService } from '../ai/image/image.service'
+import { NvidiaService } from '../ai/libs/nvidia'
 import { calculatePricingPoints, ChatPricing } from '../ai/pricing/pricing-calculator'
 import { VideoService } from '../ai/video/video.service'
 import { getCompatibleAccountTypes } from '../material-adaptation/material-adaptation.constants'
@@ -601,7 +601,7 @@ Return the result as JSON.`
     const useNvidia = !!config.ai.nvidia.apiKey
     const plannerModel = useNvidia ? 'meta/llama-3.1-405b-instruct' : modelName
 
-    const model = useNvidia 
+    const model = useNvidia
       ? new ChatOpenAI({
           modelName: plannerModel,
           apiKey: config.ai.nvidia.apiKey,
@@ -1002,7 +1002,7 @@ Return the result as JSON.`
     const useNvidia = !!config.ai.nvidia.apiKey
     const plannerModel = useNvidia ? 'meta/llama-3.1-405b-instruct' : modelName
 
-    const model = useNvidia 
+    const model = useNvidia
       ? new ChatOpenAI({
           modelName: plannerModel,
           apiKey: config.ai.nvidia.apiKey,

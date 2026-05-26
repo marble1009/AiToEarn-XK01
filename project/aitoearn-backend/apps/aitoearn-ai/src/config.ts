@@ -8,9 +8,9 @@ import { redlockConfigSchema } from '@yikart/redlock'
 import z from 'zod'
 import { geminiConfigSchema } from './core/ai/libs/gemini'
 import { grokConfigSchema } from './core/ai/libs/grok'
+import { nvidiaConfigSchema } from './core/ai/libs/nvidia'
 import { openaiConfigSchema } from './core/ai/libs/openai'
 import { volcengineConfigSchema } from './core/ai/libs/volcengine'
-import { nvidiaConfigSchema } from './core/ai/libs/nvidia'
 
 const chatPricingModalitySchema = z.object({
   text: z.string(),
