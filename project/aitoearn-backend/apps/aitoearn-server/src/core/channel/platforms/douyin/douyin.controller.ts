@@ -125,12 +125,13 @@ export class DouyinController {
     query: {
       code: string
       state: string
+      scopes?: string
     },
     @Res() res: Response,
   ) {
     const result = await this.douyinService.createAccountAndSetAccessToken(
       query.state,
-      { code: query.code, state: query.state },
+      { code: query.code, state: query.state, scopes: query.scopes },
     )
 
     if (result.status === 1 && result.callbackUrl) {

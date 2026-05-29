@@ -12,7 +12,7 @@ FROM node:20-alpine AS production
 
 ARG APP_NAME
 
-RUN apk add --no-cache curl ffmpeg
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk add --no-cache curl ffmpeg
 
 WORKDIR /app
 

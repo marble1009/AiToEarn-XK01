@@ -111,7 +111,7 @@ const CreateMaterialModalContent = memo(
           {/* 使用 PubParmasTextarea 组件 */}
           <div className="px-1 overflow-y-auto">
             <PubParmasTextarea
-              platType={PlatType.Tiktok}
+              platType={PlatType.Douyin}
               hideWritingAssistant
               desValue={params.des}
               imageFileListValue={params.images}

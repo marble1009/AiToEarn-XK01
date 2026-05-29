@@ -27,7 +27,7 @@ export class MaterialAdaptationService {
     const client = new MultiServerMCPClient({
       publish: {
         transport: 'http',
-        url: `${config.serverClient.baseUrl}/publish/mcp`,
+        url: `${config.serverClient.baseUrl}/unified/mcp`,
         headers,
       },
     })

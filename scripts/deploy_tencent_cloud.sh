@@ -9,8 +9,8 @@ echo "🚀 Starting AiToEarn Deployment on Tencent Cloud..."
 
 # 1. Install Docker if not exists
 if ! [ -x "$(command -v docker)" ]; then
-    echo "📦 Installing Docker..."
-    curl -fsSL https://get.docker.com | bash
+    echo "📦 Installing Docker with Aliyun Mirror..."
+    curl -fsSL https://get.docker.com | bash -s docker --mirror Aliyun
     sudo usermod -aG docker $USER
 fi
 
@@ -48,7 +48,7 @@ DOMAIN=aurastring.cloud
 AI_NVIDIA_API_KEY=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
 MONGODB_URI=mongodb://admin:password@mongodb:27018/aitoearn
 REDIS_URL=redis://redis:6380
-ASSETS_CONFIG='{"provider":"s3","region":"us-east-1","bucketName":"aitoearn","endpoint":"http://rustfs.local:9000","publicEndpoint":"http://111.229.159.100:9010","cdnEndpoint":"http://111.229.159.100:8081/oss","accessKeyId":"rustfsadmin","secretAccessKey":"rustfsadmin","forcePathStyle":true}'
+ASSETS_CONFIG='{"provider":"s3","region":"us-east-1","bucketName":"aitoearn","endpoint":"http://rustfs.local:9000","publicEndpoint":"http://124.221.103.86:9010","cdnEndpoint":"http://124.221.103.86:8081/oss","accessKeyId":"rustfsadmin","secretAccessKey":"rustfsadmin","forcePathStyle":true}'
 EOF
 
 # 6. Start Services
@@ -58,4 +58,4 @@ sudo docker-compose up --build -d
 
 echo "✅ Deployment Successful!"
 echo "🌐 Your app will be available at: http://aurastring.cloud (after DNS propagates)"
-echo "📡 Current IP access: http://111.229.159.100"
+echo "📡 Current IP access: http://124.221.103.86"

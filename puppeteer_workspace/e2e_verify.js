@@ -23,25 +23,29 @@ const fs = require('fs');
 
     console.log('🌐 正在为您新建标签页进行 E2E 完整路由路径自检...');
     testPage = await browser.newPage();
+    await testPage.setCacheEnabled(false);
     await testPage.setViewport({ width: 1280, height: 800 });
 
     // Enable console logs in page
     testPage.on('console', msg => console.log(`🖥️ [PAGE LOG] ${msg.text()}`));
     testPage.on('pageerror', err => console.error('❌ [PAGE ERROR]', err.toString()));
 
-    // 访问登录页以清理该域名下的 Storage 与 Cookie
-    console.log('🧹 正在清空浏览器会话以确保完全未登录状态...');
+    // 强制使用 CDP 进行深层清空，杜绝旧 Token 缓存
+    console.log('🧹 正在清空浏览器深层会话 (CDP Cookies & Cache)...');
     try {
-      await testPage.goto('http://aurastring.cloud/login', { waitUntil: 'load', timeout: 10000 });
+      const client = await testPage.target().createCDPSession();
+      await client.send('Network.clearBrowserCookies');
+      await client.send('Network.clearBrowserCache');
+      
+      // 访问静态文件以安全清空该域下的 Local/Session Storage
+      await testPage.goto('http://aurastring.cloud/favicon.ico', { waitUntil: 'load', timeout: 8000 });
       await testPage.evaluate(() => {
         localStorage.clear();
         sessionStorage.clear();
       });
-      const cookies = await testPage.cookies();
-      await testPage.deleteCookie(...cookies);
-      console.log('✅ 会话清空成功！');
+      console.log('✅ 浏览器深层会话清空成功！');
     } catch (e) {
-      console.log('⚠️ 清理会话遇到非关键错误，继续执行:', e.message);
+      console.log('⚠️ 清理深层会话遇到非关键错误，继续执行:', e.message);
     }
 
     // --- 步骤 1: 访问并验证解耦的登录页 http://aurastring.cloud/login ---

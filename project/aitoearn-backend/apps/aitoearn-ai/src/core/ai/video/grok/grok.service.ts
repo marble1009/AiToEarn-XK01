@@ -66,9 +66,12 @@ export class GrokVideoService {
   async createVideo(request: GrokVideoCreateRequest) {
     const { userId, userType, model, prompt, duration, aspectRatio, resolution, imageUrl, videoUrl } = request
 
+    const absoluteVideoUrl = videoUrl ? (videoUrl.startsWith('http') ? videoUrl : FileUtil.buildUrl(videoUrl)) : undefined
+    const absoluteImageUrl = imageUrl ? (imageUrl.startsWith('http') ? imageUrl : FileUtil.buildUrl(imageUrl)) : undefined
+
     let pricing: number
-    if (videoUrl) {
-      const metadata = await this.videoMetadataService.probeVideoMetadata(videoUrl)
+    if (absoluteVideoUrl) {
+      const metadata = await this.videoMetadataService.probeVideoMetadata(absoluteVideoUrl)
       const roundedDuration = Math.ceil(metadata.duration)
       pricing = this.calculatePrice({ model, duration: roundedDuration, mode: 'video2video' })
     }
@@ -85,11 +88,11 @@ export class GrokVideoService {
 
     const startedAt = new Date()
 
-    const result = await (videoUrl
+    const result = await (absoluteVideoUrl
       ? this.grokLibService.editVideo({
           model,
           prompt,
-          video: { url: videoUrl },
+          video: { url: absoluteVideoUrl },
         })
       : this.grokLibService.createVideo({
           model,
@@ -97,7 +100,7 @@ export class GrokVideoService {
           duration,
           aspect_ratio: aspectRatio as GrokAspectRatio,
           resolution: resolution as GrokResolution,
-          image: imageUrl ? { url: imageUrl } : undefined,
+          image: absoluteImageUrl ? { url: absoluteImageUrl } : undefined,
         }))
 
     if (userType === UserType.User) {
@@ -118,7 +121,7 @@ export class GrokVideoService {
       startedAt,
       type: AiLogType.Video,
       points: pricing,
-      request: { model, prompt, duration, aspectRatio, resolution, imageUrl, videoUrl },
+      request: { model, prompt, duration, aspectRatio, resolution, imageUrl: absoluteImageUrl, videoUrl: absoluteVideoUrl },
       status: AiLogStatus.Generating,
     })
 

@@ -1,26 +1,15 @@
-/**
- * Local Development Configuration
- *
- * 说明：本文件供本地开发使用 (pnpm nx serve aitoearn-server)
- * 从环境变量读取敏感信息，请配合项目根目录的 .env.local 使用
- *
- * 启动前请确保：
- *   1. MongoDB 和 Redis 已运行（可通过 docker-compose up mongodb redis 启动）
- *   2. .env.local 中已填写必要的密钥
- */
-
 const {
-  REDIS_HOST = 'localhost',
-  REDIS_PORT = '6380',
-  REDIS_PASSWORD = 'password',
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_PASSWORD,
 } = process.env
 
 const {
-  MONGODB_HOST = 'localhost',
-  MONGODB_PORT = '27018',
-  MONGODB_USERNAME = 'admin',
-  MONGODB_PASSWORD = 'password',
-  MONGODB_URI,
+  MONGODB_HOST,
+  MONGODB_PORT,
+  MONGODB_USERNAME,
+  MONGODB_PASSWORD,
+  MONGODB_URI, // 新增：支持直接传入完整 URI
 } = process.env
 
 const {
@@ -28,69 +17,68 @@ const {
 } = process.env
 
 const {
-  AI_URL = 'http://localhost:3010',
+  AI_URL,
 } = process.env
 
 const {
-  JWT_SECRET = 'change-this-jwt-secret',
-  INTERNAL_TOKEN = 'change-this-secret-token',
+  JWT_SECRET,
+  INTERNAL_TOKEN,
 } = process.env
 
 const {
-  NODE_ENV = 'development',
-  APP_DOMAIN = 'localhost',
+  NODE_ENV,
+  APP_DOMAIN,
 } = process.env
 
 const {
-  MAIL_USER = '',
-  MAIL_PASS = '',
-  MAIL_HOST = 'email-smtp.ap-southeast-1.amazonaws.com',
-  MAIL_PORT = '587',
+  MAIL_USER,
+  MAIL_PASS,
+  MAIL_SECURE,
 } = process.env
 
 const {
-  BILIBILI_CLIENT_ID = '',
-  BILIBILI_CLIENT_SECRET = '',
-  GOOGLE_CLIENT_ID = '',
-  GOOGLE_CLIENT_SECRET = '',
-  KWAI_CLIENT_ID = '',
-  KWAI_CLIENT_SECRET = '',
-  PINTEREST_CLIENT_ID = '',
-  PINTEREST_CLIENT_SECRET = '',
-  PINTEREST_TEST_AUTHORIZATION = '',
-  TIKTOK_CLIENT_ID = '',
-  TIKTOK_CLIENT_SECRET = '',
-  TWITTER_CLIENT_ID = '',
-  TWITTER_CLIENT_SECRET = '',
-  FACEBOOK_CLIENT_ID = '',
-  FACEBOOK_CLIENT_SECRET = '',
-  FACEBOOK_CONFIG_ID = '',
-  THREADS_CLIENT_ID = '',
-  THREADS_CLIENT_SECRET = '',
-  INSTAGRAM_CLIENT_ID = '',
-  INSTAGRAM_CLIENT_SECRET = '',
-  LINKEDIN_CLIENT_ID = '',
-  LINKEDIN_CLIENT_SECRET = '',
-  YOUTUBE_CLIENT_ID = '',
-  YOUTUBE_CLIENT_SECRET = '',
-  WXPLAT_APP_ID = '',
-  WXPLAT_APP_SECRET = '',
-  WXPLAT_ENCODING_AES_KEY = '',
-  DOYIN_CLIENT_ID = '',
-  DOYIN_CLIENT_SECRET = '',
+  BILIBILI_CLIENT_ID,
+  BILIBILI_CLIENT_SECRET,
+  GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET,
+  KWAI_CLIENT_ID,
+  KWAI_CLIENT_SECRET,
+  PINTEREST_CLIENT_ID,
+  PINTEREST_CLIENT_SECRET,
+  PINTEREST_TEST_AUTHORIZATION,
+  TIKTOK_CLIENT_ID,
+  TIKTOK_CLIENT_SECRET,
+  TWITTER_CLIENT_ID,
+  TWITTER_CLIENT_SECRET,
+  FACEBOOK_CLIENT_ID,
+  FACEBOOK_CLIENT_SECRET,
+  FACEBOOK_CONFIG_ID,
+  THREADS_CLIENT_ID,
+  THREADS_CLIENT_SECRET,
+  INSTAGRAM_CLIENT_ID,
+  INSTAGRAM_CLIENT_SECRET,
+  LINKEDIN_CLIENT_ID,
+  LINKEDIN_CLIENT_SECRET,
+  YOUTUBE_CLIENT_ID,
+  YOUTUBE_CLIENT_SECRET,
+  WXPLAT_APP_ID,
+  WXPLAT_APP_SECRET,
+  WXPLAT_ENCODING_AES_KEY,
+  DOYIN_CLIENT_ID,
+  DOYIN_CLIENT_SECRET,
 } = process.env
 
 const {
-  ALI_SMS_ACCESS_KEY_ID = '',
-  ALI_SMS_ACCESS_KEY_SECRET = '',
-  ALI_SMS_SIGN_NAME = '',
-  ALI_SMS_TEMPLATE_CODE = '',
+  ALI_SMS_ACCESS_KEY_ID,
+  ALI_SMS_ACCESS_KEY_SECRET,
+  ALI_SMS_SIGN_NAME,
+  ALI_SMS_TEMPLATE_CODE,
 } = process.env
 
 const {
-  RELAY_SERVER_URL = '',
-  RELAY_API_KEY = '',
-  RELAY_CALLBACK_URL = '',
+  RELAY_SERVER_URL,
+  RELAY_API_KEY,
+  RELAY_CALLBACK_URL,
 } = process.env
 
 module.exports = {
@@ -115,32 +103,62 @@ module.exports = {
     },
   },
 
-  // 数据库 - 默认连接 docker-compose 中的 MongoDB（映射到 27018）
+  // 数据库
   mongodb: {
-    uri: MONGODB_URI || `mongodb://${MONGODB_USERNAME}:${encodeURIComponent(MONGODB_PASSWORD)}@${MONGODB_HOST}:${MONGODB_PORT}/?authSource=admin&directConnection=true`,
+    uri: MONGODB_URI || process.env.MONGO_URL || `mongodb://${MONGODB_HOST}:${MONGODB_PORT}/?directConnection=true`,
     dbName: 'aitoearn',
   },
 
-  // 缓存/队列 - 默认连接 docker-compose 中的 Redis（映射到 6380）
-  redis: {
-    host: REDIS_HOST,
-    port: Number(REDIS_PORT),
-    username: 'default',
-    password: REDIS_PASSWORD,
-  },
+  // 缓存/队列
+  redis: (() => {
+    if (process.env.REDIS_URL) {
+      try {
+        const url = new URL(process.env.REDIS_URL);
+        const config = {
+          host: url.hostname,
+          port: Number(url.port) || 6379,
+          password: url.password || process.env.REDIS_PASSWORD,
+        };
+        if (url.username && url.username !== 'default') {
+          config.username = url.username;
+        }
+        return config;
+      } catch(e) {}
+    }
+    return {
+      host: process.env.REDIS_HOST,
+      port: Number(process.env.REDIS_PORT) || 6379,
+      password: process.env.REDIS_PASSWORD,
+    };
+  })(),
   redlock: {
-    redis: {
-      host: REDIS_HOST,
-      port: Number(REDIS_PORT),
-      username: 'default',
-      password: REDIS_PASSWORD,
-    },
+    redis: (() => {
+      if (process.env.REDIS_URL) {
+        try {
+          const url = new URL(process.env.REDIS_URL);
+          const config = {
+            host: url.hostname,
+            port: Number(url.port) || 6379,
+            password: url.password || process.env.REDIS_PASSWORD,
+          };
+          if (url.username && url.username !== 'default') {
+            config.username = url.username;
+          }
+          return config;
+        } catch(e) {}
+      }
+      return {
+        host: process.env.REDIS_HOST,
+        port: Number(process.env.REDIS_PORT) || 6379,
+        password: process.env.REDIS_PASSWORD,
+      };
+    })(),
   },
 
-  // Channel 配置
+  // Channel
   channel: {
     channelDb: {
-      uri: MONGODB_URI || `mongodb://${MONGODB_USERNAME}:${encodeURIComponent(MONGODB_PASSWORD)}@${MONGODB_HOST}:${MONGODB_PORT}/?authSource=admin&directConnection=true`,
+      uri: MONGODB_URI || process.env.MONGO_URL || `mongodb://${MONGODB_HOST}:${MONGODB_PORT}/?directConnection=true`,
       dbName: 'aitoearn_channel',
     },
     moreApi: {
@@ -267,12 +285,22 @@ module.exports = {
     },
   },
 
-  // 邮件服务
+  // 外部服务
+  assets: ASSETS_CONFIG ? JSON.parse(ASSETS_CONFIG.replace(/(^'|'$)/g, '')) : {
+    provider: 's3',
+    region: 'us-east-1',
+    bucketName: 'aitoearn',
+    endpoint: 'http://127.0.0.1:9000',
+    publicEndpoint: 'http://127.0.0.1:9000',
+    accessKeyId: 'rustfsadmin',
+    secretAccessKey: 'rustfsadmin',
+    forcePathStyle: true,
+  },
   mail: {
     transport: {
-      host: MAIL_HOST,
-      port: Number(MAIL_PORT),
-      secure: false,
+      host: process.env.MAIL_HOST || 'email-smtp.ap-southeast-1.amazonaws.com',
+      port: Number(process.env.MAIL_PORT) || 587,
+      secure: MAIL_SECURE === 'true' || Number(process.env.MAIL_PORT) === 465,
       auth: {
         user: MAIL_USER,
         pass: MAIL_PASS,
@@ -282,40 +310,25 @@ module.exports = {
       from: MAIL_USER || 'noreply@tx.aitoearn.ai',
     },
   },
-
-  // 阿里云短信
   aliSms: {
-    accessKeyId: ALI_SMS_ACCESS_KEY_ID,
-    accessKeySecret: ALI_SMS_ACCESS_KEY_SECRET,
-    signName: ALI_SMS_SIGN_NAME,
-    templateCode: ALI_SMS_TEMPLATE_CODE,
+    accessKeyId: ALI_SMS_ACCESS_KEY_ID || 'placeholder-sms-id',
+    accessKeySecret: ALI_SMS_ACCESS_KEY_SECRET || 'placeholder-sms-secret',
+    signName: ALI_SMS_SIGN_NAME || 'placeholder-sms-sign',
+    templateCode: ALI_SMS_TEMPLATE_CODE || 'placeholder-sms-code',
   },
 
-  // 文件存储
-  assets: ASSETS_CONFIG ? JSON.parse(ASSETS_CONFIG) : {
-    provider: 's3',
-    region: 'us-east-1',
-    bucketName: 'aitoearn',
-    endpoint: 'http://localhost:9001',
-    publicEndpoint: 'http://localhost:9001',
-    cdnEndpoint: 'http://localhost:8080/oss',
-    accessKeyId: 'rustfsadmin',
-    secretAccessKey: 'rustfsadmin',
-    forcePathStyle: true,
-  },
-
-  // AI 服务
+  // 内部服务通信
   aiClient: {
     baseUrl: AI_URL,
     token: INTERNAL_TOKEN,
   },
 
-  // 队列并发
+  // 队列并发限制（多用户高并发调优）
   queueConcurrency: {
     publish: Number(process.env.QUEUE_CONCURRENCY_PUBLISH) || 3,
   },
 
-  // 积分
+  // 业务
   credits: {
     registerBonus: 50,
   },

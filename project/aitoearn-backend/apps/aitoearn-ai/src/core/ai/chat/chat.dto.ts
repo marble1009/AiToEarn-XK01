@@ -9,7 +9,7 @@ export const messageContentTextSchema = z.object({
 export const messageContentImageUrlSchema = z.object({
   type: z.literal('image_url'),
   image_url: z.object({
-    url: z.url(),
+    url: z.string(),
     detail: z.enum(['auto', 'low', 'high']).optional(),
   }),
 })

@@ -71,9 +71,9 @@ const MobileContent = memo(
     const [videoCoverSetingModal, setVideoCoverSetingModal] = useState(false)
     // 内部图片/视频状态（用于排序等操作后同步回 params）
 
-    // 平台配置（用于上传类型判断，取 TikTok 作为基准）
+    // 平台配置（用于上传类型判断，取 抖音 作为基准）
     const platConfig = useMemo(() => {
-      return AccountPlatInfoMap.get(PlatType.Tiktok)! || {}
+      return AccountPlatInfoMap.get(PlatType.Douyin)! || {}
     }, [])
 
     const imageMax = useMemo(() => {

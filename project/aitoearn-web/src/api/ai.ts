@@ -162,7 +162,11 @@ export async function aiChatStream(data: {
   const token = useUserStore.getState().token
   const lang = useUserStore.getState().lang
 
-  const response = await fetch('https://aitoearn.ai/api/ai/chat', {
+  const apiBase = typeof window !== 'undefined'
+    ? '/api'
+    : (process.env.NEXT_PUBLIC_API_URL || 'https://aitoearn.ai/api')
+
+  const response = await fetch(`${apiBase}/ai/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

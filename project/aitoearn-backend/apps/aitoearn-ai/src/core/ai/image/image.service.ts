@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common'
 import { QueueService } from '@yikart/aitoearn-queue'
 import { AssetsService } from '@yikart/assets'
-import { AppException, CreditsType, getExtByMimeType, ImageType, ResponseCode, UserType } from '@yikart/common'
+import { AppException, CreditsType, getExtByMimeType, ImageType, ResponseCode, UserType, FileUtil } from '@yikart/common'
 import { CreditsHelperService } from '@yikart/helpers'
 import { AiLogChannel, AiLogRepository, AiLogStatus, AiLogType, AssetType, Transactional, UserRepository } from '@yikart/mongodb'
 import parseDataUri from 'data-urls'
@@ -192,9 +192,10 @@ export class ImageService {
    */
   async geminiGeneration(userId: string, request: GeminiImageGenerationDto & { model: 'gemini-3.1-flash-image-preview' | 'gemini-3-pro-image-preview' }) {
     const { model } = request
+    const imageUrls = request.imageUrls?.map(url => (url && !url.startsWith('http')) ? FileUtil.buildUrl(url) : url)
     const result = await this.geminiService.generateImage({
       prompt: request.prompt,
-      imageUrls: request.imageUrls,
+      imageUrls,
       imageSize: request.imageSize,
       aspectRatio: request.aspectRatio,
       model,

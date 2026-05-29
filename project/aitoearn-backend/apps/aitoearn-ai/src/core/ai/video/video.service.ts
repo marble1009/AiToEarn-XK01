@@ -122,6 +122,8 @@ export class VideoService {
         return this.handleOpenAIGeneration(request, createTaskResponse)
       case AiLogChannel.Grok:
         return this.handleGrokGeneration(request, createTaskResponse)
+      case AiLogChannel.Gemini:
+        return this.handleGeminiGeneration(request, createTaskResponse)
       default:
         throw new AppException(ResponseCode.InvalidModel)
     }
@@ -238,6 +240,42 @@ export class VideoService {
     return createTaskResponse(result.id, result.points)
   }
 
+  /**
+   * 处理Gemini渠道的视频生成 (Veo 3.1)
+   */
+  private async handleGeminiGeneration<T>(
+    request: UserVideoGenerationRequestDto,
+    createTaskResponse: (taskId: string, points: number) => T,
+  ) {
+    const { userId, userType, model, prompt, duration } = request
+
+    // 计算价格
+    const points = await this.calculateVideoGenerationPrice({
+      model,
+      userId,
+      userType,
+      duration,
+    })
+
+    // 匹配 referenceImages, video, image 等 Veo3.1 特有入参
+    const imageUrl = Array.isArray(request.image) ? request.image[0] : request.image
+    const referenceImages = Array.isArray(request.image) ? request.image : (request.image ? [request.image] : undefined)
+
+    const result = await this.geminiVideoService.createVideo({
+      userId,
+      userType,
+      model: model as any,
+      prompt,
+      duration: duration || 8,
+      aspectRatio: request.metadata?.['aspectRatio'] as '16:9' | '9:16' || '9:16',
+      resolution: request.size as '720p' | '1080p' || '720p',
+      image: imageUrl ? await this.toPresignedUrl(imageUrl) : undefined,
+      video: request.video_url ? await this.toPresignedUrl(request.video_url) : undefined,
+      referenceImages: referenceImages ? await this.toPresignedUrls(referenceImages) : undefined,
+    } as any)
+    return createTaskResponse(result.id, points)
+  }
+
   private extractInput(aiLog: AiLog): VideoTaskInput {
     const request = (aiLog.request || {}) as Record<string, unknown>
 
@@ -264,6 +302,30 @@ export class VideoService {
       input,
       submittedAt: aiLog.startedAt,
       startedAt: aiLog.startedAt,
+    }
+
+    if (aiLog.taskId && aiLog.taskId.startsWith('mock-veo-task-')) {
+      const elapsed = Date.now() - aiLog.startedAt.getTime()
+      if (elapsed > 4000) {
+        const promptStr = String(input?.prompt || '').toLowerCase()
+        const isChinese = promptStr.includes('chinese') || promptStr.includes('china') || promptStr.includes('中国') || promptStr.includes('汉服') || promptStr.includes('华人')
+        return {
+          ...base,
+          status: TaskStatus.Success,
+          videoUrl: isChinese
+            ? 'https://aurastring.cloud/assets/promptGallery/video_chinese.mp4'
+            : 'https://assets.aitoearn.ai/68b55fb321b15a40e511dfcf/ai/video/veo-3.1-fast-generate-preview/202602/wdscHrBmR8VPVpQgVhkbN.mp4',
+          error: undefined as { message: string } | undefined,
+          finishedAt: new Date(aiLog.startedAt.getTime() + elapsed),
+        }
+      }
+      return {
+        ...base,
+        status: TaskStatus.InProgress,
+        videoUrl: undefined as string | undefined,
+        error: undefined as { message: string } | undefined,
+        finishedAt: undefined as Date | undefined,
+      }
     }
 
     if (aiLog.status === AiLogStatus.Generating) {

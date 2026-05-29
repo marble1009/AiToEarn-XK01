@@ -266,14 +266,26 @@ export const AccountPlatInfoMap = new Map<PlatType, IAccountPlatInfo>([
     },
   ],
 ])
-export const AccountPlatInfoArr = Array.from(AccountPlatInfoMap)
-
 // ========== 区域平台配置 ==========
 
-/** 判断平台是否可用（所有平台均可用） */
-export function isPlatformAvailable(_platType: PlatType): boolean {
-  return true
+// 纯国内版 AuraString 支持的平台白名单
+export const DOMESTIC_PLATFORMS = new Set<PlatType>([
+  PlatType.Xhs,       // 小红书
+  PlatType.Douyin,    // 抖音
+  PlatType.WxSph,     // 微信视频号
+  PlatType.KWAI,      // 快手
+  PlatType.BILIBILI,  // B站
+  PlatType.WxGzh,     // 微信公众号
+])
+
+/** 判断平台是否可用 */
+export function isPlatformAvailable(platType: PlatType): boolean {
+  return DOMESTIC_PLATFORMS.has(platType)
 }
+
+export const AccountPlatInfoArr = Array.from(AccountPlatInfoMap).filter(
+  ([platType]) => isPlatformAvailable(platType)
+)
 
 /** 隐藏的平台（向后兼容，空集合） */
 export const ABROAD_HIDDEN_PLATFORMS = new Set<PlatType>()

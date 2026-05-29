@@ -24,6 +24,7 @@
     "@nestjs/swagger": "^11.2.0",
     "@volcengine/openapi": "^1.32.0",
     "@yikart/aitoearn-auth": "workspace:*",
+    "execa": "^9.6.1",
     "@yikart/aitoearn-queue": "workspace:*",
     "@yikart/aitoearn-server-client": "workspace:*",
     "@yikart/assets": "workspace:*",

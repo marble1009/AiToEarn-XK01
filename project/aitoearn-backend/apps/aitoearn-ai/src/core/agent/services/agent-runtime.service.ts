@@ -214,7 +214,9 @@ export class AgentRuntimeService {
     const queryOptions: Options = {
       permissionMode: 'default',
       includePartialMessages: options.includePartialMessages ?? false,
-      model: options.model,
+      model: options.model && (options.model.startsWith('claude-3-') || options.model.startsWith('claude-2-'))
+        ? options.model
+        : 'claude-3-5-sonnet-20241022',
       cwd: taskCwd,
       settingSources: ['project', 'user'],
       env: {
@@ -754,22 +756,22 @@ export class AgentRuntimeService {
       // [McpServerName.Subtitle]: this.subtitleMcp.createServer(userId, userType),
       [McpServerName.Account]: {
         type: 'http',
-        url: `${config.serverClient.baseUrl}/account/mcp`,
+        url: `${config.serverClient.baseUrl}/unified/mcp`,
         headers,
       },
       [McpServerName.Content]: {
         type: 'http',
-        url: `${config.serverClient.baseUrl}/content/mcp`,
+        url: `${config.serverClient.baseUrl}/unified/mcp`,
         headers,
       },
       [McpServerName.Statistics]: {
         type: 'http',
-        url: `${config.serverClient.baseUrl}/statistics/mcp`,
+        url: `${config.serverClient.baseUrl}/unified/mcp`,
         headers,
       },
       [McpServerName.Publish]: {
         type: 'http',
-        url: `${config.serverClient.baseUrl}/publish/mcp`,
+        url: `${config.serverClient.baseUrl}/unified/mcp`,
         headers,
       },
     }

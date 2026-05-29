@@ -38,6 +38,7 @@ interface ClaudeCodeRouterConfig {
   Providers?: ProviderConfig[]
   Router?: RouterConfig
   API_TIMEOUT_MS?: number
+  CUSTOM_ROUTER_PATH?: string
 }
 
 @Injectable()
@@ -58,6 +59,7 @@ export class ClaudeCodeRouterService implements OnModuleInit, OnModuleDestroy {
     this.logger.debug(`找到 Claude Code Router CLI: ${cliPath}`)
 
     this.startFileWatcher()
+    this.generateCustomRouterFile()
     this.generateConfigFile(routerConfig)
     this.startChildProcess(cliPath)
   }
@@ -78,20 +80,46 @@ export class ClaudeCodeRouterService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  private generateCustomRouterFile() {
+    if (!existsSync(this.configDir)) {
+      mkdirSync(this.configDir, { recursive: true })
+    }
+    const customRouterPath = join(this.configDir, 'custom-router.js')
+    const customRouterContent = `
+module.exports = async function router(req, config) {
+  const requestedModel = req.body.model;
+  if (requestedModel && (requestedModel.includes('haiku') || requestedModel.includes('MiniMax-M2.5'))) {
+    return 'new,MiniMax-M2.5';
+  }
+  return 'new,MiniMax-M2.7';
+};
+`
+    writeFileSync(customRouterPath, customRouterContent.trim(), 'utf-8')
+    this.logger.debug(`自定义路由器脚本已生成: ${customRouterPath}`)
+  }
+
   private generateConfigFile(routerConfig: { baseUrl: string, apiKey: string }) {
     if (!existsSync(this.configDir)) {
       mkdirSync(this.configDir, { recursive: true })
       this.logger.debug(`创建配置目录: ${this.configDir}`)
     }
 
+    let finalBaseUrl = routerConfig.baseUrl
+    if (finalBaseUrl && finalBaseUrl.endsWith('/anthropic')) {
+      finalBaseUrl = `${finalBaseUrl}/v1/messages`
+    } else if (finalBaseUrl === 'https://api.minimaxi.com/anthropic') {
+      finalBaseUrl = 'https://api.minimaxi.com/anthropic/v1/messages'
+    }
+
     const routerConfigFile: ClaudeCodeRouterConfig = {
       PORT: 3456,
       APIKEY: 'ccr',
       NON_INTERACTIVE_MODE: true,
+      CUSTOM_ROUTER_PATH: join(this.configDir, 'custom-router.js'),
       Providers: [
         {
           name: 'new',
-          api_base_url: routerConfig.baseUrl,
+          api_base_url: finalBaseUrl,
           api_key: routerConfig.apiKey,
           models: [
             'MiniMax-M2.7',
@@ -107,6 +135,13 @@ export class ClaudeCodeRouterService implements OnModuleInit, OnModuleDestroy {
             'claude-sonnet-4-5-20250929',
             'claude-opus-4-6',
             'claude-opus-4-6-thinking',
+            'claude-3-5-sonnet-20241022',
+            'claude-3-5-sonnet-latest',
+            'claude-3-5-haiku-20241022',
+            'claude-3-5-haiku-latest',
+            'claude-3-opus-20240229',
+            'claude-3-sonnet-20240229',
+            'claude-3-haiku-20240307',
           ],
           transformer: {
             use: [
@@ -116,9 +151,9 @@ export class ClaudeCodeRouterService implements OnModuleInit, OnModuleDestroy {
         },
       ],
       Router: {
-        default: 'new,claude-opus-4-6',
-        background: 'new,claude-haiku-4-5-20251001',
-        think: 'new,claude-opus-4-6',
+        default: 'new,MiniMax-M2.7',
+        background: 'new,MiniMax-M2.5',
+        think: 'new,MiniMax-M2.7',
       },
     }
 

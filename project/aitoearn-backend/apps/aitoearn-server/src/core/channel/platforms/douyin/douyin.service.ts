@@ -231,11 +231,32 @@ export class DouyinService extends PlatformBaseService {
    */
   async createAccountAndSetAccessToken(
     taskId: string,
-    data: { code: string, state: string },
+    data: { code: string, state: string, scopes?: string },
   ): Promise<AuthCallbackResult> {
-    const cacheKey = ChannelRedisKeys.authTask('douyin', taskId)
-    const { code, state } = data
+    const { code, state, scopes } = data
 
+    // If this is a whitelist activation request
+    if (scopes === 'trial.whitelist' || (state === '' && code)) {
+      this.logger.log(`Douyin Whitelist Activation: code=${code}`)
+      try {
+        const accessTokenInfo = await this.douyinApiService.getAccessToken(code)
+        if (accessTokenInfo) {
+          this.logger.log(`Douyin Whitelist Activated Successfully! open_id=${accessTokenInfo.open_id}`)
+          return {
+            status: 1,
+            message: '白名单激活成功！请回到开发控制台刷新白名单列表。',
+          }
+        }
+      } catch (err) {
+        this.logger.error(`Douyin Whitelist Activation failed: ${err}`)
+        return {
+          status: 0,
+          message: `白名单激活失败: ${(err as any).message || err}`,
+        }
+      }
+    }
+
+    const cacheKey = ChannelRedisKeys.authTask('douyin', taskId)
     const taskInfo
       = await this.redisService.getJson<AuthTaskInfo<DouyinAuthInfo>>(cacheKey)
     if (!taskInfo || taskInfo.status !== 0) {
