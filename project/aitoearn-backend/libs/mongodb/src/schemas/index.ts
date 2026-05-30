@@ -43,6 +43,8 @@ import {
   MissionSubmission,
   MissionSubmissionSchema,
 } from './mission-submission.schema'
+import { SubscriptionPlan, SubscriptionPlanSchema } from './subscription-plan.schema'
+import { UserSubscription, UserSubscriptionSchema } from './user-subscription.schema'
 
 export * from './account-group.schema'
 export * from './account.schema'
@@ -74,6 +76,8 @@ export * from './timestamp.schema'
 export * from './user-notification-control.schema'
 export * from './user.schema'
 export * from './mission-submission.schema'
+export * from './subscription-plan.schema'
+export * from './user-subscription.schema'
 
 export const schemas = [
   { name: User.name, schema: UserSchema },
@@ -104,4 +108,6 @@ export const schemas = [
   { name: InteractionRecord.name, schema: InteractionRecordSchema },
   { name: ReplyCommentRecord.name, schema: ReplyCommentRecordSchema },
   { name: MissionSubmission.name, schema: MissionSubmissionSchema },
+  { name: SubscriptionPlan.name, schema: SubscriptionPlanSchema },
+  { name: UserSubscription.name, schema: UserSubscriptionSchema },
 ] as const

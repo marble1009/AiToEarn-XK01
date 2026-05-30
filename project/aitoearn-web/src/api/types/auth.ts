@@ -32,3 +32,17 @@ export interface CodeLoginResponse {
   token?: string
   userInfo?: UserInfo
 }
+
+/** 密码登录参数 */
+export interface PasswordLoginParams {
+  identifier: string
+  password: string
+}
+
+/** 密码注册参数 */
+export interface PasswordRegisterParams {
+  username?: string
+  mail: string
+  password: string
+  inviteCode?: string
+}

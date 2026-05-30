@@ -30,5 +30,19 @@
   "termsOfService": "服务条款",
   "and": "和",
   "privacyPolicy": "隐私政策",
-  "newUserPromotion": "新用户登录就送14天会员，免费用！"
+  "newUserPromotion": "新用户登录就送14天会员，免费用！",
+  "passwordLogin": "密码登录",
+  "emailCodeLogin": "验证码登录",
+  "register": "注册账号",
+  "passwordPlaceholder": "请输入密码",
+  "passwordRequired": "请输入密码",
+  "passwordTooShort": "密码长度至少6位",
+  "usernamePlaceholder": "请输入用户名 (选填)",
+  "usernameTooShort": "用户名至少3位",
+  "inviteCodePlaceholder": "请输入邀请码 (选填)",
+  "registerSuccess": "注册成功",
+  "registerFailed": "注册失败",
+  "alreadyHaveAccount": "已有账号？去登录",
+  "dontHaveAccount": "没有账号？去注册",
+  "loginIdentifierPlaceholder": "请输入邮箱/手机号/用户名"
 }

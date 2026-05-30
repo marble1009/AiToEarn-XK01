@@ -3,6 +3,7 @@
 import { arch } from 'node:os'
 import { Command } from 'commander'
 import { $, chalk, fs, path } from 'zx'
+import { execSync } from 'node:child_process'
 
 function getDefaultPlatform() {
   const a = arch()
@@ -60,7 +61,7 @@ async function getDependencies(appName, verbose = false) {
   if (verbose)
     console.info(chalk.yellow(`分析 ${appName} 的依赖关系...`))
 
-  await $`npx nx graph --file=temp-graph.json`
+  execSync('npx nx graph --file=temp-graph.json', { stdio: verbose ? 'inherit' : 'ignore' })
   const graphData = await fs.readJson('temp-graph.json')
   const graph = graphData.graph
 
@@ -95,8 +96,7 @@ async function copyArtifacts(projects, graph, contextDir, appName, verbose = fal
 
   // 只构建主应用，Nx 会自动构建所有依赖的库
   try {
-    await $`npx nx build ${appName}`
-    console.info(chalk.green(`${appName} 及其依赖构建完成`))
+    console.info(chalk.yellow(`跳过 ${appName} 重新构建，使用现有 dist 产物`))
   }
   catch (error) {
     console.error(chalk.red(`${appName} 构建失败:`))
@@ -379,7 +379,15 @@ async function generateConfig(projects, graph, contextDir, verbose = false) {
     console.info(chalk.green('Monorepo 配置生成完成'))
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+import { fileURLToPath } from 'node:url'
+const isMainFile = () => {
+  try {
+    return fileURLToPath(import.meta.url).toLowerCase().replace(/\\/g, '/') === path.resolve(process.argv[1]).toLowerCase().replace(/\\/g, '/');
+  } catch (e) {
+    return false;
+  }
+}
+if (isMainFile()) {
   const program = new Command()
 
   program

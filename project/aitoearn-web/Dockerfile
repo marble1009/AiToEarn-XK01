@@ -10,9 +10,9 @@ WORKDIR /app
 
 FROM base AS deps
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY package.json pnpm-workspace.yaml .npmrc ./
 
-RUN pnpm install --frozen-lockfile --prod=false
+RUN pnpm install --no-frozen-lockfile --prod=false
 
 FROM base AS builder
 WORKDIR /app

@@ -56,4 +56,18 @@ const PhoneVerifySchema = z.object({
   phone: z.string().regex(/^1[3-9]\d{9}$/, { message: '请输入正确的手机号' }).describe('手机号'),
   code: z.string().length(6, { message: '验证码为6位数字' }).describe('短信验证码'),
 })
-export class PhoneVerifyDto extends createZodDto(PhoneVerifySchema) {}
+export class PhoneVerifyDto extends createZodDto(PhoneVerifySchema, 'PhoneVerifyDto') {}
+
+export const PasswordLoginSchema = z.object({
+  identifier: z.string().describe('用户名/邮箱/手机号'),
+  password: z.string().describe('密码'),
+})
+export class PasswordLoginDto extends createZodDto(PasswordLoginSchema, 'PasswordLoginDto') {}
+
+export const PasswordRegisterSchema = z.object({
+  username: z.string().min(3, { message: '用户名至少3位' }).max(20).optional().describe('用户名'),
+  mail: z.string().email({ message: '请输入正确的邮箱' }).describe('邮箱'),
+  password: z.string().min(6, { message: '密码至少6位' }).describe('密码'),
+  inviteCode: z.string().describe('邀请码').optional(),
+})
+export class PasswordRegisterDto extends createZodDto(PasswordRegisterSchema, 'PasswordRegisterDto') {}

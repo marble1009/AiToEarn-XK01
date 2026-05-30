@@ -66,6 +66,7 @@ services:
     environment:
       RUSTFS_ACCESS_KEY: rustfsadmin
       RUSTFS_SECRET_KEY: rustfsadmin
+      RUSTFS_ALLOW_INSECURE_DEFAULT_CREDENTIALS: "true"
     ports:
       - "9001:9001"
     volumes:
@@ -119,6 +120,11 @@ services:
 
   aitoearn-ai:
     image: ghcr.io/marble1009/aitoearn-ai:latest
+    build:
+      context: ./project/aitoearn-backend/tmp/docker-context-ai
+      dockerfile: Dockerfile
+      args:
+        - APP_NAME=aitoearn-ai
     pull_policy: if_not_present
     container_name: aitoearn-ai
     restart: unless-stopped
@@ -154,14 +160,14 @@ services:
 
       SERVER_URL: http://aitoearn-server:3002
 
-      ASSETS_CONFIG: '{"provider":"s3","region":"us-east-1","bucketName":"aitoearn","endpoint":"http://rustfs.local:9000","publicEndpoint":"http://aurastring.cloud:9010","cdnEndpoint":"http://aurastring.cloud/oss","accessKeyId":"rustfsadmin","secretAccessKey":"rustfsadmin","forcePathStyle":true}'
+      ASSETS_CONFIG: '{"provider":"s3","region":"us-east-1","bucketName":"aitoearn","endpoint":"http://rustfs.local:9000","publicEndpoint":"http://aiautoedit.art:9010","cdnEndpoint":"http://aiautoedit.art/oss","accessKeyId":"rustfsadmin","secretAccessKey":"rustfsadmin","forcePathStyle":true}'
 
       # AI Services
       AI_NVIDIA_API_KEY: ${AI_NVIDIA_API_KEY:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-sk-placeholder}
       OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-sk-placeholder}
-      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-https://api.anthropic.com}
+      ANTHROPIC_API_KEY: sk-cp-vVYM7B9nZGff1HrfVBtXJ2b2UdUdbv5aQb5K_t8jPhX6_EdfQCpgTCF7--Uoq27s_ROEGm7bAZ0_8eMCHpI8OlmiX1vRG2lN7cU1T0kLC5CYi_hYEsWZSUc
+      ANTHROPIC_BASE_URL: https://api.minimaxi.com/anthropic
       VOLCENGINE_API_KEY: ""
       VOLCENGINE_ACCESS_KEY_ID: ""
       VOLCENGINE_SECRET_ACCESS_KEY: ""
@@ -180,6 +186,11 @@ services:
 
   aitoearn-server:
     image: ghcr.io/marble1009/aitoearn-server:latest
+    build:
+      context: ./project/aitoearn-backend/tmp/docker-context-server
+      dockerfile: Dockerfile
+      args:
+        - APP_NAME=aitoearn-server
     pull_policy: if_not_present
     container_name: aitoearn-server
     restart: unless-stopped
@@ -198,7 +209,7 @@ services:
       NODE_ENV: production
       APP_ENV: production
       APP_NAME: aitoearn-server
-      APP_DOMAIN: ${APP_DOMAIN:-aurastring.cloud}
+      APP_DOMAIN: ${APP_DOMAIN:-aiautoedit.art}
 
       MONGODB_HOST: mongodb
       MONGODB_PORT: 27017
@@ -214,11 +225,11 @@ services:
       JWT_SECRET: change-this-jwt-secret
       INTERNAL_TOKEN: change-this-secret-token
 
-      ASSETS_CONFIG: '{"provider":"s3","region":"us-east-1","bucketName":"aitoearn","endpoint":"http://rustfs.local:9000","publicEndpoint":"http://aurastring.cloud:9010","cdnEndpoint":"http://aurastring.cloud/oss","accessKeyId":"rustfsadmin","secretAccessKey":"rustfsadmin","forcePathStyle":true}'
+      ASSETS_CONFIG: '{"provider":"s3","region":"us-east-1","bucketName":"aitoearn","endpoint":"http://rustfs.local:9000","publicEndpoint":"http://aiautoedit.art:9010","cdnEndpoint":"http://aiautoedit.art/oss","accessKeyId":"rustfsadmin","secretAccessKey":"rustfsadmin","forcePathStyle":true}'
 
       MAIL_HOST: ${MAIL_HOST:-smtp.exmail.qq.com}
       MAIL_PORT: ${MAIL_PORT:-465}
-      MAIL_USER: ${MAIL_USER:-aitoearn@aurastring.cloud}
+      MAIL_USER: ${MAIL_USER:-aitoearn@aiautoedit.art}
       MAIL_PASS: ${MAIL_PASS:-109911lZ}
 
       # Third-party OAuth
@@ -260,7 +271,7 @@ services:
       # Relay (optional)
       RELAY_SERVER_URL: ${RELAY_SERVER_URL:-https://aitoearn.cn/api}
       RELAY_API_KEY: ${RELAY_API_KEY:-}
-      RELAY_CALLBACK_URL: ${RELAY_CALLBACK_URL:-http://aurastring.cloud/api/plat/relay-callback}
+      RELAY_CALLBACK_URL: ${RELAY_CALLBACK_URL:-http://aiautoedit.art/api/plat/relay-callback}
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:3002/health', (r) => { process.exit(r.statusCode === 200 ? 0 : 1) })"]
       interval: 30s
@@ -270,6 +281,9 @@ services:
 
   aitoearn-web:
     image: ghcr.io/marble1009/aitoearn-web:latest
+    build:
+      context: ./project/aitoearn-web
+      dockerfile: Dockerfile
     pull_policy: if_not_present
     container_name: aitoearn-web
     restart: unless-stopped

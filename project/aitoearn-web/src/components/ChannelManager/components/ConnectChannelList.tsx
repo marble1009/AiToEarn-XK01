@@ -99,6 +99,24 @@ export function ConnectChannelList() {
         </div>
       )}
 
+      {/* 安全保障提示 */}
+      <div className="mx-4 mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4 shadow-[0_4px_12px_rgba(95,122,97,0.03)]">
+        <div className="flex items-start gap-3">
+          <span className="text-xl">🛡️</span>
+          <div className="flex-1 space-y-1">
+            <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              国内社媒「安全草稿推送」保障说明
+            </h4>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              为了保障您的账号安全、规避平台的风控拦截（如黑号、幽灵限流等），本系统针对 <b>抖音、快手、小红书、微信视频号</b> 等国内主流平台，全面采用官方合规的 <b>『静默安全推送至草稿箱』</b> 模式。
+            </p>
+            <p className="text-[11px] text-primary font-medium leading-normal mt-1.5">
+              💡 安全原理：系统将生成的内容安全传输到您平台的官方草稿箱中。您只需登录对应官方 App，在草稿箱中一键发布即可。这100%模拟了人工日常行为，确保账号权重与自然流量，省心又安全！
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* 平台网格 */}
       <ScrollArea className="flex-1 p-4">
         <div

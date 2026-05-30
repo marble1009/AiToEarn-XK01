@@ -9,13 +9,14 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useTransClient } from '@/app/i18n/client'
 import logo from '@/assets/images/logo.png'
 import { useUserStore } from '@/store/user'
 
 import { EmailLoginForm } from './EmailLoginForm'
+import { PasswordLoginForm } from './PasswordLoginForm'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 10 },
@@ -27,6 +28,7 @@ export default function LoginContent() {
   const router = useRouter()
   const { token, _hasHydrated } = useUserStore()
   const { t } = useTransClient('login')
+  const [loginMethod, setLoginMethod] = useState<'code' | 'password'>('password')
 
   // 已登录用户重定向
   useEffect(() => {
@@ -87,8 +89,34 @@ export default function LoginContent() {
             <p className="mt-2 text-muted-foreground">{t('loginSubtitle')}</p>
           </div>
 
+          {/* 登录方式切换 Tab */}
+          <div className="mb-6 flex rounded-lg bg-black/40 p-1 border border-border">
+            <button
+              type="button"
+              onClick={() => setLoginMethod('password')}
+              className={`flex-1 rounded-md py-2 text-sm font-medium transition-all cursor-pointer ${
+                loginMethod === 'password'
+                  ? 'bg-primary text-primary-foreground shadow'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {t('passwordLogin')}
+            </button>
+            <button
+              type="button"
+              onClick={() => setLoginMethod('code')}
+              className={`flex-1 rounded-md py-2 text-sm font-medium transition-all cursor-pointer ${
+                loginMethod === 'code'
+                  ? 'bg-primary text-primary-foreground shadow'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {t('emailCodeLogin')}
+            </button>
+          </div>
+
           {/* 登录表单 */}
-          <EmailLoginForm />
+          {loginMethod === 'password' ? <PasswordLoginForm /> : <EmailLoginForm />}
         </motion.div>
 
         {/* 底部条款 */}

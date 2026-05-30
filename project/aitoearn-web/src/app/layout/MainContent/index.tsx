@@ -26,7 +26,7 @@ export function MainContent({ children, banner }: MainContentProps) {
       {banner}
       <div
         id="main-content"
-        className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden animate-cyber-fade-in"
+        className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden animate-cyber-fade-in pb-16 md:pb-0"
       >
         {children}
       </div>

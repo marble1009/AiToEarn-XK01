@@ -88,3 +88,21 @@ export function formatAmountChange(cents: number): string {
   const usd = centsToUsd(Math.abs(cents))
   return cents >= 0 ? `+${usd}` : `-${usd}`
 }
+
+export interface SubscriptionStatusVo {
+  planName: string
+  endDate: string | null
+  chatLimit: number
+  chatUsed: number
+  genLimit: number
+  genUsed: number
+  chatRemaining: number
+  genRemaining: number
+}
+
+/**
+ * 获取当前用户的会员订阅与AI限制额度状态
+ */
+export function getSubscriptionStatusApi() {
+  return http.get<SubscriptionStatusVo>('user/credits/subscription')
+}

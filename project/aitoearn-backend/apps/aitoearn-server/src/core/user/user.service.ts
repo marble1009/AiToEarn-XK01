@@ -81,6 +81,29 @@ export class UserService {
     return res
   }
 
+  async getUserByLoginIdentifier(identifier: string): Promise<User | null> {
+    return this.userRepository.getByLoginIdentifier(identifier)
+  }
+
+  async createUserWithPassword(
+    mail: string,
+    passwordEncrypted: string,
+    salt: string,
+    username?: string,
+    inviteCode?: string,
+  ): Promise<User> {
+    const newData = new NewUser(UserCreateType.mail, mail, { password: passwordEncrypted, salt })
+    if (username) {
+      newData.name = username
+    }
+    newData.inviteCode = inviteCode
+    newData.locale = getLocale()
+
+    const userInfo = await this.userRepository.create(newData)
+    this.afterCreate(userInfo)
+    return userInfo
+  }
+
   async createUserByPhone(phone: string): Promise<User> {
     const newData = new NewUser(UserCreateType.phone, phone)
     newData.locale = getLocale()

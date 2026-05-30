@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Post, SetMetadata } from '@nestjs/common'
+import { Body, Controller, Get, Post, SetMetadata, UseGuards } from '@nestjs/common'
 import { SSE_METADATA } from '@nestjs/common/constants'
 import { ApiTags } from '@nestjs/swagger'
 import { GetToken, Public, TokenInfo } from '@yikart/aitoearn-auth'
 import { ApiDoc, UserType, ZodValidationPipe } from '@yikart/common'
+import { AiQuotaGuard } from '../../../common'
 import { ChatCompletionDto, ChatStreamProxyDto, chatStreamProxyDtoSchema, ClaudeChatProxyDto, claudeChatProxyDtoSchema } from './chat.dto'
 import { ChatService } from './chat.service'
 import { chatCompletionChunkVoSchema, ChatCompletionVo, ChatModelConfigVo } from './chat.vo'
@@ -31,6 +32,7 @@ export class ChatController {
     body: ChatCompletionDto.schema,
     response: ChatCompletionVo,
   })
+  @UseGuards(AiQuotaGuard)
   @Post('/chat')
   async chat(@GetToken() token: TokenInfo, @Body() body: ChatCompletionDto): Promise<ChatCompletionVo> {
     const response = await this.chatService.userChatCompletion({
@@ -47,6 +49,7 @@ export class ChatController {
     response: chatCompletionChunkVoSchema,
   })
   @SetMetadata(SSE_METADATA, true)
+  @UseGuards(AiQuotaGuard)
   @Post('/chat/stream')
   async chatStream(
     @GetToken() token: TokenInfo,
@@ -64,6 +67,7 @@ export class ChatController {
     body: claudeChatProxyDtoSchema,
   })
   @SetMetadata(SSE_METADATA, true)
+  @UseGuards(AiQuotaGuard)
   @Post('/chat/claude')
   async claudeChatStream(
     @GetToken() token: TokenInfo,

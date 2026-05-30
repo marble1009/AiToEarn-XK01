@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { GetToken, Public, TokenInfo } from '@yikart/aitoearn-auth'
 import { ApiDoc, UserType } from '@yikart/common'
+import { AiQuotaGuard } from '../../../common'
 import { ImageEditDto, ImageGenerationDto } from './image.dto'
 import { ImageService } from './image.service'
 import { AsyncTaskResponseVo, ImageEditModelParamsVo, ImageGenerationModelParamsVo, ImageResponseVo, TaskStatusResponseVo } from './image.vo'
@@ -43,6 +44,7 @@ export class ImageController {
     body: ImageGenerationDto.schema,
     response: ImageResponseVo,
   })
+  @UseGuards(AiQuotaGuard)
   @Post('/image/generate')
   async generateImage(
     @GetToken() token: TokenInfo,
@@ -61,6 +63,7 @@ export class ImageController {
     body: ImageEditDto.schema,
     response: ImageResponseVo,
   })
+  @UseGuards(AiQuotaGuard)
   @Post('/image/edit')
   async editImage(
     @GetToken() token: TokenInfo,
@@ -79,6 +82,7 @@ export class ImageController {
     body: ImageGenerationDto.schema,
     response: AsyncTaskResponseVo,
   })
+  @UseGuards(AiQuotaGuard)
   @Post('/image/generate/async')
   async generateImageAsync(
     @GetToken() token: TokenInfo,
@@ -97,6 +101,7 @@ export class ImageController {
     body: ImageEditDto.schema,
     response: AsyncTaskResponseVo,
   })
+  @UseGuards(AiQuotaGuard)
   @Post('/image/edit/async')
   async editImageAsync(
     @GetToken() token: TokenInfo,

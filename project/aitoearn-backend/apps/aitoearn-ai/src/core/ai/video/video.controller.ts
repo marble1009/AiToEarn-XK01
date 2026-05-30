@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { GetToken, Public, TokenInfo } from '@yikart/aitoearn-auth'
 import { ApiDoc, UserType } from '@yikart/common'
+import { AiQuotaGuard } from '../../../common'
 import { ListVideoTasksQueryDto, VideoGenerationRequestDto } from './video.dto'
 import { VideoService } from './video.service'
 import {
@@ -35,6 +36,7 @@ export class VideoController {
     body: VideoGenerationRequestDto.schema,
     response: VideoGenerationResponseVo,
   })
+  @UseGuards(AiQuotaGuard)
   @Post('/video/generations')
   async videoGeneration(
     @GetToken() token: TokenInfo,

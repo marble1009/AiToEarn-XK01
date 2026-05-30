@@ -23,7 +23,10 @@
       "@yikart/mongodb": ["libs/mongodb/src/index.ts"],
       "@yikart/nest-mcp": ["libs/nest-mcp/src/index.ts"],
       "@yikart/redis": ["libs/redis/src/index.ts"],
-      "@yikart/redlock": ["libs/redlock/src/index.ts"]
+      "@yikart/redlock": ["libs/redlock/src/index.ts"],
+      "@yikart/channel-db": ["libs/channel-db/src/index.ts"],
+      "@yikart/mail": ["libs/mail/src/index.ts"],
+      "@yikart/aitoearn-server-client": ["libs/aitoearn-server-client/src/index.ts"]
     },
     "strict": true,
     "strictBindCallApply": true,

@@ -7,6 +7,7 @@ import { AssetsModule } from '@yikart/assets'
 import { HelpersModule } from '@yikart/helpers'
 import { MongodbModule } from '@yikart/mongodb'
 import { RedlockModule } from '@yikart/redlock'
+import { RedisModule } from '@yikart/redis'
 import { config } from './config'
 import { AgentModule } from './core/agent/agent.module'
 import { AiModule } from './core/ai/ai.module'
@@ -18,6 +19,7 @@ import { MaterialAdaptationModule } from './core/material-adaptation'
   imports: [
     ScheduleModule.forRoot(),
     MongodbModule.forRoot(config.mongodb),
+    RedisModule.forRoot(config.redis),
     AitoearnQueueModule.forRoot({
       redis: config.redis,
       prefix: '{bull}',

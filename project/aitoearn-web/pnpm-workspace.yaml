@@ -1,6 +1,8 @@
 packages:
   - '.'
 
+blockExoticSubdeps: false
+
 allowBuilds:
   '@parcel/watcher': true
   sharp: true

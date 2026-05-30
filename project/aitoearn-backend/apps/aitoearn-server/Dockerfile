@@ -10,6 +10,12 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod
 
 FROM node:20-slim AS production
 
+# Use USTC Debian mirror for fast packages installation in China
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || true \
+    && sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || true \
+    && sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list 2>/dev/null || true \
+    && sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list 2>/dev/null || true
+
 ARG APP_NAME
 
 # Install Chromium, ffmpeg, curl and Chinese fonts for Puppeteer (supports both amd64 and arm64)

@@ -7,7 +7,7 @@ import { RedisService } from '@yikart/redis'
 
 import { RateLimit, RateLimitGuard } from '../../common/guards'
 import { getRandomString } from '../../common/utils'
-import { encryptPassword } from '../../common/utils/password.util'
+import { encryptPassword, validatePassWord } from '../../common/utils/password.util'
 import { config } from '../../config'
 import {
   GoogleLoginDto,
@@ -21,6 +21,10 @@ import {
   PhoneLoginDto,
   PhoneVerifyDto,
   UserCancelDto,
+  PasswordLoginDto,
+  PasswordLoginSchema,
+  PasswordRegisterDto,
+  PasswordRegisterSchema,
 } from './login.dto'
 import { LoginService } from './login.service'
 import { UserService } from './user.service'
@@ -105,6 +109,101 @@ export class LoginController {
 
     return {
       type: isNewUser ? 'regist' : 'login',
+      token,
+      exp: tokenInfo.exp,
+      userInfo,
+    }
+  }
+
+  @ApiDoc({
+    summary: '密码登录',
+    description: '通过用户名/邮箱/手机号和密码登录。',
+    body: PasswordLoginSchema,
+  })
+  @Public()
+  @RateLimit({ ttl: 60, limit: 10, keyGenerator: req => `passwordLogin:${req.body.identifier}` })
+  @Post('password')
+  async loginByPassword(@Body() body: PasswordLoginDto) {
+    const { identifier, password } = body
+
+    const userInfo = await this.userService.getUserByLoginIdentifier(identifier)
+    if (!userInfo || userInfo.isDelete) {
+      throw new AppException(ResponseCode.UserNotFound, 'The account does not exist')
+    }
+
+    if (!userInfo.password || !userInfo.salt) {
+      throw new AppException(ResponseCode.UserLoginCodeError, '密码未设置，请使用验证码登录或重置密码')
+    }
+
+    const isValid = validatePassWord(userInfo.password, userInfo.salt, password)
+    if (!isValid) {
+      throw new AppException(ResponseCode.UserLoginCodeError, '密码错误')
+    }
+
+    if (userInfo.status === UserStatus.STOP) {
+      throw new AppException(ResponseCode.UserStatusError)
+    }
+
+    const token = this.authService.generateToken(userInfo)
+    const tokenInfo = this.authService.decodeToken(token)
+
+    this.userService.afterLogin(userInfo)
+
+    return {
+      type: 'login',
+      token,
+      exp: tokenInfo.exp,
+      userInfo,
+    }
+  }
+
+  @ApiDoc({
+    summary: '账号密码注册',
+    description: '使用用户名、邮箱和密码注册。',
+    body: PasswordRegisterSchema,
+  })
+  @Public()
+  @RateLimit({ ttl: 60, limit: 5, keyGenerator: req => `passwordRegister:${req.body.mail}` })
+  @Post('register')
+  async registerByPassword(@Body() body: PasswordRegisterDto) {
+    const { username, mail, password, inviteCode } = body
+
+    // 检查邮箱是否已注册
+    const existingUser = await this.userService.getUserInfoByMail(mail)
+    if (existingUser && !existingUser.isDelete) {
+      throw new AppException(ResponseCode.ValidationFailed, '该邮箱已注册')
+    }
+
+    // 检查用户名是否冲突
+    if (username) {
+      const existingName = await this.userService.getUserByLoginIdentifier(username)
+      if (existingName && !existingName.isDelete) {
+        throw new AppException(ResponseCode.ValidationFailed, '该用户名已被使用')
+      }
+    }
+
+    const { password: encryptedPassword, salt } = encryptPassword(password)
+
+    if (inviteCode) {
+      const inviteUserInfo = await this.userService.getUserByPopularizeCode(inviteCode)
+      if (!inviteUserInfo) {
+        throw new AppException(ResponseCode.UserLoginCodeError, '无效的邀请码')
+      }
+    }
+
+    const userInfo = await this.userService.createUserWithPassword(
+      mail,
+      encryptedPassword,
+      salt,
+      username,
+      inviteCode,
+    )
+
+    const token = this.authService.generateToken(userInfo)
+    const tokenInfo = this.authService.decodeToken(token)
+
+    return {
+      type: 'regist',
       token,
       exp: tokenInfo.exp,
       userInfo,

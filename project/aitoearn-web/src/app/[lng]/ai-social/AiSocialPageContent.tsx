@@ -5,7 +5,7 @@
 'use client'
 
 import type { IHomeChatRef } from './components/HomeChat'
-import { ArrowUp, Upload } from 'lucide-react'
+import { ArrowUp, Upload, Sparkles, Image as ImageIcon, Video, BookOpen, PenTool } from 'lucide-react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -182,7 +182,7 @@ export function AiSocialPageContent() {
 
   return (
     <div
-      className="bg-background"
+      className="bg-background min-h-screen pb-16"
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDragOver={handleDragOver}
@@ -198,28 +198,120 @@ export function AiSocialPageContent() {
         </div>
       )}
 
-      {/* 首屏 Chat 区域 */}
-      <section className="min-h-[60vh] flex items-center justify-center px-4 pt-16 pb-8 md:pt-24 md:pb-12">
-        <HomeChat
-          ref={homeChatRef}
-          externalPrompt={appliedPrompt}
-          externalMaterials={appliedMaterials}
-          onClearExternalPrompt={handleClearExternalPrompt}
-          agentTaskId={agentTaskId}
-        />
+      {/* 首屏营销引流工作台 */}
+      <section className="max-w-4xl mx-auto px-4 pt-16 pb-8 md:pt-24 md:pb-12">
+        {/* 小店引流工作台标题 */}
+        <div className="text-center mb-8">
+          <span className="px-3 py-1 text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-300 rounded-full inline-block mb-3 animate-pulse">
+            ✨ AI 智能助推，一键获客引流
+          </span>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground mb-3">
+            小店获客推广工作台
+          </h1>
+          <p className="text-muted-foreground text-xs md:text-sm max-w-lg mx-auto">
+            输入您的商铺特色，让 AI 帮您快速生成爆款文案和引流短视频，一键推送到各个平台草稿箱！
+          </p>
+        </div>
+
+        {/* 快速生成三大模板卡片 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          {/* 卡片一：写爆款文案 */}
+          <div 
+            onClick={() => {
+              setAppliedPrompt("我经营着一家实体店铺，主推特色是：[在此输入您的商品或服务，例如：招牌黄金脆皮烤鸭]，请帮我写一篇非常懂顾客心理、在社交平台（小红书/抖音）爆火的获客引流文案！带上丰富可爱的表情符号，字数约200字。")
+              window.scrollTo({ top: 380, behavior: 'smooth' })
+              toast.success("文案模版已加载，请在下方修改您的店铺特色！")
+            }}
+            className="cursor-pointer p-6 rounded-2xl border border-border bg-card hover:border-primary hover:shadow-lg transition-all duration-300 group flex flex-col justify-between"
+          >
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <PenTool className="w-6 h-6 text-primary" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-primary transition-colors">写爆款文案</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                餐饮菜单、美发促销、商品上新等文案一键填空式生成。
+              </p>
+            </div>
+            <span className="text-xs font-semibold text-primary mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              选择该模版 →
+            </span>
+          </div>
+
+          {/* 卡片二：做宣传海报 */}
+          <div 
+            onClick={() => {
+              setAppliedPrompt("请为我的店铺设计一张精美宣传海报。设计主题是：[在此输入海报主题，例如：开业大酬宾，全场8.8折/新品上市/节日限定活动]，版面要高端、大气，色彩搭配温暖喜庆，吸引人点击！")
+              window.scrollTo({ top: 380, behavior: 'smooth' })
+              toast.success("海报设计模版已加载，请在下方修改海报主题！")
+            }}
+            className="cursor-pointer p-6 rounded-2xl border border-border bg-card hover:border-secondary hover:shadow-lg transition-all duration-300 group flex flex-col justify-between"
+          >
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <ImageIcon className="w-6 h-6 text-secondary" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-secondary transition-colors">做宣传海报</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                快速制作门店活动促销海报、新品发布海报。
+              </p>
+            </div>
+            <span className="text-xs font-semibold text-secondary mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              选择该模版 →
+            </span>
+          </div>
+
+          {/* 卡片三：发引流短视频 */}
+          <div 
+            onClick={() => {
+              setAppliedPrompt("请帮我把上传的店内照片或商品实拍图合成为一条带爆款背景音乐与炫酷转场效果的抖音/视频号引流短视频！视频主题是：[在此输入视频卖点，例如：周末探店阿强海鲜排档/老字号纯手工糕点制作流程]")
+              window.scrollTo({ top: 380, behavior: 'smooth' })
+              toast.success("短视频合成模版已加载，请在下方上传照片并描述视频卖点！")
+            }}
+            className="cursor-pointer p-6 rounded-2xl border border-border bg-card hover:border-amber-500 hover:shadow-lg transition-all duration-300 group flex flex-col justify-between"
+          >
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Video className="w-6 h-6 text-amber-600" />
+              </div>
+              <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-amber-600 transition-colors">发引流短视频</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                上传菜品或店内照片，自动合成爆款配乐及转场视频。
+              </p>
+            </div>
+            <span className="text-xs font-semibold text-amber-600 mt-4 inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+              选择该模版 →
+            </span>
+          </div>
+        </div>
+
+        {/* AI 内容生成控制台 */}
+        <div id="ai-generator-panel" className="border border-border rounded-3xl p-6 bg-card shadow-sm relative">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className="w-5 h-5 text-emerald-500" />
+            <span className="text-sm font-bold text-foreground">AI 内容生成器</span>
+          </div>
+          <HomeChat
+            ref={homeChatRef}
+            externalPrompt={appliedPrompt}
+            externalMaterials={appliedMaterials}
+            onClearExternalPrompt={handleClearExternalPrompt}
+            agentTaskId={agentTaskId}
+          />
+        </div>
       </section>
 
       {/* 任务预览区域 - 无数据时自动隐藏 */}
       <TaskPreview limit={4} className="px-4 py-8" />
 
-      {/* /!* 提示词画廊区域 *!/ */}
+      {/* 提示词画廊区域 */}
       <PromptGallery onApplyPrompt={handleApplyPrompt} />
 
-      {/* AI Agent 功能亮点（独立展示） */}
+      {/* AI Agent 功能亮点 */}
       <AgentFeatures />
 
-      {/* 一图解读 AiToEarn 生态 */}
-      <EcosystemDiagram />
+      {/* 隐藏生态图以符合小店主极简路线 */}
+      {/* <EcosystemDiagram /> */}
 
       {/* 回到顶部按钮 - 右侧 */}
       <BackToTop position="right" />

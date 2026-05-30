@@ -8,6 +8,8 @@ import type {
   PhoneCodeLoginParams,
   SendEmailCodeParams,
   SendPhoneCodeParams,
+  PasswordLoginParams,
+  PasswordRegisterParams,
 } from '@/api/types/auth'
 import http from '@/utils/request'
 
@@ -29,4 +31,14 @@ export function sendPhoneCodeApi(data: SendPhoneCodeParams) {
 /** 手机验证码登录 */
 export function phoneCodeLoginApi(data: PhoneCodeLoginParams) {
   return http.post<CodeLoginResponse>('login/phone/verify', data)
+}
+
+/** 密码登录 */
+export function passwordLoginApi(data: PasswordLoginParams) {
+  return http.post<CodeLoginResponse>('login/password', data)
+}
+
+/** 密码注册 */
+export function passwordRegisterApi(data: PasswordRegisterParams) {
+  return http.post<CodeLoginResponse>('login/register', data)
 }

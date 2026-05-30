@@ -5,7 +5,7 @@
  */
 'use client'
 
-import { X } from 'lucide-react'
+import { X, Sparkles, Inbox, Link as LinkIcon, Menu } from 'lucide-react'
 import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { useNavigationLogic } from '@/app/layout/shared'
@@ -14,6 +14,8 @@ import { useSettingsModalStore } from '@/components/SettingsModal/store'
 import { cn } from '@/lib/utils'
 import { MobileBottomSection, MobileNavList, MobileTopBar } from './components'
 import { useUserStore } from '@/store/user'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
 
 /**
  * 移动端导航主组件
@@ -30,6 +32,7 @@ function MobileNav() {
     })),
   )
 
+  const params = useParams()
   // 首页、auth、websit、welcome 页面不显示，未登录也绝不显示
   const token = useUserStore(state => state.token)
   if (isAuthPage || !token) {
@@ -37,6 +40,10 @@ function MobileNav() {
   }
 
   const handleClose = () => setIsOpen(false)
+
+  const isAiSocial = currRouter?.includes('/ai-social')
+  const isDraftBox = currRouter?.includes('/draft-box')
+  const isAccounts = currRouter?.includes('/accounts')
 
   return (
     <>
@@ -56,13 +63,13 @@ function MobileNav() {
       <div
         data-testid="mobile-drawer"
         className={cn(
-          'md:hidden fixed top-0 right-0 z-500 w-[300px] h-full bg-background shadow-xl transition-transform duration-300 ease-in-out flex flex-col',
+          'md:hidden fixed top-0 right-0 z-[60] w-[300px] h-full bg-background shadow-xl transition-transform duration-300 ease-in-out flex flex-col',
           isOpen ? 'translate-x-0' : 'translate-x-full',
         )}
       >
         {/* 抽屉头部 */}
         <div className="flex items-center justify-between h-14 px-4 border-b border-border shrink-0">
-          <span className="text-base font-semibold text-foreground">Menu</span>
+          <span className="text-base font-semibold text-foreground">功能菜单</span>
           <button
             onClick={handleClose}
             data-testid="mobile-drawer-close"
@@ -86,6 +93,63 @@ function MobileNav() {
           <MobileBottomSection onClose={handleClose} onOpenSettings={openSettings} />
         </div>
       </div>
+
+      {/* 移动端微信式底部四栏导航 */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-card border-t border-border flex items-center justify-around z-50 pb-safe shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+        {/* 工作台 */}
+        <Link 
+          href={`/${params.lng}/ai-social`}
+          className={cn(
+            "flex flex-col items-center justify-center flex-1 h-full py-1 text-[10px] font-medium transition-colors duration-200",
+            isAiSocial
+              ? "text-primary font-semibold"
+              : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          <Sparkles className={cn("w-5 h-5 mb-1", isAiSocial ? "text-primary" : "text-muted-foreground")} />
+          <span>工作台</span>
+        </Link>
+
+        {/* 草稿箱 */}
+        <Link 
+          href={`/${params.lng}/draft-box`}
+          className={cn(
+            "flex flex-col items-center justify-center flex-1 h-full py-1 text-[10px] font-medium transition-colors duration-200",
+            isDraftBox
+              ? "text-primary font-semibold"
+              : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          <Inbox className={cn("w-5 h-5 mb-1", isDraftBox ? "text-primary" : "text-muted-foreground")} />
+          <span>草稿箱</span>
+        </Link>
+
+        {/* 账号绑定 */}
+        <Link 
+          href={`/${params.lng}/accounts`}
+          className={cn(
+            "flex flex-col items-center justify-center flex-1 h-full py-1 text-[10px] font-medium transition-colors duration-200",
+            isAccounts
+              ? "text-primary font-semibold"
+              : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          <LinkIcon className={cn("w-5 h-5 mb-1", isAccounts ? "text-primary" : "text-muted-foreground")} />
+          <span>账号绑定</span>
+        </Link>
+
+        {/* 更多/菜单 */}
+        <button 
+          type="button"
+          onClick={() => setIsOpen(true)}
+          className={cn(
+            "flex flex-col items-center justify-center flex-1 h-full py-1 text-[10px] font-medium transition-colors duration-200 text-muted-foreground hover:text-foreground"
+          )}
+        >
+          <Menu className="w-5 h-5 mb-1 text-muted-foreground" />
+          <span>更多菜单</span>
+        </button>
+      </nav>
     </>
   )
 }

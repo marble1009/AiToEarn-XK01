@@ -37,11 +37,16 @@ const PublishDatePicker = memo(
       const { t } = useTransClient('publish')
       const [menuOpen, setMenuOpen] = useState(false)
       const [tempDate, setTempDate] = useState<Dayjs | null>(null)
-      const { pubTime, setPubTime } = usePublishDialog(
+      const { pubTime, setPubTime, pubListChoosed } = usePublishDialog(
         useShallow(state => ({
           pubTime: state.pubTime,
           setPubTime: state.setPubTime,
+          pubListChoosed: state.pubListChoosed,
         })),
+      )
+
+      const isDomesticPlatform = pubListChoosed.some(
+        item => ['douyin', 'xhs', 'kuaishou', 'wechat', 'channels'].includes(item.account?.type?.toLowerCase())
       )
 
       const handleCalendarChange = (date: Dayjs) => {
@@ -229,7 +234,7 @@ const PublishDatePicker = memo(
                 </path>
               </svg>
             )}
-            {t('publish')}
+            {isDomesticPlatform ? "推送至草稿箱 (安全推荐)" : t('publish')}
           </Button>
         </div>
       )

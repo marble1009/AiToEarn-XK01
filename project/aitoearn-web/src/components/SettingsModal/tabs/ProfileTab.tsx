@@ -4,16 +4,18 @@
 
 'use client'
 
-import { Camera, LogOut } from 'lucide-react'
+import { Camera, LogOut, CheckCircle2, ShieldAlert } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { updateUserInfoApi } from '@/api/apiReq'
 import { uploadToOss } from '@/api/oss'
+import { getSubscriptionStatusApi, SubscriptionStatusVo } from '@/api/credits'
 import { useTransClient } from '@/app/i18n/client'
 import { AvatarCropModal } from '@/components/AvatarCropModal'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
 import { toast } from '@/lib/toast'
 import { cn } from '@/lib/utils'
 import { useUserStore } from '@/store/user'
@@ -44,6 +46,24 @@ export function ProfileTab({ onClose }: ProfileTabProps) {
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
   const [cropModalOpen, setCropModalOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [subStatus, setSubStatus] = useState<SubscriptionStatusVo | null>(null)
+  const [loadingSub, setLoadingSub] = useState(true)
+
+  useEffect(() => {
+    async function loadSubscription() {
+      try {
+        const res = await getSubscriptionStatusApi()
+        if (res?.data) {
+          setSubStatus(res.data)
+        }
+      } catch (err) {
+        console.error('加载订阅额度失败:', err)
+      } finally {
+        setLoadingSub(false)
+      }
+    }
+    loadSubscription()
+  }, [])
 
   const avatarUrl = userInfo?.avatar ? getOssUrl(userInfo.avatar) : ''
 
@@ -226,6 +246,53 @@ export function ProfileTab({ onClose }: ProfileTabProps) {
           <p className="mt-1 truncate text-sm text-muted-foreground">
             {userInfo?.mail || (userInfo?.phone ? userInfo.phone.replace(/^(.{3}).*(.{4})$/, '$1****$2') : '-')}
           </p>
+        </div>
+      </div>
+
+      {/* 会员卡与额度面板 */}
+      <div className="rounded-2xl border border-border p-4 bg-muted/30 space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-sm text-foreground">小店智能推广卡</span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary">
+              {subStatus?.planName || '免费体验版'}
+            </span>
+          </div>
+          {subStatus?.endDate && (
+            <span className="text-[10px] text-muted-foreground">
+              有效期至：{new Date(subStatus.endDate).toLocaleDateString()}
+            </span>
+          )}
+        </div>
+
+        <div className="space-y-3">
+          {/* 对话额度 */}
+          <div className="space-y-1">
+            <div className="flex justify-between text-xs">
+              <span className="text-muted-foreground">今日AI对话额度</span>
+              <span className="font-bold text-foreground">
+                {subStatus ? `${subStatus.chatUsed} / ${subStatus.chatLimit} 次` : '0 / 10 次'}
+              </span>
+            </div>
+            <Progress 
+              value={subStatus ? (subStatus.chatUsed / subStatus.chatLimit) * 100 : 0} 
+              className="h-1.5"
+            />
+          </div>
+
+          {/* 生成额度 */}
+          <div className="space-y-1">
+            <div className="flex justify-between text-xs">
+              <span className="text-muted-foreground">今日AI视频/海报生成额度</span>
+              <span className="font-bold text-foreground">
+                {subStatus ? `${subStatus.genUsed} / ${subStatus.genLimit} 次` : '0 / 1 次'}
+              </span>
+            </div>
+            <Progress 
+              value={subStatus ? (subStatus.genUsed / subStatus.genLimit) * 100 : 0} 
+              className="h-1.5"
+            />
+          </div>
         </div>
       </div>
 

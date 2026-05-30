@@ -64,6 +64,20 @@ export class UserRepository extends BaseRepository<User> {
     return userInfo
   }
 
+  async getByLoginIdentifier(identifier: string): Promise<User | null> {
+    const db = this.model.findOne({
+      $or: [
+        { mail: identifier },
+        { phone: identifier },
+        { name: identifier },
+      ],
+      isDelete: false,
+    })
+    db.select('+password +salt')
+    const userInfo = await db.lean({ virtuals: true }).exec()
+    return userInfo
+  }
+
   async getByPopularizeCode(popularizeCode: string): Promise<User | null> {
     const userInfo = await this.model.findOne({
       popularizeCode,
