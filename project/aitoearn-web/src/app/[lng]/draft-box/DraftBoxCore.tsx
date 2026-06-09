@@ -127,8 +127,8 @@ export default function DraftBoxCore() {
           <div className="flex flex-col h-full bg-background">
             <div className="flex-1 flex items-center justify-center p-4">
               <div className="text-center max-w-md">
-                <div className="mx-auto w-20 h-20 rounded-full bg-[#39FF14]/10 border border-[#39FF14]/30 shadow-[0_0_15px_rgba(57,255,20,0.2)] flex items-center justify-center mb-6">
-                  <Sparkles className="h-10 w-10 text-[#39FF14] animate-pulse" />
+                <div className="mx-auto w-20 h-20 rounded-full bg-[#5F7A61]/10 border border-[#5F7A61]/30 shadow-[0_4px_12px_rgba(95,122,97,0.1)] flex items-center justify-center mb-6">
+                  <Sparkles className="h-10 w-10 text-[#5F7A61] animate-pulse" />
                 </div>
                 <h2 className="text-xl font-bold text-foreground mb-2">
                   {t('empty.title')}
@@ -138,7 +138,7 @@ export default function DraftBoxCore() {
                 </p>
                 <Button
                   size="lg"
-                  className="cursor-pointer gap-2 bg-gradient-to-r from-[#39FF14] to-[#FF007F] text-black font-black hover:opacity-90 transition-all border-none shadow-[0_0_15px_rgba(57,255,20,0.3)]"
+                  className="cursor-pointer gap-2 bg-[#5F7A61] text-[#FAF7F2] hover:bg-[#5F7A61]/90 transition-all border-none shadow-sm font-bold rounded-2xl h-12"
                   onClick={openCreatePlanModal}
                 >
                   <Plus className="h-5 w-5" />
@@ -157,19 +157,19 @@ export default function DraftBoxCore() {
     <div className="flex flex-col h-full">
       {/* Mission Banner */}
       {currentMission && (
-        <div className="bg-[#030303] border-b border-[#39FF14]/30 px-6 py-3 flex items-center justify-between shadow-[0_0_12px_rgba(57,255,20,0.1)]">
+        <div className="bg-white/90 dark:bg-[#202C24]/90 border-b border-[#5F7A61]/15 px-6 py-3.5 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center border border-[#39FF14]/40 shadow-[0_0_6px_rgba(57,255,20,0.2)]">
-              <CheckCircle2 size={16} className="text-[#39FF14]" />
+            <div className="w-8 h-8 rounded-full bg-[#5F7A61]/10 flex items-center justify-center border border-[#5F7A61]/30">
+              <CheckCircle2 size={16} className="text-[#5F7A61]" />
             </div>
             <div>
-              <p className="text-sm font-black text-foreground">
-                正在创作专属内容：<span className="text-[#39FF14] drop-shadow-[0_0_6px_rgba(57,255,20,0.4)]">{currentMission.title}</span>
+              <p className="text-sm font-extrabold text-[#2A2A2A] dark:text-[#FDFBF7]">
+                正在创作专属内容：<span className="text-[#5F7A61] dark:text-[#7FA382]">{currentMission.title}</span>
               </p>
-              <p className="text-[10px] text-muted-foreground">NVIDIA AI 灵感智体将自动优化并匹配 {currentMission.brand} 的品牌规范。</p>
+              <p className="text-[10px] text-[#2A2A2A]/50 dark:text-[#FDFBF7]/50 font-normal">NVIDIA AI 灵感智体将自动优化并匹配 {currentMission.brand} 的品牌规范。</p>
             </div>
           </div>
-          <Badge className="bg-[#39FF14]/10 text-[#39FF14] border border-[#39FF14]/30 px-3 py-1 font-bold">任务执行中</Badge>
+          <Badge className="bg-[#5F7A61]/10 text-[#5F7A61] border border-[#5F7A61]/30 px-3 py-1 font-bold">任务执行中</Badge>
         </div>
       )}
 

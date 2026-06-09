@@ -159,6 +159,7 @@ export function apiUpdateMaterialInfo(
 export function apiUpdateMaterial(
   id: string,
   data: {
+    type?: string
     coverUrl?: string
     mediaList?: MaterialMedia[]
     title?: string

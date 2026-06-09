@@ -21,7 +21,7 @@ export function WalletTab() {
       id: '1',
       type: 'paypal',
       accountName: 'Personal PayPal',
-      accountNumber: 'dev@aitoearn.com',
+      accountNumber: 'dev@aiautoedit.com',
       isDefault: true,
     }
   ])

@@ -158,15 +158,15 @@ export function SettingsModal({ open, onClose, defaultTab }: SettingsModalProps)
         <DialogTitle className="sr-only">{t('title')}</DialogTitle>
 
         {/* 移动端布局：垂直排列；桌面端：水平排列 */}
-        <div className="flex h-[85vh] max-h-[650px] flex-col overflow-hidden md:h-[70vh] md:max-h-none md:flex-row">
+        <div className="flex h-[85vh] max-h-[650px] flex-col overflow-hidden bg-[#FAF7F2] dark:bg-[#18221B] md:h-[70vh] md:max-h-none md:flex-row rounded-3xl">
           {/* 侧边栏/顶部导航 */}
-          <div className="flex w-full shrink-0 overflow-hidden flex-col border-b border-border md:w-52 md:border-b-0 md:border-r">
+          <div className="flex w-full shrink-0 overflow-hidden flex-col border-b border-[#5F7A61]/15 md:w-52 md:border-b-0 md:border-r bg-[#5F7A61]/5">
             {/* 侧边栏头部 - Logo + 项目名称 */}
-            <div className="flex h-14 shrink-0 items-center gap-2 px-4 md:h-auto md:px-5 md:py-4">
-              <Image src={logo} alt="Aitoearn" width={24} height={24} className="hidden md:block md:h-7 md:w-7" />
-              <span className="text-sm font-semibold tracking-tight text-foreground md:text-base">
+            <div className="flex h-14 shrink-0 items-center gap-2 px-4 md:h-auto md:px-5 md:py-5 border-b border-[#5F7A61]/10 md:mb-2 bg-white/20">
+              <Image src={logo} alt="爱易客" width={24} height={24} className="hidden md:block md:h-7 md:w-7" />
+              <span className="text-sm font-extrabold tracking-tight text-[#2A2A2A] dark:text-[#FDFBF7] md:text-base">
                 <span className="md:hidden">{t('title')}</span>
-                <span className="hidden md:inline">Aitoearn</span>
+                <span className="hidden md:inline">爱易客</span>
               </span>
             </div>
 
@@ -181,10 +181,10 @@ export function SettingsModal({ open, onClose, defaultTab }: SettingsModalProps)
                     data-tab-key={tab.key}
                     onClick={() => setActiveTab(tab.key)}
                     className={cn(
-                      'snap-center flex shrink-0 items-center gap-1.5 rounded-md px-3 py-2 text-left text-sm transition-all md:gap-2 md:py-2.5',
+                      'snap-center flex shrink-0 items-center gap-1.5 rounded-xl px-4 py-2 text-left text-sm transition-all md:gap-2.5 md:py-3',
                       isActive
-                        ? 'bg-muted font-medium text-foreground'
-                        : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                        ? 'bg-[#5F7A61] font-bold text-white shadow-sm'
+                        : 'text-[#2A2A2A]/70 dark:text-[#FDFBF7]/70 hover:bg-[#5F7A61]/10 hover:text-[#5F7A61]',
                     )}
                   >
                     {tab.icon}
@@ -196,10 +196,10 @@ export function SettingsModal({ open, onClose, defaultTab }: SettingsModalProps)
           </div>
 
           {/* 右侧/下方内容区域 */}
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-white dark:bg-[#1E2A21]">
             {/* 右侧头部 - 设置标题 */}
-            <div className="hidden shrink-0 items-center border-b border-border md:flex md:px-6 md:py-4">
-              <h2 className="text-base font-semibold text-foreground md:text-lg">{t('title')}</h2>
+            <div className="hidden shrink-0 items-center border-b border-[#5F7A61]/10 md:flex md:px-6 md:py-4 bg-[#FAF7F2]/50">
+              <h2 className="text-base font-extrabold text-[#2A2A2A] dark:text-[#FDFBF7] md:text-lg">{t('title')}</h2>
             </div>
 
             {/* 右侧内容 - 确保内容区域可以正确滚动 */}

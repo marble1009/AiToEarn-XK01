@@ -6,6 +6,7 @@ import { ChatModule } from './chat'
 import { ImageModule } from './image'
 import { NvidiaModule } from './libs/nvidia'
 import { OpenaiModule } from './libs/openai'
+import { WanxiangModule } from './libs/wanxiang'
 import { LogsModule } from './logs'
 import { ModelsConfigModule } from './models-config'
 import { VideoModule } from './video'
@@ -13,6 +14,7 @@ import { VideoModule } from './video'
 @Module({
   imports: [
     OpenaiModule.forRoot(config.ai.openai),
+    WanxiangModule,
     NvidiaModule.forRoot(config.ai.nvidia),
     ChatModule,
     LogsModule,

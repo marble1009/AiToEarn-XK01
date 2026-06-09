@@ -1,12 +1,11 @@
-trustPolicyExclude:
-  - 'detect-port@1.6.1'
-  - 'chokidar@4.0.3'
-
+# pnpm 10 之后已使用 `onlyBuiltDependencies` 替代旧的 `allowedDeprecatedVersions` / `allowBuilds` 字符串开关
+# 下方只保留构建期允许执行的原生包列表与对等依赖规则
 packages:
   - 'apps/*'
   - 'libs/*'
   - 'tools/*'
 
+# 仅允许以下包执行 install/build 阶段的原生编译脚本
 onlyBuiltDependencies:
   - '@alicloud/openapi-core'
   - '@nestjs/core'
@@ -21,19 +20,12 @@ onlyBuiltDependencies:
   - simple-git-hooks
   - unrs-resolver
 
+# 部分 monorepo 包未在 peerDependencies 中显式声明 axios，但运行时确实使用
 peerDependencyRules:
   ignoreMissing:
     - axios
 
-allowBuilds:
-  '@alicloud/openapi-core': set this to true or false
-  '@nestjs/core': set this to true or false
-  '@scarf/scarf': set this to true or false
-  esbuild: set this to true or false
-  git-commit-msg-linter: set this to true or false
-  msgpackr-extract: set this to true or false
-  nx: set this to true or false
-  protobufjs: set this to true or false
-  sharp: set this to true or false
-  simple-git-hooks: set this to true or false
-  unrs-resolver: set this to true or false
+# 显式忽略 trust policy 警告的包（这些包在锁文件里被标记为需要审核）
+trustPolicyExclude:
+  - 'detect-port@1.6.1'
+  - 'chokidar@4.0.3'

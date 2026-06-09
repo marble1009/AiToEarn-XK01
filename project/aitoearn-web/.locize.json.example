@@ -1,0 +1,6 @@
+{
+  "projectId": "YOUR_LOCIZE_PROJECT_ID",
+  "apiKey": "YOUR_LOCIZE_API_KEY",
+  "version": "latest",
+  "localesPath": "./src/app/i18n/locales"
+}

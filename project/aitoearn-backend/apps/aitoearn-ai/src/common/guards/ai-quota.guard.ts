@@ -27,14 +27,16 @@ export class AiQuotaGuard implements CanActivate {
     // 1. 获取用户有效订阅
     const activeSub = await this.userSubscriptionRepository.getActiveSubscription(user.id)
     
-    // 2. 确定额度限制（默认免费版额度）
-    let limit = actionType === 'chat' ? 10 : 1 // 每日默认：10次对话，1次视频/图片生成
-    let planName = '免费体验版'
+    // 2. 确定额度限制（默认免费版额度已被调大以支持开发测试）
+    let limit = actionType === 'chat' ? 10000 : 5000 // 每日默认：10000次对话，5000次视频/图片生成
+    let planName = '开发测试体验版'
 
     if (activeSub) {
       const plan = await this.subscriptionPlanRepository.getById(activeSub.planId)
       if (plan) {
-        limit = actionType === 'chat' ? plan.chatLimitPerDay : plan.genLimitPerDay
+        limit = actionType === 'chat' 
+          ? Math.max(plan.chatLimitPerDay, 10000) 
+          : Math.max(plan.genLimitPerDay, 5000)
         planName = plan.name
       }
     }

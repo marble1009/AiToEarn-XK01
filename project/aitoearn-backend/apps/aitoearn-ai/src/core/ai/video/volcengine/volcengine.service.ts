@@ -48,12 +48,28 @@ export class VolcengineVideoService {
     const finalResolution = resolution || defaults.resolution
     const finalDuration = duration || defaults.duration
 
-    const pricingConfig = modelConfig.pricing.find((pricing) => {
+    let pricingConfig = modelConfig.pricing.find((pricing) => {
       const aspectRatioMatch = !pricing.aspectRatio || !finalAspectRatio || pricing.aspectRatio === finalAspectRatio
       const resolutionMatch = !pricing.resolution || !finalResolution || pricing.resolution === finalResolution
       const durationMatch = !pricing.duration || !finalDuration || pricing.duration === finalDuration
       return aspectRatioMatch && resolutionMatch && durationMatch
     })
+
+    if (!pricingConfig && finalDuration) {
+      const matchingConfigs = modelConfig.pricing.filter((pricing) => {
+        const aspectRatioMatch = !pricing.aspectRatio || !finalAspectRatio || pricing.aspectRatio === finalAspectRatio
+        const resolutionMatch = !pricing.resolution || !finalResolution || pricing.resolution === finalResolution
+        return aspectRatioMatch && resolutionMatch
+      })
+      if (matchingConfigs.length > 0) {
+        matchingConfigs.sort((a, b) => {
+          const aDiff = a.duration ? Math.abs(a.duration - finalDuration) : Infinity
+          const bDiff = b.duration ? Math.abs(b.duration - finalDuration) : Infinity
+          return aDiff - bDiff
+        })
+        pricingConfig = matchingConfigs[0]
+      }
+    }
 
     if (!pricingConfig) {
       throw new AppException(ResponseCode.InvalidModel)

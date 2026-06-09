@@ -31,6 +31,7 @@ import { ConditionalDeleteDialog } from './ConditionalDeleteDialog'
 import { useMediaTabStore } from './ContentTabs/mediaTabStore'
 import { DraftListToolbar } from './DraftListToolbar'
 import { GeneratingCard } from './GeneratingCard'
+import { getOssUrl } from '@/utils/oss'
 import { LazyImage } from './LazyImage'
 import { MediaListSection } from './MediaListSection'
 
@@ -78,7 +79,7 @@ interface DraftCardProps {
 // 草稿卡片组件（小红书风格）
 const DraftCard = memo(({ material, onClick, batchMode, selected, onToggleSelect, useCountLabel }: DraftCardProps) => {
   const { t } = useTransClient('brandPromotion')
-  const coverUrl = material.coverUrl || '/images/placeholder.png'
+  const coverUrl = getOssUrl(material.coverUrl) || '/images/placeholder.png'
 
   const handleClick = useCallback(() => {
     if (batchMode) {
@@ -226,7 +227,7 @@ export const DraftListSection = memo(({ materialGroupId }: DraftListSectionProps
   const { t: tMaterial } = useTransClient('material')
 
   const showTabs = !!materialGroupId
-  const [activeTab, setActiveTab] = useState('all')
+  const [activeTab, setActiveTab] = useState<'all' | 'drafts' | 'video' | 'img'>('all')
 
   // materialGroupId 变化时，有 Tab 模式默认选中"全部"
   useEffect(() => {
@@ -244,7 +245,7 @@ export const DraftListSection = memo(({ materialGroupId }: DraftListSectionProps
     materialsPagination,
     currentPlan,
     generatingCount,
-    batchMode,
+    batchMode: draftBatchMode,
     selectedMaterialIds,
   } = usePlanDetailStore(
     useShallow(state => ({
@@ -264,11 +265,12 @@ export const DraftListSection = memo(({ materialGroupId }: DraftListSectionProps
   const openGenerationDetailDialog = usePlanDetailStore(state => state.openGenerationDetailDialog)
   const toggleMaterialSelection = usePlanDetailStore(state => state.toggleMaterialSelection)
 
-  const { videoTotal, imgTotal, allTotal } = useMediaTabStore(
+  const { videoTotal, imgTotal, allTotal, mediaBatchMode } = useMediaTabStore(
     useShallow(state => ({
       videoTotal: state.video.total,
       imgTotal: state.img.total,
       allTotal: state.all.draftTotal + state.all.videoTotal + state.all.imgTotal,
+      mediaBatchMode: state.batchMode,
     })),
   )
 
@@ -278,11 +280,16 @@ export const DraftListSection = memo(({ materialGroupId }: DraftListSectionProps
   const imgInitialized = useMediaTabStore(state => state.img.initialized)
   const allInitialized = useMediaTabStore(state => state.all.initialized)
 
+  const batchMode = activeTab === 'drafts' ? draftBatchMode : mediaBatchMode
   const selectedSet = new Set(selectedMaterialIds)
 
   // Tab 切换处理
   const handleTabChange = useCallback((value: string) => {
-    setActiveTab(value)
+    setActiveTab(value as 'all' | 'drafts' | 'video' | 'img')
+
+    // 退出当前所有批量删除模式，避免跨 Tab 状态残留
+    usePlanDetailStore.getState().exitBatchMode()
+    useMediaTabStore.getState().exitBatchMode()
 
     // 首次切换到对应 Tab 时触发加载
     if (value === 'all' && !allInitialized && materialGroupId && currentPlan) {
@@ -336,7 +343,7 @@ export const DraftListSection = memo(({ materialGroupId }: DraftListSectionProps
   // 草稿内容区域
   const draftsContent = (
     <>
-      <DraftListToolbar />
+      <DraftListToolbar activeTab="drafts" />
       <div>
         <Masonry
           breakpointCols={MASONRY_BREAKPOINTS}
@@ -518,8 +525,8 @@ export const DraftListSection = memo(({ materialGroupId }: DraftListSectionProps
         <CardContent className={cn(batchMode && 'pb-16')}>
           {draftsContent}
         </CardContent>
-        {batchMode && <BatchActionBar />}
-        <ConditionalDeleteDialog />
+        {batchMode && <BatchActionBar activeTab="drafts" />}
+        <ConditionalDeleteDialog activeTab="drafts" />
       </Card>
     )
   }
@@ -542,7 +549,8 @@ export const DraftListSection = memo(({ materialGroupId }: DraftListSectionProps
         </CardHeader>
 
         <TabsContent value="all" className="mt-0">
-          <CardContent>
+          <CardContent className={cn(batchMode && 'pb-16')}>
+            <DraftListToolbar activeTab="all" />
             <AllListSection materialGroupId={materialGroupId} />
           </CardContent>
         </TabsContent>
@@ -554,19 +562,21 @@ export const DraftListSection = memo(({ materialGroupId }: DraftListSectionProps
         </TabsContent>
 
         <TabsContent value="video" className="mt-0">
-          <CardContent>
+          <CardContent className={cn(batchMode && 'pb-16')}>
+            <DraftListToolbar activeTab="video" />
             <MediaListSection type="video" materialGroupId={materialGroupId} />
           </CardContent>
         </TabsContent>
 
         <TabsContent value="img" className="mt-0">
-          <CardContent>
+          <CardContent className={cn(batchMode && 'pb-16')}>
+            <DraftListToolbar activeTab="img" />
             <MediaListSection type="img" materialGroupId={materialGroupId} />
           </CardContent>
         </TabsContent>
 
-        {batchMode && <BatchActionBar />}
-        <ConditionalDeleteDialog />
+        {batchMode && <BatchActionBar activeTab={activeTab} />}
+        <ConditionalDeleteDialog activeTab={activeTab} />
       </Card>
     </Tabs>
   )

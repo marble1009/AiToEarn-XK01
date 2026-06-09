@@ -3,7 +3,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { GlassCard } from '@/components/ui/glass-card'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Sparkles, PenTool, Video, ShieldCheck, DollarSign, Layers } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/user'
 import { navigateToLogin } from '@/utils/auth'
@@ -24,122 +24,29 @@ interface ModuleItem {
   gridClass: string
 }
 
-const modules: ModuleItem[] = [
-  {
-    id: 'monetize',
-    title: '光弦任务空间',
-    subtitle: '创意变现',
-    description: '以创意重构连接，发现霓虹光弦高额任务奖励，将极简创作精准变现。',
-    color: 'from-[#39FF14] to-[#00FF7F]',
-    shadow: 'shadow-green-200/50',
-    path: '/mission-square',
-    gridClass: 'md:col-span-2 md:row-span-2 min-h-[380px]',
-  },
-  {
-    id: 'publish',
-    title: '光流分发中心',
-    subtitle: '一键发布',
-    description: '一键同步至全网 10+ 顶流内容渠道，智能调度，让发布从未如此轻松。',
-    color: 'from-[#FF007F] to-[#FF69B4]',
-    shadow: 'shadow-pink-200/50',
-    path: '/accounts',
-    gridClass: 'md:col-span-2 md:row-span-1 min-h-[180px]',
-  },
-  {
-    id: 'engage',
-    title: '智能交互终端',
-    subtitle: '自动互动',
-    description: 'Aura AI 智体驱动的社交运营智能体，全天候全自动交互，精准捕捉转化点。',
-    color: 'from-[#FF007F] to-[#39FF14]',
-    shadow: 'shadow-purple-200/50',
-    path: '/ai-social',
-    gridClass: 'md:col-span-1 md:row-span-1 min-h-[180px]',
-  },
-  {
-    id: 'revenue',
-    title: '灵光资产账户',
-    subtitle: '收益提现',
-    description: '查看您的光弦变现账单明细，安全管理并快速提现至个人账户。',
-    color: 'from-[#39FF14] to-[#00E5FF]',
-    shadow: 'shadow-cyan-200/50',
-    path: '/revenue',
-    gridClass: 'md:col-span-1 md:row-span-1 min-h-[180px]',
-  },
-  {
-    id: 'create',
-    title: '光弦粒子工厂',
-    subtitle: '批量创作',
-    description: '重构内容生产流水线，从灵光创意到批量视频/图文，一站式极速生产。',
-    color: 'from-[#FF007F] to-[#00E5FF]',
-    shadow: 'shadow-peach-200/50',
-    path: '/chat',
-    gridClass: 'md:col-span-4 md:row-span-1 min-h-[180px]',
-  },
-]
-
-// Custom glowing vector SVGs
+// Premium cozy vector icons styled in sage green, sunset peach, and gold
 const MonetizeIcon = () => (
-  <svg className="w-12 h-12 text-[#39FF14] drop-shadow-[0_0_8px_rgba(57,255,20,0.5)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <polygon points="12,2 22,7 22,17 12,22 2,17 2,7" strokeDasharray="2,2" />
-    <path d="M12,6 L18,9.5 L18,14.5 L12,18 L6,14.5 L6,9.5 Z" className="animate-pulse" />
-    <line x1="12" y1="2" x2="12" y2="22" strokeWidth="1" strokeOpacity="0.3" />
-    <line x1="2" y1="7" x2="22" y2="17" strokeWidth="1" strokeOpacity="0.3" />
-    <line x1="2" y1="17" x2="22" y2="7" strokeWidth="1" strokeOpacity="0.3" />
-    <circle cx="12" cy="12" r="3" fill="#39FF14" className="animate-ping" style={{ animationDuration: '3s' }} />
-    <circle cx="12" cy="12" r="2.5" fill="black" stroke="#39FF14" strokeWidth="1.5" />
-  </svg>
+  <Sparkles className="w-8 h-8 text-[#5F7A61] dark:text-[#7FA382]" />
 )
 
 const PublishIcon = () => (
-  <svg className="w-12 h-12 text-[#FF007F] drop-shadow-[0_0_8px_rgba(255,0,127,0.5)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M12,18 C15.3,18 18,15.3 18,12 C18,8.7 15.3,6 12,6 C8.7,6 6,8.7 6,12" strokeDasharray="3,3" className="animate-pulse" />
-    <path d="M12,21 C17,21 21,17 21,12 C21,7 17,3 12,3 C7,3 3,7 3,12" />
-    <line x1="12" y1="12" x2="12" y2="22" strokeWidth="2" />
-    <polygon points="12,8 15,13 9,13" fill="#FF007F" />
-    <circle cx="12" cy="12" r="2" fill="#00E5FF" />
-  </svg>
+  <Layers className="w-8 h-8 text-[#F3A390] dark:text-[#F6B4A5]" />
 )
 
 const EngageIcon = () => (
-  <svg className="w-12 h-12 text-[#FF007F] drop-shadow-[0_0_8px_rgba(255,0,127,0.5)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <circle cx="12" cy="5" r="2" fill="#39FF14" />
-    <circle cx="5" cy="10" r="2" fill="#FF007F" />
-    <circle cx="19" cy="10" r="2" fill="#FF007F" />
-    <circle cx="8" cy="18" r="2" fill="#00E5FF" />
-    <circle cx="16" cy="18" r="2" fill="#00E5FF" />
-    <line x1="12" y1="5" x2="5" y2="10" />
-    <line x1="12" y1="5" x2="19" y2="10" />
-    <line x1="5" y1="10" x2="8" y2="18" />
-    <line x1="19" y1="10" x2="16" y2="18" />
-    <line x1="8" y1="18" x2="16" y2="18" strokeDasharray="2,2" />
-    <line x1="12" y1="5" x2="12" y2="14" />
-    <rect x="10" y="11" width="4" height="4" rx="1" fill="black" stroke="#FF007F" className="animate-spin" style={{ transformOrigin: '12px 13px', animationDuration: '6s' }} />
-  </svg>
+  <ShieldCheck className="w-8 h-8 text-[#E5B25D] dark:text-[#E9C482]" />
 )
 
 const RevenueIcon = () => (
-  <svg className="w-12 h-12 text-[#00E5FF] drop-shadow-[0_0_8px_rgba(0,229,255,0.5)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <path d="M12,2 L20,6.5 L20,15.5 L12,20 L4,15.5 L4,6.5 Z" />
-    <line x1="12" y1="2" x2="12" y2="20" />
-    <line x1="4" y1="6.5" x2="12" y2="11" />
-    <line x1="20" y1="6.5" x2="12" y2="11" />
-    <path d="M7,12 L12,15 L17,12" strokeWidth="1" strokeOpacity="0.5" />
-    <polygon points="12,6.5 15,9 12,11.5 9,9" fill="#00E5FF" className="animate-pulse" />
-  </svg>
+  <DollarSign className="w-8 h-8 text-[#5F7A61] dark:text-[#E5B25D]" />
 )
 
 const CreateIcon = () => (
-  <svg className="w-12 h-12 text-[#39FF14] drop-shadow-[0_0_8px_rgba(57,255,20,0.5)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-    <rect x="3" y="10" width="8" height="4" rx="1" />
-    <line x1="11" y1="12" x2="17" y2="12" strokeWidth="2.5" />
-    <circle cx="17" cy="12" r="2.5" fill="#FF007F" className="animate-ping" />
-    <circle cx="17" cy="12" r="1.5" fill="#39FF14" />
-    <path d="M18,12 Q21,9 22,12 Q21,15 20,12" stroke="#FF007F" strokeDasharray="1,1" className="animate-pulse" />
-    <path d="M18,12 Q20,16 22,12" stroke="#00E5FF" />
-    <line x1="3" y1="14" x2="3" y2="18" />
-    <line x1="7" y1="14" x2="7" y2="18" />
-    <line x1="3" y1="18" x2="10" y2="18" />
-  </svg>
+  <PenTool className="w-8 h-8 text-[#F3A390] dark:text-[#E5B25D]" />
+)
+
+const EcommerceIcon = () => (
+  <Layers className="w-8 h-8 text-[#E5B25D] dark:text-[#E9C482]" />
 )
 
 const getModuleIcon = (id: string) => {
@@ -154,144 +61,191 @@ const getModuleIcon = (id: string) => {
       return <RevenueIcon />
     case 'create':
       return <CreateIcon />
+    case 'ecommerce':
+      return <EcommerceIcon />
     default:
       return null
   }
 }
 
-// Extra Neon Tech Visual Widgets
-const MonetizeDashboard = () => (
-  <div className="mt-4 p-3 bg-black/40 border border-white/5 rounded-lg space-y-3 font-mono text-xs">
-    <div className="flex justify-between items-center text-[10px] text-gray-500">
-      <span>光弦瞬时流速 (AURA FLUX RATE)</span>
-      <span className="text-[#39FF14] animate-pulse">● LIVE</span>
+// Extra Custom UI widgets matching the Notion-style Golden Fusion with full bilingual support
+const MonetizeDashboard = ({ lng }: { lng: string }) => (
+  <div className="mt-4 p-3 bg-white/40 dark:bg-[#1C261F]/40 border border-[#5F7A61]/10 rounded-xl space-y-3 font-sans text-xs">
+    <div className="flex justify-between items-center text-[10px] text-[#2A2A2A]/50 dark:text-[#FDFBF7]/50">
+      <span className="font-semibold uppercase tracking-wider">
+        {lng === 'zh-CN' ? '宣发变现热度 (MISSION HEAT)' : 'PROMOTION HEAT (MISSION HEAT)'}
+      </span>
+      <span className="text-[#5F7A61] dark:text-[#7FA382] font-bold animate-pulse">
+        {lng === 'zh-CN' ? '● 实时更新' : '● Live Updated'}
+      </span>
     </div>
     <div className="h-16 relative overflow-hidden flex items-end">
       <CanvasLineChart />
     </div>
     <div className="grid grid-cols-2 gap-2 text-[10px]">
-      <div className="bg-white/5 p-1.5 rounded border border-white/5">
-        <div className="text-gray-500">高能奖励池</div>
-        <div className="text-white font-bold text-[#FF007F] mt-0.5">120K+ AUR</div>
+      <div className="bg-white/60 dark:bg-black/20 p-2 rounded-lg border border-[#5F7A61]/10">
+        <div className="text-[#2A2A2A]/50 dark:text-[#FDFBF7]/50 font-medium">
+          {lng === 'zh-CN' ? '高能任务奖池' : 'Hot Rewards Pool'}
+        </div>
+        <div className="text-[#F3A390] dark:text-[#F6B4A5] font-extrabold text-xs mt-0.5">
+          {lng === 'zh-CN' ? '12,000+ 积分' : '12,000+ Pts'}
+        </div>
       </div>
-      <div className="bg-white/5 p-1.5 rounded border border-white/5">
-        <div className="text-gray-500">创作者活跃度</div>
-        <div className="text-white font-bold text-[#39FF14] mt-0.5">98.4%</div>
+      <div className="bg-white/60 dark:bg-black/20 p-2 rounded-lg border border-[#5F7A61]/10">
+        <div className="text-[#2A2A2A]/50 dark:text-[#FDFBF7]/50 font-medium">
+          {lng === 'zh-CN' ? '店主任务达成率' : 'Store Completion'}
+        </div>
+        <div className="text-[#5F7A61] dark:text-[#7FA382] font-extrabold text-xs mt-0.5">98.4%</div>
       </div>
     </div>
   </div>
 )
 
-const PublishChannels = () => (
+const PublishChannels = ({ lng }: { lng: string }) => (
   <div className="mt-4 flex flex-wrap gap-2 items-center">
-    <div className="flex items-center gap-1.5 bg-[#FF007F]/10 border border-[#FF007F]/20 px-2 py-1 rounded text-[10px] text-white">
-      <span className="w-1.5 h-1.5 rounded-full bg-[#FF007F] animate-pulse" />
-      TikTok
+    <div className="flex items-center gap-1.5 bg-[#F3A390]/10 border border-[#F3A390]/20 px-2.5 py-1 rounded-full text-[10px] text-[#F3A390] font-semibold">
+      <span className="w-1.5 h-1.5 rounded-full bg-[#F3A390]" />
+      {lng === 'zh-CN' ? '抖音' : 'Douyin'}
     </div>
-    <div className="flex items-center gap-1.5 bg-[#39FF14]/10 border border-[#39FF14]/20 px-2 py-1 rounded text-[10px] text-white">
-      <span className="w-1.5 h-1.5 rounded-full bg-[#39FF14] animate-pulse" />
-      小红书
+    <div className="flex items-center gap-1.5 bg-[#5F7A61]/10 border border-[#5F7A61]/20 px-2.5 py-1 rounded-full text-[10px] text-[#5F7A61] font-semibold">
+      <span className="w-1.5 h-1.5 rounded-full bg-[#5F7A61]" />
+      {lng === 'zh-CN' ? '小红书' : 'Red/XHS'}
     </div>
-    <div className="flex items-center gap-1.5 bg-[#00E5FF]/10 border border-[#00E5FF]/20 px-2 py-1 rounded text-[10px] text-white">
-      <span className="w-1.5 h-1.5 rounded-full bg-[#00E5FF] animate-pulse" />
-      YouTube
+    <div className="flex items-center gap-1.5 bg-[#E5B25D]/10 border border-[#E5B25D]/20 px-2.5 py-1 rounded-full text-[10px] text-[#E5B25D] font-semibold">
+      <span className="w-1.5 h-1.5 rounded-full bg-[#E5B25D]" />
+      {lng === 'zh-CN' ? '快手' : 'Kuaishou'}
     </div>
-    <div className="flex items-center gap-1.5 bg-[#39FF14]/10 border border-[#39FF14]/20 px-2 py-1 rounded text-[10px] text-white">
-      <span className="w-1.5 h-1.5 rounded-full bg-[#39FF14] animate-pulse" />
-      抖音
+    <div className="flex items-center gap-1.5 bg-[#5F7A61]/10 border border-[#5F7A61]/20 px-2.5 py-1 rounded-full text-[10px] text-[#5F7A61] font-semibold">
+      <span className="w-1.5 h-1.5 rounded-full bg-[#7FA382]" />
+      {lng === 'zh-CN' ? '视频号' : 'WeChat Channel'}
     </div>
   </div>
 )
 
-const EngageTerminal = () => (
-  <div className="mt-4 p-2 bg-black/80 border border-[#39FF14]/20 rounded font-mono text-[9px] text-[#39FF14] h-20 overflow-hidden relative">
-    <div className="absolute top-1 right-2 w-1.5 h-1.5 rounded-full bg-[#39FF14] animate-ping" />
-    <div className="opacity-70">&gt; Social Agent v1.2.0</div>
-    <div className="opacity-90">&gt; Status: Listening (24h)</div>
-    <div className="opacity-70 text-[#FF007F]">&gt; Engaged: +1,248 users</div>
+const EngageTerminal = ({ lng }: { lng: string }) => (
+  <div className="mt-4 p-3 bg-white/40 dark:bg-[#1C261F]/40 border border-[#5F7A61]/10 rounded-xl font-mono text-[9px] text-[#5F7A61] dark:text-[#7FA382] h-20 overflow-hidden relative">
+    <div className="absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-[#5F7A61] dark:bg-[#7FA382] animate-ping" />
+    <div className="opacity-70">
+      {lng === 'zh-CN' ? '> 店铺智体运营助理 v1.2.0' : '> AI Shop Agent v1.2.0'}
+    </div>
+    <div className="opacity-90 font-semibold">
+      {lng === 'zh-CN' ? '> 运行状态: 全天候自动值守' : '> Status: 24/7 Autopilot'}
+    </div>
+    <div className="opacity-70 text-[#F3A390] dark:text-[#F6B4A5]">
+      {lng === 'zh-CN' ? '> 今日引流用户数: +1,248 人' : '> Traffic Driven Today: +1,248'}
+    </div>
     <div className="flex items-center">
-      <span>&gt; Thread-01: OK</span>
-      <span className="w-1 h-3 bg-[#39FF14] ml-1 animate-pulse" />
+      <span>
+        {lng === 'zh-CN' ? '> 账号连接: 正常 (CONNECTED)' : '> Connection: CONNECTED'}
+      </span>
+      <span className="w-1 h-3 bg-[#5F7A61] dark:bg-[#7FA382] ml-1 animate-pulse" />
     </div>
   </div>
 )
 
-const RevenueLedger = () => (
-  <div className="mt-4 p-3 bg-black/40 border border-[#00E5FF]/10 rounded-lg space-y-1 font-mono">
-    <div className="text-[10px] text-gray-500 uppercase tracking-widest">Aura Asset Ledger</div>
-    <div className="text-xl font-bold text-[#00E5FF] drop-shadow-[0_0_6px_rgba(0,229,255,0.4)]">
-      82,491.50
-      <span className="text-[10px] text-gray-400 ml-1">AUR</span>
+const RevenueLedger = ({ lng }: { lng: string }) => (
+  <div className="mt-4 p-3 bg-white/40 dark:bg-[#1C261F]/40 border border-[#5F7A61]/10 rounded-xl space-y-1 font-sans">
+    <div className="text-[10px] text-[#2A2A2A]/50 dark:text-[#FDFBF7]/50 uppercase tracking-widest font-semibold">
+      {lng === 'zh-CN' ? '商户累计收益明细 (Asset Ledger)' : 'Accumulated Earnings Ledger'}
     </div>
-    <div className="text-[9px] text-[#39FF14] flex items-center gap-1">
+    <div className="text-xl font-bold text-[#E5B25D] dark:text-[#E9C482]">
+      82,491.50
+      <span className="text-[10px] text-[#2A2A2A]/50 dark:text-[#FDFBF7]/50 ml-1 font-medium">
+        {lng === 'zh-CN' ? '积分' : 'Pts'}
+      </span>
+    </div>
+    <div className="text-[9px] text-[#5F7A61] dark:text-[#7FA382] flex items-center gap-1 font-bold">
       <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
         <polyline points="18 15 12 9 6 15" />
       </svg>
-      <span>+14.2% 今日收益率</span>
+      <span>
+        {lng === 'zh-CN' ? '+14.2% 本周环比增长' : '+14.2% Week-over-Week'}
+      </span>
     </div>
   </div>
 )
 
-const CreateSynthesizer = () => (
-  <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 w-full font-mono text-[10px] text-gray-400 bg-black/40 border border-white/5 p-4 rounded-xl">
-    <div className="space-y-1">
-      <div className="flex justify-between">
-        <span>粒子密度 (DENSITY)</span>
-        <span className="text-[#39FF14]">65%</span>
+const CreateSynthesizer = ({ lng }: { lng: string }) => (
+  <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 w-full font-sans text-[10px] text-[#2A2A2A]/60 dark:text-[#FDFBF7]/60 bg-white/40 dark:bg-[#1C261F]/40 border border-[#5F7A61]/10 p-4 rounded-xl">
+    <div className="space-y-1.5">
+      <div className="flex justify-between font-semibold">
+        <span>{lng === 'zh-CN' ? '文案爆度 (COPYWRITER COZY)' : 'COPYWRITER COZY'}</span>
+        <span className="text-[#5F7A61] dark:text-[#7FA382]">65%</span>
       </div>
-      <div className="h-1.5 bg-white/5 rounded-full overflow-hidden relative">
-        <div className="absolute top-0 left-0 h-full w-[65%] bg-gradient-to-r from-[#39FF14] to-[#00E5FF]" />
-        <div className="absolute top-[-2px] left-[65%] w-2 h-2.5 rounded bg-white shadow-[0_0_6px_#00E5FF]" />
-      </div>
-    </div>
-
-    <div className="space-y-1">
-      <div className="flex justify-between">
-        <span>渲染流速 (RENDER FLUX)</span>
-        <span className="text-[#FF007F]">50%</span>
-      </div>
-      <div className="h-1.5 bg-white/5 rounded-full overflow-hidden relative">
-        <div className="absolute top-0 left-0 h-full w-[50%] bg-gradient-to-r from-[#FF007F] to-[#00E5FF]" />
-        <div className="absolute top-[-2px] left-[50%] w-2 h-2.5 rounded bg-white shadow-[0_0_6px_#FF007F]" />
+      <div className="h-1.5 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden relative">
+        <div className="absolute top-0 left-0 h-full w-[65%] bg-gradient-to-r from-[#5F7A61] to-[#E5B25D]" />
+        <div className="absolute top-[-2px] left-[65%] w-2 h-2.5 rounded bg-[#FAF7F2] border border-[#5F7A61]/40 shadow-sm" />
       </div>
     </div>
 
-    <div className="space-y-1">
-      <div className="flex justify-between">
-        <span>灵感熵值 (ENTROPY)</span>
-        <span className="text-[#00E5FF]">82%</span>
+    <div className="space-y-1.5">
+      <div className="flex justify-between font-semibold">
+        <span>{lng === 'zh-CN' ? '海报渲染 (POSTER RENDER)' : 'POSTER RENDER'}</span>
+        <span className="text-[#F3A390]">50%</span>
       </div>
-      <div className="h-1.5 bg-white/5 rounded-full overflow-hidden relative">
-        <div className="absolute top-0 left-0 h-full w-[82%] bg-gradient-to-r from-[#00E5FF] to-[#39FF14]" />
-        <div className="absolute top-[-2px] left-[82%] w-2 h-2.5 rounded bg-white shadow-[0_0_6px_#39FF14]" />
+      <div className="h-1.5 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden relative">
+        <div className="absolute top-0 left-0 h-full w-[50%] bg-gradient-to-r from-[#F3A390] to-[#E5B25D]" />
+        <div className="absolute top-[-2px] left-[50%] w-2 h-2.5 rounded bg-[#FAF7F2] border border-[#F3A390]/40 shadow-sm" />
+      </div>
+    </div>
+
+    <div className="space-y-1.5">
+      <div className="flex justify-between font-semibold">
+        <span>{lng === 'zh-CN' ? '视频合成 (VIDEO SYNTH)' : 'VIDEO SYNTH'}</span>
+        <span className="text-[#E5B25D]">82%</span>
+      </div>
+      <div className="h-1.5 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden relative">
+        <div className="absolute top-0 left-0 h-full w-[82%] bg-gradient-to-r from-[#E5B25D] to-[#5F7A61]" />
+        <div className="absolute top-[-2px] left-[82%] w-2 h-2.5 rounded bg-[#FAF7F2] border border-[#E5B25D]/40 shadow-sm" />
       </div>
     </div>
 
     {/* Batch progress */}
-    <div className="md:col-span-3 pt-3 border-t border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-3">
+    <div className="md:col-span-3 pt-3 border-t border-[#5F7A61]/10 flex flex-col md:flex-row md:items-center justify-between gap-3">
       <div className="flex items-center gap-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#39FF14] animate-ping" />
-        <span className="text-[9px] text-[#39FF14] uppercase tracking-wider">批量成片流水线正在热合成中...</span>
+        <span className="w-1.5 h-1.5 rounded-full bg-[#5F7A61] dark:bg-[#7FA382] animate-ping" />
+        <span className="text-[9px] text-[#5F7A61] dark:text-[#7FA382] font-semibold uppercase tracking-wider">
+          {lng === 'zh-CN' ? 'AI 智能内容生成流水线就绪...' : 'AI content assembly line ready...'}
+        </span>
       </div>
-      <div className="flex items-center gap-1 text-[9px] text-gray-500">
-        <span>[████████████░░░░░] 72%</span>
+      <div className="flex items-center gap-1 text-[9px] text-[#2A2A2A]/50 dark:text-[#FDFBF7]/50 font-mono">
+        <span>[████████████░░░░░] 72% {lng === 'zh-CN' ? '已完成' : 'COMPLETED'}</span>
       </div>
     </div>
   </div>
 )
 
-const renderExtraWidget = (id: string) => {
+const EcommerceStudioWidget = ({ lng }: { lng: string }) => (
+  <div className="mt-4 flex flex-wrap gap-2 items-center">
+    <div className="flex items-center gap-1.5 bg-[#E5B25D]/10 border border-[#E5B25D]/20 px-2.5 py-1 rounded-full text-[10px] text-[#E5B25D] font-semibold">
+      <span className="w-1.5 h-1.5 rounded-full bg-[#E5B25D]" />
+      {lng === 'zh-CN' ? '背景替换' : 'Background Gen'}
+    </div>
+    <div className="flex items-center gap-1.5 bg-[#5F7A61]/10 border border-[#5F7A61]/20 px-2.5 py-1 rounded-full text-[10px] text-[#5F7A61] font-semibold">
+      <span className="w-1.5 h-1.5 rounded-full bg-[#5F7A61]" />
+      {lng === 'zh-CN' ? '人像模特' : 'AI Model'}
+    </div>
+    <div className="flex items-center gap-1.5 bg-[#F3A390]/10 border border-[#F3A390]/20 px-2.5 py-1 rounded-full text-[10px] text-[#F3A390] font-semibold">
+      <span className="w-1.5 h-1.5 rounded-full bg-[#F3A390]" />
+      {lng === 'zh-CN' ? '一致视频 (R2V)' : 'Consistent Video'}
+    </div>
+  </div>
+)
+
+const renderExtraWidget = (id: string, lng: string) => {
   switch (id) {
     case 'monetize':
-      return <MonetizeDashboard />
+      return <MonetizeDashboard lng={lng} />
     case 'publish':
-      return <PublishChannels />
+      return <PublishChannels lng={lng} />
     case 'engage':
-      return <EngageTerminal />
+      return <EngageTerminal lng={lng} />
     case 'revenue':
-      return <RevenueLedger />
+      return <RevenueLedger lng={lng} />
     case 'create':
-      return <CreateSynthesizer />
+      return <CreateSynthesizer lng={lng} />
+    case 'ecommerce':
+      return <EcommerceStudioWidget lng={lng} />
     default:
       return null
   }
@@ -300,6 +254,81 @@ const renderExtraWidget = (id: string) => {
 export default function HubContent({ lng }: HubContentProps) {
   const router = useRouter()
   const token = useUserStore(state => state.token)
+
+  const modules: ModuleItem[] = [
+    {
+      id: 'monetize',
+      title: lng === 'zh-CN' ? '商户爆单任务广场' : 'Merchant Mission Square',
+      subtitle: lng === 'zh-CN' ? '推广收益' : 'Monetize Rewards',
+      description: lng === 'zh-CN'
+        ? '发现同城爆单推广宣发任务，提交您的海报与到店Vlog草稿，获取丰厚的积分与引流奖励。'
+        : 'Discover local viral marketing tasks. Submit posters or Vlog drafts to earn rich points and rewards.',
+      color: 'from-[#D2232A] to-[#F3A390]',
+      shadow: 'shadow-red-100/30 dark:shadow-red-950/20',
+      path: '/mission-square',
+      gridClass: 'md:col-span-2 md:row-span-2 min-h-[380px]',
+    },
+    {
+      id: 'publish',
+      title: lng === 'zh-CN' ? '绑定推广抖音/红书' : 'Link Social Channels',
+      subtitle: lng === 'zh-CN' ? '多端同步' : 'Multi-Platform Sync',
+      description: lng === 'zh-CN'
+        ? '安全绑定您的抖音、小红书、快手、微信视频号等同城流量账号。采用合规的草稿箱安全推送机制，轻松实现多平台内容群发。'
+        : 'Securely bind Douyin, Xiaohongshu, Kuaishou, and WeChat channels. Smooth multi-platform publishing via secure draft push.',
+      color: 'from-[#F3A390] to-[#E5B25D]',
+      shadow: 'shadow-pink-100/30 dark:shadow-pink-950/20',
+      path: '/accounts',
+      gridClass: 'md:col-span-2 md:row-span-1 min-h-[180px]',
+    },
+    {
+      id: 'engage',
+      title: lng === 'zh-CN' ? 'AI 同城引流获客' : 'AI Social Traffic Agent',
+      subtitle: lng === 'zh-CN' ? '全天候值守' : '24/7 Autopilot',
+      description: lng === 'zh-CN'
+        ? '实体门店专用的 AI 自动引流托管助理。自动捕捉高意向同城食客/顾客，打通从线上曝光到线下进店消费的客流转化闭环。'
+        : 'Autopilot AI agent dedicated to local merchants. Captures high-intent local customers to drive foot traffic and boost conversions.',
+      color: 'from-[#E5B25D] to-[#D2232A]',
+      shadow: 'shadow-yellow-100/30 dark:shadow-yellow-950/20',
+      path: '/ai-social',
+      gridClass: 'md:col-span-1 md:row-span-1 min-h-[180px]',
+    },
+    {
+      id: 'revenue',
+      title: lng === 'zh-CN' ? '获客推广收益中心' : 'Monetization & Analytics',
+      subtitle: lng === 'zh-CN' ? '安全结算' : 'Secure Payouts',
+      description: lng === 'zh-CN'
+        ? '实时统计您的推广积分与获客收益明细，收益明晰安全。支持一键发起结算和提取。'
+        : 'Track your marketing points and conversion metrics in real-time. Secure, transparent ledger with quick payouts.',
+      color: 'from-[#5F7A61] to-[#E5B25D]',
+      shadow: 'shadow-teal-100/30 dark:shadow-teal-950/20',
+      path: '/revenue',
+      gridClass: 'md:col-span-1 md:row-span-1 min-h-[180px]',
+    },
+    {
+      id: 'create',
+      title: lng === 'zh-CN' ? 'AI 自动获客创作室' : 'AI Creative Studio',
+      subtitle: lng === 'zh-CN' ? '爆款生产线' : 'Viral Production Line',
+      description: lng === 'zh-CN'
+        ? '实体店老板专用的 AI 宣发创作流水线。只需输入您的特色招牌或活动，即可一键批量生成爆款同城引流文案、活动海报及精美短视频。'
+        : 'Cozy content workflow tailored for store owners. Input highlights to batch generate viral posts and short videos.',
+      color: 'from-[#D2232A] to-[#E5B25D]',
+      shadow: 'shadow-orange-100/30 dark:shadow-orange-950/20',
+      path: '/draft-box',
+      gridClass: 'md:col-span-2 md:row-span-1 min-h-[180px]',
+    },
+    {
+      id: 'ecommerce',
+      title: lng === 'zh-CN' ? '电商智能创作工坊' : 'E-commerce AI Studio',
+      subtitle: lng === 'zh-CN' ? '视觉营销中心' : 'Visual Marketing Hub',
+      description: lng === 'zh-CN'
+        ? '专为电商卖家与门店主设计的视觉内容生成中心。支持智能商品背景替换、虚拟模特试衣、以及基于万相 2.7 R2V 技术的角色一致视频生成。'
+        : 'Visual content generator tailored for e-commerce. Replace backgrounds, generate virtual model fittings, and synthesize consistent videos.',
+      color: 'from-[#E5B25D] to-[#5F7A61]',
+      shadow: 'shadow-yellow-100/30 dark:shadow-teal-950/20',
+      path: '/ecommerce-studio',
+      gridClass: 'md:col-span-2 md:row-span-1 min-h-[180px]',
+    },
+  ]
 
   const handleCardClick = (path: string) => {
     if (!token) {
@@ -325,23 +354,13 @@ export default function HubContent({ lng }: HubContentProps) {
   }
 
   return (
-    <div className="min-h-screen bg-black selection:bg-[#FF007F]/20 p-6 md:p-16 flex flex-col items-center relative overflow-hidden">
-      {/* CRT Scanline Filter */}
-      <div 
-        className="pointer-events-none absolute inset-0 z-10 opacity-[0.03]"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06))',
-          backgroundSize: '100% 4px, 6px 100%'
-        }}
-      />
-      {/* Radial dot grid background */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `radial-gradient(circle, #39FF14 1px, transparent 1px)`,
-          backgroundSize: '24px 24px',
-        }}
-      />
+    <div className="min-h-screen bg-[#FAF7F2] dark:bg-[#18221B] selection:bg-[#5F7A61]/20 p-6 md:p-16 flex flex-col items-center relative overflow-hidden font-sans">
+      
+      {/* Premium Warm Soft Spotlights */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,#5F7A61_0%,transparent_70%)] opacity-[0.05] dark:opacity-[0.08] blur-3xl animate-pulse" style={{ animationDuration: '8s' }} />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle,#F3A390_0%,transparent_70%)] opacity-[0.05] dark:opacity-[0.08] blur-3xl animate-pulse" style={{ animationDuration: '12s' }} />
+      </div>
 
       {/* Header */}
       <motion.div
@@ -349,11 +368,13 @@ export default function HubContent({ lng }: HubContentProps) {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-12 space-y-4 relative z-20"
       >
-        <h1 className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-[#39FF14] via-[#00E5FF] to-[#FF007F] drop-shadow-[0_0_15px_rgba(57,255,20,0.3)] tracking-wider">
-          AuraString 极简内容实验室
+        <h1 className="text-4xl md:text-5xl font-extrabold text-[#2A2A2A] dark:text-[#FDFBF7] tracking-tight text-center">
+          {lng === 'zh-CN' ? '爱易客 智能创作空间' : 'aiautoedit Creative Space'}
         </h1>
-        <p className="text-gray-400 text-sm md:text-base max-w-2xl mx-auto tracking-widest font-light">
-          光弦 · 光流 · 智体 · 批量 —— 专为新一代超级个体打造的赛博智能创作流水线。
+        <p className="text-[#2A2A2A]/70 dark:text-[#FDFBF7]/70 text-sm md:text-base max-w-2xl mx-auto tracking-wide font-normal">
+          {lng === 'zh-CN' 
+            ? '文案撰写 · 宣传发布 · 智体托管 —— 专为实体店老板与创作者量身打造的内容获客与推广中心。'
+            : 'Cozy copywriting · Multi-platform publish · AI autopilot —— Tailored content growth center for store owners & creators.'}
         </p>
       </motion.div>
 
@@ -367,43 +388,45 @@ export default function HubContent({ lng }: HubContentProps) {
         {modules.map((m) => (
           <motion.div key={m.id} variants={item} className={m.gridClass}>
             <GlassCard 
-              className="h-full flex flex-col group relative overflow-hidden cursor-pointer transition-all active:scale-[0.99] border border-white/5 hover:border-[#FF007F]/40 hover:shadow-[0_0_25px_rgba(255,0,127,0.15)] bg-black/60 backdrop-blur-xl p-6"
+              className="h-full flex flex-col group relative overflow-hidden cursor-pointer transition-all active:scale-[0.99] border border-[#5F7A61]/15 dark:border-[#7FA382]/15 hover:border-[#F3A390]/40 dark:hover:border-[#F3A390]/40 bg-white/70 dark:bg-[#202C24]/60 backdrop-blur-xl p-6 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(95,122,97,0.06)]"
               onClick={() => handleCardClick(m.path)}
             >
               {/* Radial Blur Glow */}
-              <div className={`absolute -right-12 -top-12 w-40 h-40 bg-gradient-to-br ${m.color} blur-3xl opacity-10 group-hover:opacity-30 transition-opacity`} />
+              <div className={`absolute -right-12 -top-12 w-40 h-40 bg-gradient-to-br ${m.color} blur-3xl opacity-[0.03] group-hover:opacity-[0.08] transition-opacity`} />
               
               <div className="relative z-10 flex flex-col h-full justify-between">
                 <div>
-                  {/* Glowing Custom Vector SVG Icon */}
+                  {/* Glowing Custom Vector Icon Container */}
                   <div className="mb-6 flex justify-between items-start">
-                    <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 group-hover:border-[#FF007F]/30 group-hover:bg-[#FF007F]/5 transition-colors">
+                    <div className="p-3 rounded-2xl bg-[#5F7A61]/5 border border-[#5F7A61]/10 group-hover:border-[#F3A390]/30 group-hover:bg-[#F3A390]/5 transition-colors">
                       {getModuleIcon(m.id)}
                     </div>
                     {/* Tiny visual tech tag */}
                     <div className="flex items-center gap-1.5">
                       <span className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${m.color} animate-pulse`} />
-                      <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">{m.id}</span>
+                      <span className="text-[10px] font-semibold text-[#2A2A2A]/40 dark:text-[#FDFBF7]/40 uppercase tracking-widest">{m.id}</span>
                     </div>
                   </div>
                   
-                  <div className="space-y-1.5 mb-4">
-                    <span className="text-[10px] font-bold text-[#39FF14] tracking-widest uppercase">{m.subtitle}</span>
-                    <h3 className="text-xl md:text-2xl font-black text-white group-hover:text-[#FF007F] transition-colors tracking-wide">{m.title}</h3>
+                  <div className="space-y-1 mb-4">
+                    <span className="text-[10px] font-bold text-[#5F7A61] dark:text-[#7FA382] tracking-widest uppercase">{m.subtitle}</span>
+                    <h3 className="text-xl md:text-2xl font-bold text-[#2A2A2A] dark:text-[#FDFBF7] group-hover:text-[#5F7A61] dark:group-hover:text-[#7FA382] transition-colors tracking-tight">{m.title}</h3>
                   </div>
 
-                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed mb-6 font-light">
+                  <p className="text-[#2A2A2A]/70 dark:text-[#FDFBF7]/70 text-xs md:text-sm leading-relaxed mb-6 font-normal">
                     {m.description}
                   </p>
                 </div>
 
-                {/* Simulated Console Dashboard Widget */}
+                {/* Dashboard Widget */}
                 <div>
-                  {renderExtraWidget(m.id)}
+                  {renderExtraWidget(m.id, lng)}
 
-                  <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-[#FF007F] font-bold group/btn">
-                    <span className="text-xs tracking-widest uppercase group-hover:text-white transition-colors">立即开启 SYSTEM.ACCESS</span>
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-[#FF007F] to-[#00E5FF] flex items-center justify-center text-white transition-transform group-hover/btn:translate-x-1 shadow-[0_0_10px_rgba(255,0,127,0.3)]">
+                  <div className="mt-6 pt-4 border-t border-[#5F7A61]/10 flex items-center justify-between text-[#5F7A61] dark:text-[#7FA382] font-bold group/btn">
+                    <span className="text-xs tracking-wide group-hover:text-[#2A2A2A] dark:group-hover:text-white transition-colors">
+                      {lng === 'zh-CN' ? '一键进入创意面板' : 'Enter Workspace'}
+                    </span>
+                    <div className="w-8 h-8 rounded-full bg-[#5F7A61] text-[#FAF7F2] flex items-center justify-center transition-transform group-hover/btn:translate-x-1 shadow-[0_3px_10px_rgba(95,122,97,0.25)]">
                       <ArrowRight size={14} strokeWidth={2.5} />
                     </div>
                   </div>
@@ -419,11 +442,10 @@ export default function HubContent({ lng }: HubContentProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="mt-16 text-center text-gray-600 text-[10px] tracking-widest relative z-20 font-mono"
+        className="mt-16 text-center text-[#2A2A2A]/50 dark:text-[#FDFBF7]/50 text-[10px] tracking-widest relative z-20 font-medium"
       >
-        © 2026 AuraString.cloud | 用极简内容粒子，点亮超级个体的赛博未来
+        © 2026 {lng === 'zh-CN' ? '爱易客' : 'aiautoedit'} Laboratory. All Rights Reserved.
       </motion.div>
     </div>
   )
 }
-

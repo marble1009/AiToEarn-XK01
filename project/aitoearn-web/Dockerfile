@@ -20,7 +20,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN pnpm build
+RUN NODE_OPTIONS="--max-old-space-size=1024" pnpm build
 
 FROM base AS production
 WORKDIR /app

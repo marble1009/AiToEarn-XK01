@@ -216,6 +216,9 @@ importers:
       dayjs:
         specifier: ^1.11.14
         version: 1.11.19
+      execa:
+        specifier: ^9.6.1
+        version: 9.6.1
       express:
         specifier: 5.1.0
         version: 5.1.0
@@ -645,6 +648,9 @@ importers:
       '@yikart/redlock':
         specifier: workspace:*
         version: link:../redlock
+      ali-oss:
+        specifier: ^6.23.0
+        version: 6.23.0
       dayjs:
         specifier: ^1.11.13
         version: 1.11.19
@@ -664,6 +670,9 @@ importers:
         specifier: ^4.3.5
         version: 4.3.6
     devDependencies:
+      '@types/ali-oss':
+        specifier: ^6.23.3
+        version: 6.23.3
       '@types/mime-types':
         specifier: ^3.0.1
         version: 3.0.1

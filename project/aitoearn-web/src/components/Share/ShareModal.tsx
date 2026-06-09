@@ -206,7 +206,7 @@ export function ShareModal({ taskId, open = false, onOpenChange, trigger }: Shar
       const res = await agentApi.createPublicShare(taskId, validitySeconds)
       if (res?.data) {
         const baseUrl
-          = typeof window !== 'undefined' ? window.location.origin : 'https://aitoearn.ai'
+          = typeof window !== 'undefined' ? window.location.origin : 'https://aiautoedit.art'
         const fullUrl = `${baseUrl}/chat?token=${res.data.token}`
         setShareLink(fullUrl)
         setShareExpiresAt(res.data.expiresAt)
@@ -247,7 +247,7 @@ export function ShareModal({ taskId, open = false, onOpenChange, trigger }: Shar
         const res = await agentApi.createPublicShare(taskId, validitySeconds)
         if (res?.data) {
           const baseUrl
-            = typeof window !== 'undefined' ? window.location.origin : 'https://aitoearn.ai'
+            = typeof window !== 'undefined' ? window.location.origin : 'https://aiautoedit.art'
           link = `${baseUrl}/chat?token=${res.data.token}`
           setShareLink(link)
           setShareExpiresAt(res.data.expiresAt)
@@ -286,7 +286,7 @@ export function ShareModal({ taskId, open = false, onOpenChange, trigger }: Shar
         const res = await agentApi.createPublicShare(taskId, validitySeconds)
         if (res?.data) {
           const baseUrl
-            = typeof window !== 'undefined' ? window.location.origin : 'https://aitoearn.ai'
+            = typeof window !== 'undefined' ? window.location.origin : 'https://aiautoedit.art'
           link = `${baseUrl}/chat?token=${res.data.token}`
           setShareLink(link)
           setShareExpiresAt(res.data.expiresAt)
@@ -323,7 +323,7 @@ export function ShareModal({ taskId, open = false, onOpenChange, trigger }: Shar
       }
 
       const description = `${t('publishShareDescription')}\n\n${link}`
-      const tags = ['aitoearn', 'agent']
+      const tags = ['aiautoedit', 'agent']
 
       const params = new URLSearchParams()
       params.set('aiGenerated', 'true')
@@ -363,7 +363,7 @@ export function ShareModal({ taskId, open = false, onOpenChange, trigger }: Shar
         const res = await agentApi.createPublicShare(taskId, validitySeconds)
         if (res?.data) {
           const baseUrl
-            = typeof window !== 'undefined' ? window.location.origin : 'https://aitoearn.ai'
+            = typeof window !== 'undefined' ? window.location.origin : 'https://aiautoedit.art'
           link = `${baseUrl}/chat?token=${res.data.token}`
           expiresAt = res.data.expiresAt
           setShareLink(link)
@@ -399,8 +399,8 @@ export function ShareModal({ taskId, open = false, onOpenChange, trigger }: Shar
         a.href = url
         a.download
           = blobs.length === 1
-            ? `aitoearn_conversation_${taskId}.png`
-            : `aitoearn_${taskId}_${i + 1}.png`
+            ? `aiautoedit_conversation_${taskId}.png`
+            : `aiautoedit_${taskId}_${i + 1}.png`
         document.body.appendChild(a)
         a.click()
         a.remove()

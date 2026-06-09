@@ -91,6 +91,7 @@ export interface NewMaterial {
 }
 
 export interface UpMaterial {
+  type?: MaterialType
   title?: string
   desc?: string
   topics?: string[]

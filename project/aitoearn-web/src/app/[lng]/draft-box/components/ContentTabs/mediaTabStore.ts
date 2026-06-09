@@ -8,8 +8,9 @@ import type { MediaItem } from '@/api/types/media'
 import type { PromotionMaterial } from '@/app/[lng]/brand-promotion/brandPromotionStore/types'
 import { create } from 'zustand'
 import { combine } from 'zustand/middleware'
-import { apiGetMaterialList } from '@/api/material'
-import { getMediaList } from '@/api/media'
+import { apiGetMaterialList, apiBatchDeleteMaterials, apiFilterDeleteMaterials } from '@/api/material'
+import { getMediaList, apiBatchDeleteMedia, apiFilterDeleteMedia } from '@/api/media'
+import { usePlanDetailStore } from '@/app/[lng]/brand-promotion/planDetailStore'
 
 const PAGE_SIZE = 20
 const ALL_PAGE_SIZE = 20
@@ -97,6 +98,11 @@ export const useMediaTabStore = create(
       previewOpen: false,
       previewIndex: 0,
       previewType: 'video' as 'video' | 'img',
+      // 批量/条件删除相关的状态
+      batchMode: false,
+      selectedIds: [] as string[],
+      batchDeleting: false,
+      conditionalDeleteDialogOpen: false,
     },
     (set, get) => ({
       /**
@@ -355,23 +361,22 @@ export const useMediaTabStore = create(
           const freshImgs = (imgRes?.data?.list || []).map((m: MediaItem) => mediaToAllItem(m, 'img'))
 
           const current = get().all
-          const existingIds = new Set(current.mergedList.map(item => item.id))
-          const newItems = [...freshDrafts, ...freshVideos, ...freshImgs].filter(item => !existingIds.has(item.id))
+          const combinedMap = new Map<string, AllTabItem>()
+          current.mergedList.forEach(item => combinedMap.set(item.id, item))
+          ;[...freshDrafts, ...freshVideos, ...freshImgs].forEach(item => combinedMap.set(item.id, item))
 
-          if (newItems.length > 0) {
-            set({
-              all: {
-                ...current,
-                mergedList: sortByCreatedAtDesc([...newItems, ...current.mergedList]),
-                draftTotal: draftRes?.data?.total || current.draftTotal,
-                videoTotal: videoRes?.data?.total || current.videoTotal,
-                imgTotal: imgRes?.data?.total || current.imgTotal,
-              },
-            })
-          }
+          set({
+            all: {
+              ...current,
+              mergedList: sortByCreatedAtDesc(Array.from(combinedMap.values())),
+              draftTotal: draftRes?.data?.total || current.draftTotal,
+              videoTotal: videoRes?.data?.total || current.videoTotal,
+              imgTotal: imgRes?.data?.total || current.imgTotal,
+            },
+          })
         }
-        catch {
-          // 静默失败
+        catch (error) {
+          console.error('Failed to silent refresh all list:', error)
         }
       },
 
@@ -385,6 +390,10 @@ export const useMediaTabStore = create(
           all: { ...defaultAllState },
           previewOpen: false,
           previewIndex: 0,
+          batchMode: false,
+          selectedIds: [],
+          batchDeleting: false,
+          conditionalDeleteDialogOpen: false,
         })
       },
 
@@ -402,23 +411,26 @@ export const useMediaTabStore = create(
             if (res?.data) {
               const freshList = res.data.list || []
               const total = res.data.total || 0
-              // 构建当前列表的 _id Set
-              const existingIds = new Set(current.list.map(m => m._id))
-              // 找出新增项
-              const newItems = freshList.filter(item => !existingIds.has(item._id))
-              if (newItems.length > 0) {
-                set({
-                  [type]: {
-                    ...current,
-                    list: [...newItems, ...current.list],
-                    total,
-                  },
-                })
-              }
+              
+              const combinedMap = new Map<string, MediaItem>()
+              current.list.forEach(m => combinedMap.set(m._id, m))
+              freshList.forEach(m => combinedMap.set(m._id, m))
+
+              const updatedList = Array.from(combinedMap.values()).sort(
+                (a, b) => new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime()
+              )
+
+              set({
+                [type]: {
+                  ...current,
+                  list: updatedList,
+                  total,
+                },
+              })
             }
           }
-          catch {
-            // 静默失败
+          catch (error) {
+            console.error(`Failed to silent refresh ${type} list:`, error)
           }
         }))
       },
@@ -435,6 +447,139 @@ export const useMediaTabStore = create(
        */
       closePreview: () => {
         set({ previewOpen: false })
+      },
+
+      enterBatchMode: () => {
+        set({ batchMode: true, selectedIds: [] })
+      },
+
+      exitBatchMode: () => {
+        set({ batchMode: false, selectedIds: [] })
+      },
+
+      toggleSelection: (id: string) => {
+        const { selectedIds } = get()
+        const index = selectedIds.indexOf(id)
+        if (index === -1) {
+          set({ selectedIds: [...selectedIds, id] })
+        }
+        else {
+          set({ selectedIds: selectedIds.filter(i => i !== id) })
+        }
+      },
+
+      selectAllLoaded: (activeTab: 'all' | 'video' | 'img') => {
+        if (activeTab === 'all') {
+          const { mergedList } = get().all
+          set({ selectedIds: mergedList.map(item => item.id) })
+        }
+        else {
+          const list = get()[activeTab].list
+          set({ selectedIds: list.map(m => m._id) })
+        }
+      },
+
+      deselectAll: () => {
+        set({ selectedIds: [] })
+      },
+
+      openConditionalDeleteDialog: () => {
+        set({ conditionalDeleteDialogOpen: true })
+      },
+
+      closeConditionalDeleteDialog: () => {
+        set({ conditionalDeleteDialogOpen: false })
+      },
+
+      batchDeleteMedia: async (activeTab: 'all' | 'video' | 'img', materialGroupId: string) => {
+        const { selectedIds } = get()
+        if (selectedIds.length === 0)
+          return false
+        set({ batchDeleting: true })
+        try {
+          if (activeTab === 'all') {
+            const { mergedList } = get().all
+            const selectedSet = new Set(selectedIds)
+            const selectedItems = mergedList.filter(item => selectedSet.has(item.id))
+
+            const draftIds = selectedItems.filter(item => item.source === 'draft').map(item => item.id)
+            const mediaIds = selectedItems.filter(item => item.source !== 'draft').map(item => item.id)
+
+            await Promise.all([
+              draftIds.length > 0 ? apiBatchDeleteMaterials(draftIds) : Promise.resolve(),
+              mediaIds.length > 0 ? apiBatchDeleteMedia(mediaIds) : Promise.resolve(),
+            ])
+
+            set({ batchMode: false, selectedIds: [] })
+
+            const currentPlan = usePlanDetailStore.getState().currentPlan
+            if (currentPlan) {
+              await usePlanDetailStore.getState().fetchMaterials(currentPlan.id, 1)
+              await (get() as any).fetchAllList(materialGroupId, currentPlan.id)
+            }
+          }
+          else {
+            await apiBatchDeleteMedia(selectedIds)
+            set({ batchMode: false, selectedIds: [] })
+
+            await (get() as any).fetchMediaList(materialGroupId, activeTab)
+            const currentPlan = usePlanDetailStore.getState().currentPlan
+            if (currentPlan) {
+              await (get() as any).fetchAllList(materialGroupId, currentPlan.id)
+            }
+          }
+          return true
+        }
+        catch (error) {
+          console.error('Batch delete failed:', error)
+          return false
+        }
+        finally {
+          set({ batchDeleting: false })
+        }
+      },
+
+      filterDeleteMedia: async (
+        activeTab: 'all' | 'video' | 'img',
+        materialGroupId: string,
+        conditions: { title?: string; useCount?: number },
+      ) => {
+        try {
+          const currentPlan = usePlanDetailStore.getState().currentPlan
+          const planId = currentPlan?.id
+          const promises: Promise<any>[] = []
+
+          if (activeTab === 'all') {
+            if (planId) {
+              promises.push(apiFilterDeleteMaterials({ ...conditions, groupId: planId }))
+            }
+            promises.push(apiFilterDeleteMedia({ ...conditions, materialGroupId }))
+          }
+          else {
+            promises.push(apiFilterDeleteMedia({ useCount: conditions.useCount, materialGroupId, type: activeTab }))
+          }
+
+          await Promise.all(promises)
+          set({ conditionalDeleteDialogOpen: false })
+
+          if (activeTab === 'all') {
+            if (planId) {
+              await usePlanDetailStore.getState().fetchMaterials(planId, 1)
+              await (get() as any).fetchAllList(materialGroupId, planId)
+            }
+          }
+          else {
+            await (get() as any).fetchMediaList(materialGroupId, activeTab)
+            if (planId) {
+              await (get() as any).fetchAllList(materialGroupId, planId)
+            }
+          }
+          return true
+        }
+        catch (error) {
+          console.error('Filter delete failed:', error)
+          return false
+        }
       },
     }),
   ),

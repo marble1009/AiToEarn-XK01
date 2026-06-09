@@ -48,7 +48,15 @@
   "yes": "是",
   "no": "否",
   "calendar": {
-    "weekDaysShort": ["日", "一", "二", "三", "四", "五", "六"],
+    "weekDaysShort": [
+      "日",
+      "一",
+      "二",
+      "三",
+      "四",
+      "五",
+      "六"
+    ],
     "monthSuffix": "月"
   },
   "actions": {
@@ -87,12 +95,12 @@
     "income": "收入记录",
     "wallet": "钱包账户",
     "materialLibrary": "素材库",
-    "draftBox": "内容工坊",
-    "draftBoxSeoTitle": "内容工坊 - AI批量创作与草稿编辑 —— AuraString",
-    "draftBoxSeoDescription": "在一个地方管理所有内容草稿。使用AI批量生成社媒帖子，发布前编辑草稿，用 AuraString 组织多平台分发内容。",
-    "draftBoxSeoKeywords": "内容工坊, 草稿编辑, AI内容生成, 批量创作, 社媒草稿, 内容排期, AuraString",
+    "draftBox": "AI 自动获客创作室",
+    "draftBoxSeoTitle": "AI 自动获客创作室 - 实体门店爆单宣传海报与引流视频一键生成 —— 爱易客",
+    "draftBoxSeoDescription": "店铺老板专属的 AI 智能自动获客平台。只需输入您的特色特色招牌或活动，AI 即可一键批量生成爆款引流文案、活动海报及精美视频草稿，轻松把您的食客/客人变成您的免费宣传员！",
+    "draftBoxSeoKeywords": "AI创作室, 爆单文案, 活动海报, 引流视频, 小红书发文, 抖音引流, 自动获客, 爱易客",
     "brandPromotion": "AI打卡",
-    "agentAssets": "粒子素材"
+    "agentAssets": "海报图片素材库"
   },
   "tasks": "内容市场",
   "signIn": {
@@ -116,7 +124,7 @@
     "title": "下载{{appName}}",
     "operationInApp": "请在{{appName}}中操作添加",
     "description": "为了更好的用户体验和功能完整性，该操作需要在 {{appName}} 中完成账号添加。请下载并安装 {{appName}} 后继续操作。",
-    "operationDescription": "请在AuraString App中操作{{platform}}频道账号<br/>为了更好的用户体验和完整性，请下载并安装AuraString App后继续操作。",
+    "operationDescription": "请在 爱易客 App 中操作{{platform}}频道账号<br/>为了更好的用户体验和完整性，请下载并安装 爱易客 App 后继续操作。",
     "scanQrCode": "扫描二维码下载",
     "downloadLink": "下载链接：",
     "copy": "复制",
@@ -129,7 +137,7 @@
   },
   "uptime": {
     "seoTitle": "AI 模型状态 - 实时模型可用性监控",
-    "pageKeywords": "AI模型状态, 模型可用性, 在线率追踪, AI服务健康, 模型监控, AuraString状态",
+    "pageKeywords": "AI模型状态, 模型可用性, 在线率追踪, AI服务健康, 模型监控, 爱易客状态",
     "pageTitle": "AI 模型状态",
     "pageDescription": "实时监控 AI 模型的可用性和运行状态。查看各模型和服务商的运行状况。",
     "loading": "加载中...",

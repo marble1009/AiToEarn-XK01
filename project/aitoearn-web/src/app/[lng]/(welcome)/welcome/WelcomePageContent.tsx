@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Sparkles, Terminal, ShieldAlert, Cpu, ArrowRight } from 'lucide-react'
+import { Sparkles, PenTool, Video, Layers, ShieldCheck, ArrowRight, Globe, ChevronDown } from 'lucide-react'
 import { navigateToLogin } from '@/utils/auth'
+import { setCookie } from 'cookies-next'
+import { cookieName } from '@/app/i18n/settings'
 
 interface WelcomePageContentProps {
   lng: string
@@ -11,90 +13,122 @@ interface WelcomePageContentProps {
 
 export default function WelcomePageContent({ lng }: WelcomePageContentProps) {
   const router = useRouter()
-  const [inputText, setInputText] = useState('')
-  const [glitchText, setGlitchText] = useState('AURASTRING')
   const [systemTime, setSystemTime] = useState('')
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false)
+
+  const handleLanguageChange = (newLng: string) => {
+    if (newLng === lng) return
+    setCookie(cookieName, newLng, { path: '/' })
+    
+    const currentPath = window.location.pathname
+    const pathWithoutLang = currentPath.replace(`/${lng}`, '') || '/'
+    const newPath = `/${newLng}${pathWithoutLang}`
+    
+    router.push(newPath)
+    router.refresh()
+  }
 
   useEffect(() => {
-    // Dynamic glitch effect
-    const interval = setInterval(() => {
-      const chars = 'AURASTRING/#'
-      let glitched = ''
-      for (let i = 0; i < 'AURASTRING'.length; i++) {
-        if (Math.random() < 0.1) {
-          glitched += chars[Math.floor(Math.random() * chars.length)]
-        } else {
-          glitched += 'AURASTRING'[i]
-        }
-      }
-      setGlitchText(glitched)
-    }, 250)
-
-    // System time updates
+    // System time updates in cozy standard
     const timeInterval = setInterval(() => {
       const now = new Date()
       setSystemTime(now.toISOString().replace('T', ' ').substring(0, 19))
     }, 1000)
 
     return () => {
-      clearInterval(interval)
       clearInterval(timeInterval)
     }
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleStart = () => {
     navigateToLogin()
   }
 
   return (
-    <div className="relative min-h-screen w-full bg-[#000000] text-gray-100 antialiased overflow-hidden font-mono selection:bg-[#FF007F] selection:text-white">
-      {/* CRT Scanline Filter Overlay */}
-      <div className="pointer-events-none absolute inset-0 z-50 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px]" />
+    <div className="relative min-h-screen w-full bg-[#FAF7F2] text-[#2A2A2A] antialiased overflow-hidden font-sans selection:bg-[#5F7A61]/20 selection:text-[#5F7A61]">
       
-      {/* Subtle CRT Flicker & Glow */}
-      <div className="absolute inset-0 pointer-events-none z-40 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]" />
-
-      {/* Cyber Grid Lines Background */}
-      <div 
-        className="absolute inset-0 z-0 opacity-15 pointer-events-none"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, #39FF14 1px, transparent 1px),
-            linear-gradient(to bottom, #39FF14 1px, transparent 1px)
-          `,
-          backgroundSize: '40px 40px',
-        }}
-      />
-
-      {/* Pulsing Neon Glow Spotlights */}
+      {/* Premium Warm Soft Spotlights */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,#39FF14_0%,transparent_70%)] opacity-10 blur-3xl animate-pulse" style={{ animationDuration: '6s' }} />
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,#FF007F_0%,transparent_70%)] opacity-10 blur-3xl animate-pulse" style={{ animationDuration: '9s' }} />
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,#5F7A61_0%,transparent_70%)] opacity-[0.07] blur-3xl animate-pulse" style={{ animationDuration: '8s' }} />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle,#F3A390_0%,transparent_70%)] opacity-[0.08] blur-3xl animate-pulse" style={{ animationDuration: '12s' }} />
       </div>
 
       {/* Header / Navbar */}
-      <header className="relative z-30 w-full border-b border-[#39FF14]/20 bg-black/60 backdrop-blur-md">
+      <header className="relative z-30 w-full border-b border-[#5F7A61]/10 bg-[#FAF7F2]/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="relative flex size-8 items-center justify-center rounded bg-black border border-[#39FF14]/40 shadow-[0_0_10px_rgba(57,255,20,0.3)]">
-              <span className="text-[#39FF14] text-lg font-bold">A</span>
-              <span className="absolute -top-1 -right-1 size-2 rounded-full bg-[#FF007F] animate-ping" />
+            <div className="relative flex size-9 items-center justify-center rounded-xl bg-[#5F7A61] text-[#FAF7F2] shadow-[0_4px_12px_rgba(95,122,97,0.2)]">
+              <span className="text-lg font-bold select-none">{lng === 'zh-CN' ? '客' : 'a'}</span>
+              <span className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-[#F3A390]" />
             </div>
-            <span className="text-xl font-black tracking-widest text-[#39FF14] drop-shadow-[0_0_8px_rgba(57,255,20,0.6)]">
-              Aura<span className="text-[#FF007F] drop-shadow-[0_0_8px_rgba(255,0,127,0.6)]">String</span>
+            <span className="text-xl font-bold tracking-tight text-[#2A2A2A]">
+              {lng === 'zh-CN' ? '爱易客' : 'aiautoedit'}{' '}
+              <span className="text-xs font-normal text-[#5F7A61] bg-[#5F7A61]/10 px-2 py-0.5 rounded-full ml-1.5">
+                {lng === 'zh-CN' ? '体验版' : 'Beta'}
+              </span>
             </span>
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="hidden md:inline text-xs text-[#39FF14]/60 tracking-wider">
-              [ SYSTEM TIME: {systemTime || '2026-05-25 11:00:00'} ]
+          <div className="flex items-center gap-3 sm:gap-4">
+            <span className="hidden md:inline text-xs text-[#2A2A2A]/50 font-mono">
+              [ {lng === 'zh-CN' ? '营业时间' : 'Hours'}: {systemTime || '2026-05-30 11:00:00'} ]
             </span>
+
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-[#5F7A61]/25 text-xs font-semibold text-[#2A2A2A]/80 bg-white/40 backdrop-blur-sm transition-all duration-300 hover:border-[#5F7A61]/50 hover:bg-white cursor-pointer select-none"
+              >
+                <Globe className="size-3.5 text-[#5F7A61]" />
+                <span className="hidden sm:inline">{lng === 'zh-CN' ? '简体中文' : 'English'}</span>
+                <span className="inline sm:hidden">{lng === 'zh-CN' ? '中' : 'EN'}</span>
+                <ChevronDown className="size-3 text-[#2A2A2A]/50" />
+              </button>
+
+              {langDropdownOpen && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setLangDropdownOpen(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-32 rounded-xl border border-[#5F7A61]/10 bg-white p-1.5 shadow-[0_10px_25px_rgba(95,122,97,0.08)] z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <button
+                      onClick={() => {
+                        handleLanguageChange('zh-CN')
+                        setLangDropdownOpen(false)
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all ${
+                        lng === 'zh-CN' 
+                          ? 'bg-[#5F7A61]/10 text-[#5F7A61]' 
+                          : 'text-[#2A2A2A]/70 hover:bg-[#5F7A61]/5 hover:text-[#5F7A61]'
+                      }`}
+                    >
+                      简体中文
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleLanguageChange('en')
+                        setLangDropdownOpen(false)
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition-all mt-1 ${
+                        lng === 'en' 
+                          ? 'bg-[#5F7A61]/10 text-[#5F7A61]' 
+                          : 'text-[#2A2A2A]/70 hover:bg-[#5F7A61]/5 hover:text-[#5F7A61]'
+                      }`}
+                    >
+                      English
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+
             <button
-              onClick={() => navigateToLogin()}
-              className="relative px-5 py-1.5 overflow-hidden rounded border border-[#39FF14] text-xs font-semibold text-[#39FF14] bg-transparent transition-all duration-300 hover:bg-[#39FF14] hover:text-black hover:shadow-[0_0_15px_rgba(57,255,20,0.6)]"
+              onClick={handleStart}
+              className="relative px-4 sm:px-5 py-2 overflow-hidden rounded-xl border border-[#5F7A61] text-xs font-semibold text-[#5F7A61] bg-transparent transition-all duration-300 hover:bg-[#5F7A61] hover:text-[#FAF7F2] hover:shadow-[0_4px_14px_rgba(95,122,97,0.15)] cursor-pointer"
             >
-              启动终端
+              {lng === 'zh-CN' ? '开启工作台' : 'Launch App'}
             </button>
           </div>
         </div>
@@ -102,95 +136,90 @@ export default function WelcomePageContent({ lng }: WelcomePageContentProps) {
 
       {/* Main Content Area */}
       <main className="relative z-10 flex flex-col items-center justify-center px-4 py-16 md:py-24 max-w-7xl mx-auto min-h-[calc(100vh-10rem)]">
-        {/* Neon Badge */}
-        <div className="mb-6 flex items-center gap-2 rounded border border-[#FF007F]/40 bg-black/50 px-4 py-1.5 shadow-[0_0_10px_rgba(255,0,127,0.2)]">
-          <Sparkles className="size-4 text-[#FF007F] animate-pulse" />
-          <span className="text-xs uppercase tracking-[0.2em] text-[#FF007F] font-semibold">
-            AuraString 极简内容实验室
+        
+        {/* Cozy Craft Badge */}
+        <div className="mb-6 flex items-center gap-2 rounded-full border border-[#F3A390]/30 bg-[#F3A390]/10 px-4 py-1.5 shadow-[0_2px_8px_rgba(243,163,144,0.08)]">
+          <Sparkles className="size-4 text-[#F3A390] animate-pulse" />
+          <span className="text-xs uppercase tracking-[0.1em] text-[#F3A390] font-semibold">
+            为实体小商贩与店老板量身打造的内容推广神器
           </span>
         </div>
 
-        {/* Glitch Main Title */}
-        <h1 className="text-center text-4xl sm:text-6xl md:text-7xl font-black tracking-widest text-white drop-shadow-[0_0_12px_rgba(255,255,255,0.2)]">
-          <span className="text-[#39FF14]">{glitchText}</span>
+        {/* Dynamic Typography Main Title */}
+        <h1 className="text-center text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#2A2A2A] leading-tight">
+          让您的好生意 <br className="sm:hidden" />
+          <span className="text-[#5F7A61] relative">
+            爆单出圈
+            <span className="absolute bottom-1 left-0 w-full h-2 bg-[#F3A390]/30 -z-10 rounded-full" />
+          </span>
         </h1>
 
-        {/* Cyber Subtitle */}
-        <p className="mt-6 max-w-2xl text-center text-sm sm:text-base text-gray-400 leading-relaxed">
-          极简内容引擎 ✦ 赛博分发与智体交互终端。
+        {/* Elegant Subtitle */}
+        <p className="mt-8 max-w-2xl text-center text-sm sm:text-base text-[#2A2A2A]/70 leading-relaxed font-normal">
+          实体店主的一站式 AI 获客推广终端。
           <br className="hidden sm:inline" />
-          光流一键托管，国内及国际多轨自动分发，小红书专属签名底层协议护航。
+          智能生成爆款图文、宣传海报与引流短视频，极速安全推送至社交平台草稿箱，无风控，轻松获客！
         </p>
 
-        {/* Interactive Terminal Command Box */}
-        <form
-          onSubmit={handleSubmit}
-          className="relative mt-12 w-full max-w-xl p-[2px] rounded-lg bg-gradient-to-r from-[#39FF14] via-transparent to-[#FF007F] shadow-[0_0_20px_rgba(57,255,20,0.15)]"
-        >
-          <div className="flex w-full items-center gap-3 rounded-lg bg-black/90 p-3">
-            <Terminal className="size-5 text-[#39FF14] shrink-0" />
-            <input
-              type="text"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              placeholder="输入光弦指令 (例如: /boot_lab)..."
-              className="flex-1 bg-transparent text-sm border-0 text-white placeholder-gray-600 focus:outline-none focus:ring-0"
-            />
-            <button
-              type="submit"
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded bg-[#39FF14] text-black font-bold text-xs uppercase tracking-wider transition-all duration-300 hover:bg-[#FF007F] hover:text-white hover:shadow-[0_0_15px_rgba(255,0,127,0.5)]"
-            >
-              <span>执行</span>
-              <ArrowRight className="size-3.5" />
-            </button>
-          </div>
-        </form>
+        {/* Cozy Call-To-Action Button */}
+        <div className="mt-12 w-full max-w-md flex justify-center">
+          <button
+            onClick={handleStart}
+            className="group flex w-full sm:w-auto items-center justify-center gap-2.5 px-8 py-4 rounded-2xl bg-[#5F7A61] text-[#FAF7F2] font-bold text-sm tracking-wide transition-all duration-300 hover:bg-[#5F7A61]/90 hover:scale-[1.02] hover:shadow-[0_8px_24px_rgba(95,122,97,0.2)] cursor-pointer"
+          >
+            <span>一键进入 AI 创意工坊</span>
+            <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+          </button>
+        </div>
 
         {/* Three High-Tech Spec Blocks */}
         <div className="grid gap-6 mt-20 w-full sm:grid-cols-3 max-w-5xl">
           {/* Spec 1 */}
-          <div className="p-6 rounded border border-[#39FF14]/20 bg-black/50 backdrop-blur-sm transition-all duration-300 hover:border-[#39FF14]/60 hover:shadow-[0_0_15px_rgba(57,255,20,0.1)]">
-            <div className="flex items-center gap-3 mb-3 text-[#39FF14]">
-              <Cpu className="size-5" />
-              <h3 className="font-bold text-sm tracking-wider uppercase">光流多轨分发 (Flow Hub)</h3>
+          <div className="p-6 rounded-2xl border border-[#5F7A61]/15 bg-white/60 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-all duration-300 hover:border-[#5F7A61]/40 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(95,122,97,0.05)]">
+            <div className="flex items-center gap-3 mb-3 text-[#5F7A61]">
+              <PenTool className="size-5" />
+              <h3 className="font-bold text-sm tracking-wide text-[#2A2A2A]">写爆款文案 (AI Copywriter)</h3>
             </div>
-            <p className="text-xs text-gray-500 leading-relaxed font-sans">
-              一条内容，一键在国内外 14+ 社交网格（抖音、TikTok、YouTube等）进行全自动光弦分发。
+            <p className="text-xs text-[#2A2A2A]/60 leading-relaxed font-sans">
+              告别繁琐提问。输入招牌特色（如“黄金脆皮烤鸭”），一键自动产出符合抖音、小红书调性的高诱惑力爆单文案。
             </p>
           </div>
 
           {/* Spec 2 */}
-          <div className="p-6 rounded border border-[#FF007F]/20 bg-black/50 backdrop-blur-sm transition-all duration-300 hover:border-[#FF007F]/60 hover:shadow-[0_0_15px_rgba(255,0,127,0.1)]">
-            <div className="flex items-center gap-3 mb-3 text-[#FF007F]">
-              <Terminal className="size-5" />
-              <h3 className="font-bold text-sm tracking-wider uppercase">智体社交托管 (Agent Grid)</h3>
+          <div className="p-6 rounded-2xl border border-[#F3A390]/15 bg-white/60 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-all duration-300 hover:border-[#F3A390]/40 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(243,163,144,0.05)]">
+            <div className="flex items-center gap-3 mb-3 text-[#F3A390]">
+              <Video className="size-5" />
+              <h3 className="font-bold text-sm tracking-wide text-[#2A2A2A]">发宣传物料 (Video & Poster)</h3>
             </div>
-            <p className="text-xs text-gray-500 leading-relaxed font-sans">
-              基于大模型智体（AI Agent），全天候自动执行日常内容排程、发布与智能社交互动，释放双手。
+            <p className="text-xs text-[#2A2A2A]/60 leading-relaxed font-sans">
+              直接上传店内或菜品实拍，由 AI 自动排版生成精美活动促销海报，或智能拼贴为带爆款转场和配乐的引流短视频。
             </p>
           </div>
 
           {/* Spec 3 */}
-          <div className="p-6 rounded border border-[#39FF14]/20 bg-black/50 backdrop-blur-sm transition-all duration-300 hover:border-[#39FF14]/60 hover:shadow-[0_0_15px_rgba(57,255,20,0.1)]">
-            <div className="flex items-center gap-3 mb-3 text-[#39FF14]">
-              <ShieldAlert className="size-5" />
-              <h3 className="font-bold text-sm tracking-wider uppercase">小红书专属签名 (RedNote Key)</h3>
+          <div className="p-6 rounded-2xl border border-[#E5B25D]/15 bg-white/60 backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.02)] transition-all duration-300 hover:border-[#E5B25D]/40 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(229,178,93,0.05)]">
+            <div className="flex items-center gap-3 mb-3 text-[#E5B25D]">
+              <ShieldCheck className="size-5" />
+              <h3 className="font-bold text-sm tracking-wide text-[#2A2A2A]">安全草稿箱 (Secure Push)</h3>
             </div>
-            <p className="text-xs text-gray-500 leading-relaxed font-sans">
-              专为国内小红书平台集成了专有加密算法与底层防封签名服务，保障账户合规、高速、安全发送。
+            <p className="text-xs text-[#2A2A2A]/60 leading-relaxed font-sans">
+              针对国内抖音、快手、小红书等平台，全面采用官方合规的『静默推送至草稿箱』模式，100%安全免风控，保住账号自然流量！
             </p>
           </div>
+
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="relative z-30 w-full border-t border-[#39FF14]/10 bg-black/80 py-6">
-        <div className="mx-auto flex flex-col sm:flex-row items-center justify-between px-4 sm:px-6 lg:px-8 max-w-7xl text-[10px] text-gray-600 gap-4">
+      <footer className="relative z-30 w-full border-t border-[#5F7A61]/10 bg-[#FAF7F2] py-6">
+        <div className="mx-auto flex flex-col sm:flex-row items-center justify-between px-4 sm:px-6 lg:px-8 max-w-7xl text-[10px] text-[#2A2A2A]/50 gap-4">
           <div className="flex items-center gap-2">
-            <span className="inline-block size-1.5 rounded-full bg-[#39FF14] animate-ping" />
-            <span className="uppercase tracking-widest text-[#39FF14]/60">SYS STATUS: CONNECTED</span>
+            <span className="inline-block size-1.5 rounded-full bg-[#5F7A61] animate-ping" />
+            <span className="uppercase tracking-widest text-[#5F7A61]">
+              {lng === 'zh-CN' ? '系统连接状态: 正常' : 'Connection: Online'}
+            </span>
           </div>
-          <p className="uppercase tracking-widest">© 2026 AuraString Laboratory. All Rights Reserved.</p>
+          <p className="uppercase tracking-widest">© 2026 {lng === 'zh-CN' ? '爱易客' : 'aiautoedit'} Laboratory. All Rights Reserved.</p>
         </div>
       </footer>
     </div>

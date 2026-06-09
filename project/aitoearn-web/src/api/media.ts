@@ -42,7 +42,7 @@ export function deleteMedia(id: string) {
 
 // 获取媒体资源列表
 export function getMediaList(
-  filter: { groupId?: string, materialGroupId?: string },
+  filter: { groupId?: string, materialGroupId?: string, useCount?: number },
   pageNo: number,
   pageSize: number,
   type?: 'video' | 'img',
@@ -70,4 +70,21 @@ export function apiAddUseCount(id: string) {
 
 export function apiAddUseCountOfList(ids: string[]) {
   return http.put(`media/addUseCountOfList`, { data: { ids } })
+}
+
+export interface MediaFilterDeleteParams {
+  groupId?: string
+  materialGroupId?: string
+  type?: 'video' | 'img'
+  useCount?: number
+}
+
+// 批量删除媒体资源
+export function apiBatchDeleteMedia(ids: string[]) {
+  return http.delete('media/ids', { ids })
+}
+
+// 按条件删除媒体资源
+export function apiFilterDeleteMedia(data: MediaFilterDeleteParams) {
+  return http.delete('media/filter', data)
 }

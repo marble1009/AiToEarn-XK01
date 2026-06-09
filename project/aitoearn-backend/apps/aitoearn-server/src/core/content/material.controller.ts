@@ -168,6 +168,15 @@ export class MaterialController {
   @Get('info/:id')
   async getInfo(@Param('id') id: string) {
     const res = await this.materialService.getInfo(id)
+    if (res) {
+      if (res.coverUrl)
+        res.coverUrl = FileUtil.buildUrl(res.coverUrl)
+      for (const media of res.mediaList || []) {
+        media.url = FileUtil.buildUrl(media.url)
+        if (media.thumbUrl)
+          media.thumbUrl = FileUtil.buildUrl(media.thumbUrl)
+      }
+    }
     return res
   }
 
@@ -181,6 +190,15 @@ export class MaterialController {
   async optimalInGroup(@Query() query: GetOptimalMaterialDto) {
     const type = getMaterialTypeByAccountType(query.accountType)
     const res = await this.materialService.optimalInGroup(query.groupId, type, query.accountType)
+    if (res) {
+      if (res.coverUrl)
+        res.coverUrl = FileUtil.buildUrl(res.coverUrl)
+      for (const media of res.mediaList || []) {
+        media.url = FileUtil.buildUrl(media.url)
+        if (media.thumbUrl)
+          media.thumbUrl = FileUtil.buildUrl(media.thumbUrl)
+      }
+    }
     return res
   }
 

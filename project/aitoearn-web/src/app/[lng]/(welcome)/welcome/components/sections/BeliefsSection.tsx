@@ -1,5 +1,5 @@
 /**
- * BeliefsSection - 为什么选择 AiToEarn + 核心功能合并区块
+ * BeliefsSection - 为什么选择 aiautoedit + 核心功能合并区块
  * 参考 img_8.png 简洁设计风格：三列布局、分隔线、无花哨元素
  */
 
@@ -82,7 +82,7 @@ function SubSection({ title, subtitle, items, actionLink }: SubSectionProps) {
 export function BeliefsSection() {
   const { t } = useTransClient('welcome')
 
-  // 为什么选择 AiToEarn 数据
+  // 为什么选择 aiautoedit 数据
   const beliefs = [
     {
       id: 'belief1',
@@ -123,7 +123,7 @@ export function BeliefsSection() {
   return (
     <section className="rounded-t-3xl bg-[#f7f6f5] py-16 md:py-24 lg:mx-2">
       <div className="mx-auto max-w-7xl space-y-16 px-4 md:space-y-20 md:px-6 lg:px-8">
-        {/* 为什么选择 AiToEarn */}
+        {/* 为什么选择 aiautoedit */}
         <SubSection
           title={t('beliefs.title')}
           subtitle={t('beliefs.subtitle')}
@@ -136,7 +136,7 @@ export function BeliefsSection() {
           subtitle={t('guides.subtitle')}
           items={features}
           actionLink={{
-            href: 'https://docs.aitoearn.ai/',
+            href: 'https://docs.aiautoedit.art/',
             text: t('guides.viewDocs'),
           }}
         />

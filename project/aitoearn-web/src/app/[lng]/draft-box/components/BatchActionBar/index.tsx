@@ -14,8 +14,15 @@ import { Button } from '@/components/ui/button'
 import { confirm } from '@/lib/confirm'
 import { toast } from '@/lib/toast'
 
-const BatchActionBar = memo(() => {
+import { useMediaTabStore } from '../ContentTabs/mediaTabStore'
+
+interface BatchActionBarProps {
+  activeTab: 'all' | 'drafts' | 'video' | 'img'
+}
+
+const BatchActionBar = memo(({ activeTab }: BatchActionBarProps) => {
   const { t } = useTransClient('brandPromotion')
+  const isDrafts = activeTab === 'drafts'
 
   const { selectedMaterialIds, batchDeleting } = usePlanDetailStore(
     useShallow(state => ({
@@ -24,20 +31,47 @@ const BatchActionBar = memo(() => {
     })),
   )
 
-  const exitBatchMode = usePlanDetailStore(state => state.exitBatchMode)
-  const batchDeleteMaterials = usePlanDetailStore(state => state.batchDeleteMaterials)
+  const { selectedIds, mediaBatchDeleting } = useMediaTabStore(
+    useShallow(state => ({
+      selectedIds: state.selectedIds,
+      mediaBatchDeleting: state.batchDeleting,
+    })),
+  )
+
+  const selectedCount = isDrafts ? selectedMaterialIds.length : selectedIds.length
+  const deleting = isDrafts ? batchDeleting : mediaBatchDeleting
+
+  const exitBatchMode = useCallback(() => {
+    if (isDrafts) {
+      usePlanDetailStore.getState().exitBatchMode()
+    }
+    else {
+      useMediaTabStore.getState().exitBatchMode()
+    }
+  }, [isDrafts])
+
+  const batchDelete = useCallback(async () => {
+    if (isDrafts) {
+      return await usePlanDetailStore.getState().batchDeleteMaterials()
+    }
+    else {
+      const materialGroupId = usePlanDetailStore.getState().currentPlan?.id
+      if (!materialGroupId)
+        return false
+      return await useMediaTabStore.getState().batchDeleteMedia(activeTab, materialGroupId)
+    }
+  }, [isDrafts, activeTab])
 
   const handleDelete = useCallback(() => {
-    const count = selectedMaterialIds.length
-    if (count === 0)
+    if (selectedCount === 0)
       return
 
     confirm({
       title: t('draftManage.batchDeleteConfirmTitle'),
-      content: t('draftManage.batchDeleteConfirmDesc', { count }),
+      content: t('draftManage.batchDeleteConfirmDesc', { count: selectedCount }),
       okType: 'destructive',
       onOk: async () => {
-        const success = await batchDeleteMaterials()
+        const success = await batchDelete()
         if (success) {
           toast.success(t('draftManage.batchDeleteSuccess'))
         }
@@ -46,13 +80,13 @@ const BatchActionBar = memo(() => {
         }
       },
     })
-  }, [selectedMaterialIds.length, batchDeleteMaterials, t])
+  }, [selectedCount, batchDelete, t])
 
   return (
     <div data-testid="draftbox-batch-bar" className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 px-6 py-3">
       <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
         <span data-testid="draftbox-batch-selected-count" className="text-sm text-muted-foreground">
-          {t('draftManage.selectedCount', { count: selectedMaterialIds.length })}
+          {t('draftManage.selectedCount', { count: selectedCount })}
         </span>
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="sm" onClick={exitBatchMode} className="cursor-pointer">
@@ -63,10 +97,10 @@ const BatchActionBar = memo(() => {
             variant="destructive"
             size="sm"
             onClick={handleDelete}
-            disabled={selectedMaterialIds.length === 0 || batchDeleting}
+            disabled={selectedCount === 0 || deleting}
             className="cursor-pointer gap-1.5"
           >
-            {batchDeleting
+            {deleting
               ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
               : <Trash2 className="h-3.5 w-3.5" />}
             {t('common.delete')}

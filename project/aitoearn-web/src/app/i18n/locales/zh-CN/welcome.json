@@ -4,9 +4,9 @@
     "next": "下一个"
   },
   "seo": {
-    "title": "AuraString 极简内容实验室 - 赛博分发与智体交互终端",
-    "description": "AuraString为您提供底层光弦分发与智体发布托管，支持小红书、抖音、TikTok等主流平台，提供小红书专属防封签名算法保障安全发布。",
-    "keywords": "AuraString,内容实验室,赛博分发,智体托管,小红书签名,AI视频制作,社媒管理,多平台发布,AI运营,一键发布"
+    "title": "爱易客 智能获客创意工坊 - 实体门店内容宣发推广中心",
+    "description": "爱易客为您提供爆款文案生成、活动促销海报设计、宣传引流视频拼贴与社交网络安全推送托管，支持小红书、抖音、快手等平台，采用合规草稿箱机制安全不封号。",
+    "keywords": "爱易客,创意工坊,多轨分发,智体托管,小红书防封,AI视频制作,海报设计,多平台发布,AI运营,一键发布"
   },
   "navbar": {
     "pricing": "定价",
@@ -19,7 +19,7 @@
   "hero": {
     "badge": "AI 驱动餐厅增长",
     "title": "一人公司的AI运营员工",
-    "subtitle": "使用AiToEarn，你可以轻松为您的线下门店引流。AiToEarn为您提供最方便的AI视频制作服务，同时，您可以将您的社媒账号托管在AiToEarn，我们帮您完成内容发布和评论互动。",
+    "subtitle": "使用爱易客，你可以轻松为您的线下门店引流。爱易客为您提供最方便的AI视频制作服务，同时，您可以将您的社媒账号托管在爱易客，我们帮您完成内容发布和评论互动。",
     "placeholder": "输入您的餐厅名称",
     "cta": "获取我的AI助手",
     "selectFirst": "请先选择一家餐厅",
@@ -52,13 +52,13 @@
   },
   "reviews": {
     "title": "用户评价",
-    "subtitle": "加入数千位信任 AiToEarn 的一人公司创业者",
+    "subtitle": "加入数千位信任 爱易客 的一人公司创业者",
     "viewOnGithub": "在 GitHub 上查看",
     "review1": {
       "content": "终于有一个能处理多平台发布的开源工具！一键发布到抖音、TikTok、YouTube - 每周节省好几个小时。"
     },
     "review2": {
-      "content": "作为一人创业者，AiToEarn 简直是神器。AI 生成内容、自动发布，甚至处理评论。我的社媒现在完全自动运行。"
+      "content": "作为一人创业者，爱易客 简直是神器。AI 生成内容、自动发布，甚至处理评论。我的社媒现在完全自动运行。"
     },
     "review3": {
       "content": "AI Agent 功能太棒了。自动撰写、优化、发布内容。内容成本降低了 90%。"
@@ -87,16 +87,22 @@
     "subtitle": "扫码即发布，单条成本下降 90%+",
     "description": "高质量内容自动生成，让每一次线下互动转化为有效的社交媒体曝光",
     "playVideo": "播放视频",
-    "video1": { "title": "Blacklock 探店 Vlog" },
-    "video2": { "title": "餐厅探索短视频" },
-    "video3": { "title": "The Shed 英式餐厅" }
+    "video1": {
+      "title": "四川麻辣火锅深夜打卡 Vlog"
+    },
+    "video2": {
+      "title": "国潮新茶饮芝芝莓莓新品探店"
+    },
+    "video3": {
+      "title": "老字号手作鲜虾云吞面美味安利"
+    }
   },
   "testimonials": {
     "title": "听听像您一样的餐厅老板怎么说",
     "watchVideo": "观看视频"
   },
   "beliefs": {
-    "title": "为什么选择 AiToEarn",
+    "title": "为什么选择 爱易客",
     "subtitle": "专为一人公司和小型企业打造",
     "belief1": {
       "title": "专为一人公司设计",
@@ -133,7 +139,7 @@
     }
   },
   "experience": {
-    "title": "使用 Aitoearn，获得更多流量、更多销售、更多客户",
+    "title": "使用 爱易客，获得更多流量、更多销售、更多客户",
     "subtitle": "从线下营销到多平台发布，让 AI 为您代劳",
     "tab1": {
       "title": "线下推广营销",
@@ -173,6 +179,6 @@
     "extensionPrivacy": "扩展隐私政策",
     "contact": "联系我们",
     "supportedPlatforms": "支持平台",
-    "copyright": "© 2026 AiToEarn. 保留所有权利。"
+    "copyright": "© 2026 爱易客. 保留所有权利。"
   }
 }

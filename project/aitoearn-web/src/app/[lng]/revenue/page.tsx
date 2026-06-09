@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: PageParams) {
 
   return getMetadata(
     {
-      title: 'Revenue Dashboard - AiToEarn',
+      title: 'Revenue Dashboard - aiautoedit',
       description: 'Track your earnings and withdraw your funds.',
     },
     lng,

@@ -76,7 +76,7 @@ export class DouyinPubService extends PublishService {
         const result = await this.douyinService.automatedPublish({
           accountId,
           videoUrl: videoUrl || '',
-          title: title || 'AiToEarn Video',
+          title: title || 'aiautoedit Video',
           desc: desc || '',
           topics: topics || [],
           isPrivate

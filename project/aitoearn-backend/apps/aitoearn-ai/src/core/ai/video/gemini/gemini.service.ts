@@ -46,11 +46,25 @@ export class GeminiVideoService {
     const defaults = modelConfig.defaults || {}
     const finalDuration = duration || defaults.duration
 
-    const pricingConfig = modelConfig.pricing.find((pricing) => {
+    let pricingConfig = modelConfig.pricing.find((pricing) => {
       const durationMatch = !pricing.duration || !finalDuration || pricing.duration === finalDuration
       const resolutionMatch = !pricing.resolution || !resolution || pricing.resolution === resolution
       return durationMatch && resolutionMatch
     })
+
+    if (!pricingConfig && finalDuration) {
+      const matchingResConfigs = modelConfig.pricing.filter((pricing) => {
+        return !pricing.resolution || !resolution || pricing.resolution === resolution
+      })
+      if (matchingResConfigs.length > 0) {
+        matchingResConfigs.sort((a, b) => {
+          const aDiff = a.duration ? Math.abs(a.duration - finalDuration) : Infinity
+          const bDiff = b.duration ? Math.abs(b.duration - finalDuration) : Infinity
+          return aDiff - bDiff
+        })
+        pricingConfig = matchingResConfigs[0]
+      }
+    }
 
     if (!pricingConfig) {
       throw new AppException(ResponseCode.InvalidModel)

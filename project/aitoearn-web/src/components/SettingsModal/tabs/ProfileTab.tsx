@@ -271,11 +271,11 @@ export function ProfileTab({ onClose }: ProfileTabProps) {
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">今日AI对话额度</span>
               <span className="font-bold text-foreground">
-                {subStatus ? `${subStatus.chatUsed} / ${subStatus.chatLimit} 次` : '0 / 10 次'}
+                {`${subStatus?.chatUsed ?? 0} / ${subStatus?.chatLimit ?? 1000} 次`}
               </span>
             </div>
             <Progress 
-              value={subStatus ? (subStatus.chatUsed / subStatus.chatLimit) * 100 : 0} 
+              value={((subStatus?.chatUsed ?? 0) / (subStatus?.chatLimit ?? 1000)) * 100} 
               className="h-1.5"
             />
           </div>
@@ -285,36 +285,15 @@ export function ProfileTab({ onClose }: ProfileTabProps) {
             <div className="flex justify-between text-xs">
               <span className="text-muted-foreground">今日AI视频/海报生成额度</span>
               <span className="font-bold text-foreground">
-                {subStatus ? `${subStatus.genUsed} / ${subStatus.genLimit} 次` : '0 / 1 次'}
+                {`${subStatus?.genUsed ?? 0} / ${subStatus?.genLimit ?? 500} 次`}
               </span>
             </div>
             <Progress 
-              value={subStatus ? (subStatus.genUsed / subStatus.genLimit) * 100 : 0} 
+              value={((subStatus?.genUsed ?? 0) / (subStatus?.genLimit ?? 500)) * 100} 
               className="h-1.5"
             />
           </div>
         </div>
-      </div>
-
-      {/* Docs & GitHub Stars */}
-      <div className="flex flex-wrap items-center gap-3">
-        <Button asChild variant="outline" size="sm">
-          <a href="https://docs.aitoearn.ai/" target="_blank" rel="noopener noreferrer">
-            {tCommon('docs')}
-          </a>
-        </Button>
-        <a
-          href="https://github.com/yikart/AttAiToEarn"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center"
-        >
-          <img
-            src="https://camo.githubusercontent.com/9feb948af77cdb3d349cafc64266332d8d24243f6bd72de0980b75c9de719cd8/68747470733a2f2f696d672e736869656c64732e696f2f6769746875622f73746172732f79696b6172742f4174744169546f4561726e3f636f6c6f723d666136343730"
-            alt={t('profile.githubStars')}
-            className="h-5"
-          />
-        </a>
       </div>
 
       {/* 退出登录按钮 */}

@@ -1,8 +1,9 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common'
 import { StorageProvider } from '@yikart/assets'
 import { AppException, ResponseCode, UserType } from '@yikart/common'
-import { AiLog, AiLogChannel, AiLogRepository, AiLogStatus, AiLogType, UserRepository } from '@yikart/mongodb'
+import { AiLog, AiLogChannel, AiLogRepository, AiLogStatus, AiLogType, UserRepository, SubscriptionPlanRepository, UserSubscriptionRepository } from '@yikart/mongodb'
 import { TaskStatus } from '../../../common'
+import { WanxiangService } from '../libs/wanxiang'
 import {
   Content,
   ContentType,
@@ -37,6 +38,9 @@ export class VideoService {
     private readonly openaiVideoService: OpenAIVideoService,
     private readonly grokVideoService: GrokVideoService,
     private readonly geminiVideoService: GeminiVideoService,
+    private readonly wanxiangService: WanxiangService,
+    private readonly userSubscriptionRepo: UserSubscriptionRepository,
+    private readonly subscriptionPlanRepo: SubscriptionPlanRepository,
   ) {}
 
   /**
@@ -74,7 +78,7 @@ export class VideoService {
       ...params,
     }
 
-    const pricingConfig = modelConfig.pricing.find((pricing) => {
+    let pricingConfig = modelConfig.pricing.find((pricing) => {
       const resolutionMatch = !pricing.resolution || !resolution || pricing.resolution === resolution
       const aspectRatioMatch = !pricing.aspectRatio || !aspectRatio || pricing.aspectRatio === aspectRatio
       const modeMatch = !pricing.mode || !mode || pricing.mode === mode
@@ -82,6 +86,23 @@ export class VideoService {
 
       return resolutionMatch && aspectRatioMatch && modeMatch && durationMatch
     })
+
+    if (!pricingConfig && duration) {
+      const matchingCriteriaConfigs = modelConfig.pricing.filter((pricing) => {
+        const resolutionMatch = !pricing.resolution || !resolution || pricing.resolution === resolution
+        const aspectRatioMatch = !pricing.aspectRatio || !aspectRatio || pricing.aspectRatio === aspectRatio
+        const modeMatch = !pricing.mode || !mode || pricing.mode === mode
+        return resolutionMatch && aspectRatioMatch && modeMatch
+      })
+      if (matchingCriteriaConfigs.length > 0) {
+        matchingCriteriaConfigs.sort((a, b) => {
+          const aDiff = a.duration ? Math.abs(a.duration - duration) : Infinity
+          const bDiff = b.duration ? Math.abs(b.duration - duration) : Infinity
+          return aDiff - bDiff
+        })
+        pricingConfig = matchingCriteriaConfigs[0]
+      }
+    }
 
     if (!pricingConfig) {
       throw new AppException(ResponseCode.InvalidModel)
@@ -100,11 +121,54 @@ export class VideoService {
    * 用户视频生成（通用接口）
    */
   async userVideoGeneration(request: UserVideoGenerationRequestDto) {
-    const { model } = request
+    const { userId, userType, model, duration } = request
 
     const modelConfig = this.modelsConfigService.config.video.generation.find(m => m.name === model)
     if (!modelConfig) {
       throw new AppException(ResponseCode.InvalidModel)
+    }
+
+    // 普通会员每日 30 秒限额拦截校验
+    if (userType === UserType.User) {
+      const activeSub = await this.userSubscriptionRepo.getActiveSubscription(userId)
+      let isVip = false
+      if (activeSub) {
+        const plan = await this.subscriptionPlanRepo.getById(activeSub.planId)
+        if (plan && (plan.name.includes('VIP') || plan.name.includes('高级'))) {
+          isVip = true
+        }
+      }
+
+      if (!isVip) {
+        const requestedDuration = duration || modelConfig.defaults?.duration || 5
+        const now = new Date()
+        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0)
+        
+        // 查询该用户今日已成功和生成中的视频生成日志
+        const logs = await this.aiLogRepo.list({
+          userId,
+          userType,
+          type: AiLogType.Video,
+        })
+        
+        // 过滤 Generating 或 Success，且是今天创建的
+        const todayLogs = logs.filter(log => {
+          const logDate = log.createdAt || log.startedAt
+          return logDate >= startOfDay && 
+            (log.status === AiLogStatus.Generating || log.status === AiLogStatus.Success)
+        })
+
+        let todaySeconds = 0
+        for (const log of todayLogs) {
+          const req = log.request || {}
+          const sec = req['seconds'] ? Number(req['seconds']) : (req['duration'] ? Number(req['duration']) : 5)
+          todaySeconds += sec
+        }
+
+        if (todaySeconds + requestedDuration > 30) {
+          throw new BadRequestException(`普通会员每日视频生成时长限制为30秒。今日已使用 ${todaySeconds} 秒，本次请求 ${requestedDuration} 秒，已超出限额。`)
+        }
+      }
     }
 
     const channel = modelConfig.channel
@@ -118,6 +182,8 @@ export class VideoService {
     switch (channel) {
       case AiLogChannel.Volcengine:
         return this.handleVolcengineGeneration(request, createTaskResponse)
+      case AiLogChannel.Dashscope:
+        return this.handleWanxiangGeneration(request, createTaskResponse)
       case AiLogChannel.OpenAI:
         return this.handleOpenAIGeneration(request, createTaskResponse)
       case AiLogChannel.Grok:
@@ -127,6 +193,44 @@ export class VideoService {
       default:
         throw new AppException(ResponseCode.InvalidModel)
     }
+  }
+
+  /**
+   * 处理阿里百炼 Wanxiang 渠道的视频生成（wan2.7-* / wanx2.1-*）
+   * 替代了之前在 openai.service.ts 中基于 baseUrl 字符串匹配的 dashscope 分支
+   */
+  private async handleWanxiangGeneration<T>(
+    request: UserVideoGenerationRequestDto,
+    createTaskResponse: (taskId: string, points: number) => T,
+  ) {
+    const { model, prompt, image, video_url, duration, size } = request
+
+    let firstFrameImageUrl: string | undefined
+    if (typeof image === 'string') {
+      firstFrameImageUrl = await this.toPresignedUrl(image) || image
+    }
+    let imageUrls: string[] | undefined
+    if (Array.isArray(image)) {
+      imageUrls = await this.toPresignedUrls(image)
+    }
+    let videoUrls: string[] | undefined
+    if (video_url) {
+      const parsed = await this.toPresignedUrl(video_url)
+      videoUrls = parsed ? [parsed] : [video_url]
+    }
+
+    const result = await this.wanxiangService.generateVideo({
+      model,
+      prompt,
+      firstFrameImageUrl,
+      imageUrls,
+      videoUrls,
+      size: size as string | undefined,
+      seconds: duration,
+      async: true,
+    })
+
+    return createTaskResponse(result.id, 0)
   }
 
   /**
@@ -186,20 +290,33 @@ export class VideoService {
     request: UserVideoGenerationRequestDto,
     createTaskResponse: (taskId: string, points: number) => T,
   ) {
-    const { userId, userType, model, prompt, image } = request
+    const { userId, userType, model, prompt, image, video_url } = request
 
+    let inputReference: string | string[] | undefined = undefined
     if (Array.isArray(image)) {
-      throw new BadRequestException('OpenAI does not support multiple images')
+      if (model !== 'wan2.7-r2v') {
+        if (image.length > 1) {
+          throw new BadRequestException('OpenAI does not support multiple images')
+        }
+        inputReference = await this.toPresignedUrl(image[0])
+      } else {
+        inputReference = await this.toPresignedUrls(image)
+      }
+    } else {
+      inputReference = await this.toPresignedUrl(image)
     }
+
+    const presignedVideoUrl = video_url ? await this.toPresignedUrl(video_url) : undefined
 
     const result = await this.openaiVideoService.createVideo({
       userId,
       userType,
       prompt,
-      input_reference: await this.toPresignedUrl(image),
-      model: model as 'sora-2' | 'sora-2-pro',
-      seconds: request.duration ? request.duration.toString() as '10' | '15' | '25' : undefined,
-      size: request.size as '720x1280' | '1280x720' | '1024x1792' | '1792x1024' | undefined,
+      input_reference: inputReference,
+      video_url: presignedVideoUrl,
+      model,
+      seconds: request.duration ? request.duration.toString() : undefined,
+      size: request.size as any,
     })
     return createTaskResponse(result.id, result.points)
   }

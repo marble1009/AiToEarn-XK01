@@ -136,8 +136,8 @@ async function generateImageFromAllMessages(
       }),
     )
 
-    const appTitle = options?.appTitle || 'AiToEarn'
-    const appUrl = options?.appUrl || 'https://aitoearn.ai'
+    const appTitle = options?.appTitle || 'aiautoedit'
+    const appUrl = options?.appUrl || 'https://aiautoedit.art'
     const shareUrl = options?.shareUrl
     const expiresAt = options?.expiresAt
 

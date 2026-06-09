@@ -27,7 +27,7 @@ export class XhsPubService extends PublishService {
       const result = await this.xhsService.automatedPublish({
         accountId,
         videoUrl,
-        title: title || 'AiToEarn Video',
+        title: title || 'aiautoedit Video',
         desc: desc || '',
         topics: topics || []
       })

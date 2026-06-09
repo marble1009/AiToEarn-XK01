@@ -31,7 +31,7 @@ export class LoginService {
     try {
       return this.mailService.sendEmail({
         to: mail,
-        subject: 'AiToEarn: Your Verification Code',
+        subject: 'aiautoedit: Your Verification Code',
         template: 'mail/login',
         context: {
           mail,
@@ -70,7 +70,7 @@ export class LoginService {
 
       return this.mailService.sendEmail({
         to: mail,
-        subject: 'AiToEarn: Password Reset Verification Code',
+        subject: 'aiautoedit: Password Reset Verification Code',
         template: 'mail/repassword',
         context: {
           code,
@@ -108,7 +108,7 @@ export class LoginService {
 
       return this.mailService.sendEmail({
         to: mail,
-        subject: 'AiToEarn: Account Cancellation Confirmation',
+        subject: 'aiautoedit: Account Cancellation Confirmation',
         template: 'mail/cancel',
         context: {
           code,

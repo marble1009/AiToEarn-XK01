@@ -9,8 +9,10 @@ import OpenAI from 'openai'
 import QRCode from 'qrcode'
 import sharp from 'sharp'
 
+import { config } from '../../../config'
 import { GeminiService } from '../libs/gemini/gemini.service'
 import { OpenaiService } from '../libs/openai'
+import { WanxiangService } from '../libs/wanxiang'
 import { ModelsConfigService } from '../models-config'
 import { calculatePricingPoints, ChatPricing } from '../pricing/pricing-calculator'
 import {
@@ -28,6 +30,12 @@ import {
 
 type Uploadable = File | Response
 
+/** 判断模型名是否属于阿里百炼 Wanxiang 系列（图片） */
+function isWanxiangImageModel(model?: string): boolean {
+  if (!model) return false
+  return /^(wan2\.7-image|wan2\.7-image-pro|wanx-|virtualmodel)/.test(model)
+}
+
 @Injectable()
 export class ImageService {
   private readonly logger = new Logger(ImageService.name)
@@ -36,6 +44,7 @@ export class ImageService {
     private readonly assetsService: AssetsService,
     private readonly openaiService: OpenaiService,
     private readonly geminiService: GeminiService,
+    private readonly wanxiangService: WanxiangService,
     private readonly aiLogRepo: AiLogRepository,
     private readonly creditsHelper: CreditsHelperService,
     private readonly modelsConfigService: ModelsConfigService,
@@ -97,9 +106,13 @@ export class ImageService {
 
   /**
    * 图片生成
+   *
+   * 路由：
+   *  - wan2.7-image* / wanx-* / virtualmodel → WanxiangService（阿里百炼）
+   *  - gpt-image-1 / dall-e-*                  → OpenaiService（OpenAI 原生）
    */
   async generation(request: ImageGenerationDto) {
-    const { user, ...params } = request
+    const { user, imageUrls, ...params } = request
 
     if (!user) {
       throw new BadRequestException('userId is required')
@@ -110,9 +123,45 @@ export class ImageService {
       delete params.style
     }
 
+    // 阿里百炼系列走 WanxiangService
+    if (isWanxiangImageModel(params.model)) {
+      const wanxiangRes = await this.wanxiangService.generateImage({
+        model: params.model || 'wan2.7-image',
+        prompt: params.prompt,
+        size: typeof params.size === 'string' ? params.size : undefined,
+        imageUrls,
+        n: (params as any).n,
+        responseFormat: params.response_format as 'url' | 'b64_json' | undefined,
+      })
+
+      const list: { url: string }[] = []
+      for (const item of wanxiangRes.data) {
+        if (item.url) {
+          const uploadedPath = await this.uploadImageToS3(item.url, user, `ai/images/${request.model}`)
+          list.push({ url: uploadedPath })
+        }
+        else if (item.b64_json) {
+          const mimeType = `image/png`
+          const buffer = Buffer.from(item.b64_json, 'base64')
+          const uploadResult = await this.assetsService.uploadFromBuffer(user, buffer, {
+            type: AssetType.AiImage,
+            mimeType,
+          }, `ai/images/${request.model}`)
+          list.push({ url: uploadResult.asset.path })
+        }
+      }
+      return {
+        created: wanxiangRes.created,
+        list,
+        usage: wanxiangRes.usage,
+      }
+    }
+
+    // OpenAI 系列
     const result = await this.openaiService.createImageGeneration({
       ...params,
-    } as Omit<OpenAI.Images.ImageGenerateParams, 'user'> & { apiKey?: string })
+      imageUrls,
+    } as Omit<OpenAI.Images.ImageGenerateParams, 'user'> & { apiKey?: string; imageUrls?: string[] })
 
     for (const image of result.data || []) {
       if (image.url) {
@@ -138,9 +187,41 @@ export class ImageService {
 
   /**
    * 图片编辑
+   *
+   * 路由：
+   *  - wanx-background-generation-v2 / virtualmodel-v2 → WanxiangService（异步轮询）
+   *  - gpt-image-1 / dall-e-*                            → OpenaiService（同步）
    */
   async edit(request: ImageEditDto) {
     const { image, mask, user, ...params } = request
+
+    // 阿里百炼异步图像编辑走 WanxiangService
+    if (params.model === 'wanx-background-generation-v2' || params.model === 'virtualmodel-v2') {
+      const imageUrl = Array.isArray(image) ? image[0] : image
+      if (!imageUrl) throw new BadRequestException('image is required')
+
+      const task = await this.wanxiangService.submitAsyncImageTask({
+        model: params.model,
+        baseImageUrl: imageUrl,
+        maskImageUrl: Array.isArray(mask) ? mask[0] : mask,
+        prompt: params.prompt,
+        facePrompt: (params as any).face_prompt,
+        n: 1,
+      })
+
+      // 同步等待结果（最长 ~45 秒），后续如需更长可改为 queue 异步
+      const final = await this.waitForImageTask(task.taskId)
+      const data: { url: string }[] = []
+      for (const gUrl of final.imageUrls || []) {
+        const uploadedPath = await this.uploadImageToS3(gUrl, user!, `ai/images/${params.model}`)
+        data.push({ url: uploadedPath })
+      }
+      return {
+        created: Math.floor(Date.now() / 1000),
+        list: data,
+        usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 } as any,
+      }
+    }
 
     let imageFile: Uploadable | Uploadable[]
     if (Array.isArray(image)) {
@@ -192,27 +273,65 @@ export class ImageService {
    */
   async geminiGeneration(userId: string, request: GeminiImageGenerationDto & { model: 'gemini-3.1-flash-image-preview' | 'gemini-3-pro-image-preview' }) {
     const { model } = request
-    const imageUrls = request.imageUrls?.map(url => (url && !url.startsWith('http')) ? FileUtil.buildUrl(url) : url)
-    const result = await this.geminiService.generateImage({
-      prompt: request.prompt,
-      imageUrls,
-      imageSize: request.imageSize,
-      aspectRatio: request.aspectRatio,
-      model,
-    })
 
-    const images: { url: string, data: string, mimeType: string }[] = []
-    for (const image of result.images) {
-      const uploadResult = await this.assetsService.uploadFromBuffer(userId, image.imageData, {
-        type: AssetType.AiImage,
-        mimeType: image.mimeType,
-      }, `ai/images/${model}`)
-      images.push({ url: uploadResult.asset.path, data: image.imageData.toString('base64'), mimeType: image.mimeType })
+    // Check if Gemini key is valid
+    const isGeminiValid = !!(config.ai.gemini.apiKey && !config.ai.gemini.apiKey.includes('placeholder') && config.ai.gemini.keyPairs && config.ai.gemini.keyPairs.length > 0)
+
+    if (!isGeminiValid) {
+      const fallbackModel = 'wan2.7-image'
+      this.logger.log({ prompt: request.prompt, model: fallbackModel }, 'Gemini key 无效，回退到 Wanxiang（阿里百炼）')
+      return await this.wanxiangImageFallback(userId, request.prompt, fallbackModel)
     }
 
+    try {
+      const imageUrls = request.imageUrls?.map(url => (url && !url.startsWith('http')) ? FileUtil.buildUrl(url) : url)
+      const result = await this.geminiService.generateImage({
+        prompt: request.prompt,
+        imageUrls,
+        imageSize: request.imageSize,
+        aspectRatio: request.aspectRatio,
+        model,
+      })
+
+      const images: { url: string, data: string, mimeType: string }[] = []
+      for (const image of result.images) {
+        const uploadResult = await this.assetsService.uploadFromBuffer(userId, image.imageData, {
+          type: AssetType.AiImage,
+          mimeType: image.mimeType,
+        }, `ai/images/${model}`)
+        images.push({ url: uploadResult.asset.path, data: image.imageData.toString('base64'), mimeType: image.mimeType })
+      }
+
+      return {
+        images,
+        usage: result.usage,
+      }
+    } catch (geminiError) {
+      this.logger.warn({ error: geminiError }, 'Gemini image generation failed, falling back to Wanxiang (阿里百炼)')
+      return await this.wanxiangImageFallback(userId, request.prompt, 'wan2.7-image')
+    }
+  }
+
+  /**
+   * Gemini 失败 / 无 key 时的图像兜底：走阿里百炼 Wanxiang
+   */
+  private async wanxiangImageFallback(userId: string, prompt: string, model = 'wan2.7-image') {
+    const result = await this.wanxiangService.generateImage({
+      model,
+      prompt,
+      size: '1024x1024',
+      n: 1,
+    })
+    const images: { url: string, data: string, mimeType: string }[] = []
+    for (const item of result.data) {
+      if (item.url) {
+        const path = await this.uploadImageToS3(item.url, userId, `ai/images/${model}`)
+        images.push({ url: path, data: '', mimeType: 'image/png' })
+      }
+    }
     return {
       images,
-      usage: result.usage,
+      usage: { promptTokenCount: 0, candidatesTokenCount: 0, totalTokenCount: 0 },
     }
   }
 
@@ -751,5 +870,26 @@ export class ImageService {
       createdAt: log.createdAt,
       updatedAt: log.updatedAt,
     }
+  }
+
+  /**
+   * 同步轮询阿里百炼异步图像任务（最长 ~45 秒）
+   * 替代了之前的 pollDashScopeImageTask，鉴权由 WanxiangService 接管
+   */
+  private async waitForImageTask(taskId: string): Promise<{ status: 'succeeded' | 'failed' | 'running', imageUrls?: string[], error?: string }> {
+    const maxAttempts = 30
+    const intervalMs = 1500
+
+    for (let i = 0; i < maxAttempts; i++) {
+      await new Promise(resolve => setTimeout(resolve, intervalMs))
+      const polled = await this.wanxiangService.pollTask(taskId)
+      if (polled.status === 'succeeded') {
+        return { status: 'succeeded', imageUrls: polled.imageUrls || [] }
+      }
+      if (polled.status === 'failed') {
+        throw new Error(`Wanxiang image task failed: ${polled.error || 'unknown'}`)
+      }
+    }
+    throw new Error('Wanxiang image task execution timed out (45s)')
   }
 }

@@ -34,14 +34,22 @@ const nextConfig = {
   rewrites: async () => {
     const rewrites = []
 
-    // 存在 NEXT_PUBLIC_PROXY_URL 则代理，本地直连用
-    // 如：NEXT_PUBLIC_PROXY_URL = http://localhost:8080
-    if (process.env.NEXT_PUBLIC_PROXY_URL) {
+    // 本地开发直接代理到相应的服务
+    if (process.env.NODE_ENV === 'development') {
       rewrites.push({
-        source: `/api/:path*`,
-        destination: `${process.env.NEXT_PUBLIC_PROXY_URL}/:path*`,
+        source: '/api/ai/:path*',
+        destination: 'http://localhost:3010/ai/:path*',
+      })
+      rewrites.push({
+        source: '/api/agent/:path*',
+        destination: 'http://localhost:3010/agent/:path*',
+      })
+      rewrites.push({
+        source: '/api/:path*',
+        destination: 'http://localhost:3002/:path*',
       })
     }
+
     return rewrites
   },
 }

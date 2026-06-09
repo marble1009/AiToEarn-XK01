@@ -60,7 +60,7 @@ export abstract class AssetsHttpControllerBase {
     @Param('id') assetId: string,
   ) {
     const asset = await this.assetsService.confirmUploadByUser(token.id, assetId, this.userType)
-    return AssetVo.create(Object.assign(asset, { url: asset.path }))
+    return AssetVo.create(Object.assign(asset, { url: this.assetsService.buildUrl(asset.path) }))
   }
 
   @ApiDoc({

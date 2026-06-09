@@ -22,7 +22,7 @@ export class EmailService {
     try {
       return this.mailService.sendEmail({
         to: mail,
-        subject: isZh ? `AiToEarn 代理任务结果：${status}` : `AiToEarn Agent ${status}`,
+        subject: isZh ? `aiautoedit 代理任务结果：${status}` : `aiautoedit Agent ${status}`,
         template: isZh ? 'mail/agent-zh' : 'mail/agent',
         context: {
           taskId,
@@ -48,7 +48,7 @@ export class EmailService {
     try {
       return this.mailService.sendEmail({
         to: mail,
-        subject: isZh ? `AiToEarn：${title}` : `AiToEarn: ${title}`,
+        subject: isZh ? `aiautoedit：${title}` : `aiautoedit: ${title}`,
         template: isZh ? 'mail/task-notification-zh' : 'mail/task-notification',
         context: {
           title,

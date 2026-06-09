@@ -257,15 +257,17 @@ const ImageStack = memo(({
                 key={media.id || index}
                 className={cn(styles.mobileGridItem, isExiting && styles.imageItemExiting, isVideo && 'group/video')}
                 style={{ '--expand-rotation': `${rotation}deg`, 'transform': `rotate(${rotation}deg)` } as React.CSSProperties}
-                onClick={() => !isUploading && media.url && handleMediaClick(media.url, isVideo ? 'video' : 'image')}
+                onClick={() => !isUploading && media.url && handleMediaClick(getOssUrl(media.url), isVideo ? 'video' : 'image')}
               >
                 <div className="relative w-full h-full overflow-hidden rounded-md cursor-pointer">
                   {isVideo
                     ? (
                         <div className="w-full h-full relative">
                           {videoInfoMap.get(media.id!)?.coverUrl
-                            ? <Image src={videoInfoMap.get(media.id!)!.coverUrl} alt="" fill className="object-cover" sizes="50px" unoptimized />
-                            : (
+                            ? <Image src={getOssUrl(videoInfoMap.get(media.id!)!.coverUrl)} alt="" fill className="object-cover" sizes="50px" unoptimized />
+                            : media.url ? (
+                                <video src={getOssUrl(media.url)} className="object-cover w-full h-full bg-black" muted playsInline />
+                              ) : (
                                 <div className="w-full h-full bg-muted flex items-center justify-center">
                                   <Play className="h-4 w-4 text-muted-foreground" />
                                 </div>
@@ -278,7 +280,7 @@ const ImageStack = memo(({
                         </div>
                       )
                     : previewSrc
-                      ? <Image src={previewSrc} alt="" fill className="object-cover" sizes="50px" unoptimized={!media.url} />
+                      ? <Image src={getOssUrl(previewSrc)} alt="" fill className="object-cover" sizes="50px" unoptimized={!media.url} />
                       : <div className="w-full h-full bg-muted" />}
                   {isUploading && (
                     <div className="absolute inset-0 bg-background/60 flex items-center justify-center rounded-md">
@@ -436,15 +438,17 @@ const ImageStack = memo(({
                     if (isVideo)
                       setHoveredVideoIndex(null)
                   }}
-                  onClick={() => expanded && !isUploading && media.url && handleMediaClick(media.url, isVideo ? 'video' : 'image')}
+                  onClick={() => expanded && !isUploading && media.url && handleMediaClick(getOssUrl(media.url), isVideo ? 'video' : 'image')}
                 >
                   <div className="relative w-full h-full overflow-hidden rounded-md cursor-pointer">
                     {isVideo
                       ? (
                           <div className="w-full h-full relative">
                             {videoInfoMap.get(media.id!)?.coverUrl
-                              ? <Image src={videoInfoMap.get(media.id!)!.coverUrl} alt="" fill className="object-cover" sizes="50px" unoptimized />
-                              : (
+                              ? <Image src={getOssUrl(videoInfoMap.get(media.id!)!.coverUrl)} alt="" fill className="object-cover" sizes="50px" unoptimized />
+                              : media.url ? (
+                                  <video src={getOssUrl(media.url)} className="object-cover w-full h-full bg-black" muted playsInline />
+                                ) : (
                                   <div className="w-full h-full bg-muted flex items-center justify-center cursor-pointer">
                                     <Play className="h-4 w-4 text-muted-foreground" />
                                   </div>
@@ -457,7 +461,7 @@ const ImageStack = memo(({
                           </div>
                         )
                       : previewSrc
-                        ? <Image src={previewSrc} alt="" fill className="object-cover" sizes="50px" unoptimized={!media.url} />
+                        ? <Image src={getOssUrl(previewSrc)} alt="" fill className="object-cover" sizes="50px" unoptimized={!media.url} />
                         : <div className="w-full h-full bg-muted" />}
                     {isUploading && (
                       <div className="absolute inset-0 bg-background/60 flex items-center justify-center rounded-md">

@@ -2,6 +2,7 @@
  * AllListSection - 全部列表区域
  * 合并草稿、视频、图片三种数据源，瀑布流布局 + IntersectionObserver 无限滚动
  * 根据数据来源分发渲染 DraftCard 或 MediaCard
+ * 支持批量选择模式
  */
 
 'use client'
@@ -9,7 +10,7 @@
 import type { MediaItem } from '@/api/types/media'
 import type { PromotionMaterial } from '@/app/[lng]/brand-promotion/brandPromotionStore/types'
 import type { MediaPreviewItem } from '@/components/common/MediaPreview'
-import { Inbox } from 'lucide-react'
+import { Check, Inbox, Trash2 } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import Masonry from 'react-masonry-css'
 import { useShallow } from 'zustand/react/shallow'
@@ -18,6 +19,10 @@ import { useTransClient } from '@/app/i18n/client'
 import { MediaPreview } from '@/components/common/MediaPreview'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getOssUrl } from '@/utils/oss'
+import { apiDeleteMaterial } from '@/api/material'
+import { confirm } from '@/lib/confirm'
+import { toast } from '@/lib/toast'
+import { cn } from '@/lib/utils'
 import { useMediaTabStore } from '../ContentTabs/mediaTabStore'
 import { LazyImage } from '../LazyImage'
 import { MediaCard } from '../MediaCard'
@@ -59,15 +64,78 @@ const LoadingIndicator = memo(({ label }: { label: string }) => (
 ))
 LoadingIndicator.displayName = 'LoadingIndicator'
 
-/** 草稿卡片（简化版，用于全部列表，不含批量操作） */
-const AllDraftCard = memo(({ material, onClick }: { material: PromotionMaterial, onClick: () => void }) => {
-  const coverUrl = material.coverUrl || '/images/placeholder.png'
+/** 草稿卡片（简化版，用于全部列表，支持批量选择） */
+const AllDraftCard = memo(({ material, onClick, onDelete, batchMode, selected, onToggleSelect }: {
+  material: PromotionMaterial
+  onClick: () => void
+  onDelete?: () => void
+  batchMode?: boolean
+  selected?: boolean
+  onToggleSelect?: () => void
+}) => {
+  const coverUrl = getOssUrl(material.coverUrl) || '/images/placeholder.png'
+
+  const handleClick = useCallback(() => {
+    if (batchMode && onToggleSelect) {
+      onToggleSelect()
+    }
+    else {
+      onClick()
+    }
+  }, [batchMode, onClick, onToggleSelect])
+
+  const handleDeleteClick = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
+    confirm({
+      title: '确定要删除此草稿吗？',
+      content: '删除后将无法恢复。',
+      okType: 'destructive',
+      onOk: async () => {
+        try {
+          const res = await apiDeleteMaterial(material.id)
+          if (res) {
+            toast.success('删除成功')
+            onDelete?.()
+          } else {
+            toast.error('删除失败')
+          }
+        } catch (error) {
+          console.error('Failed to delete material:', error)
+          toast.error('删除失败')
+        }
+      }
+    })
+  }, [material, onDelete])
 
   return (
     <div
-      className="mb-4 cursor-pointer group relative"
-      onClick={onClick}
+      className={cn(
+        'mb-4 cursor-pointer group relative',
+        batchMode
+          ? cn(
+              'rounded-xl transition-all duration-200',
+              selected ? 'shadow-lg' : '',
+            )
+          : '',
+      )}
+      onClick={handleClick}
     >
+      {/* 批量模式圆形勾选指示器 */}
+      {batchMode && (
+        <div
+          className={cn(
+            'absolute top-2 right-2 z-10 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200 shadow-sm',
+            selected
+              ? 'bg-primary border-primary scale-110'
+              : 'bg-background/90 border-muted-foreground/30 group-hover:border-primary group-hover:scale-105',
+          )}
+          onClick={(e) => { e.stopPropagation(); onToggleSelect?.() }}
+        >
+          {selected && <Check className="w-3.5 h-3.5 text-primary-foreground" />}
+        </div>
+      )}
+
       <div className="relative w-full overflow-hidden rounded-xl">
         <LazyImage
           src={coverUrl}
@@ -79,12 +147,28 @@ const AllDraftCard = memo(({ material, onClick }: { material: PromotionMaterial,
           placeholderHeight={150}
           style={{ aspectRatio: 'auto' }}
         />
-        {material.desc && (
+        {!batchMode && material.desc && (
           <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3 rounded-xl">
             <p className="text-white text-xs line-clamp-4">
               {material.desc}
             </p>
           </div>
+        )}
+
+        {/* 选中遮罩 */}
+        {batchMode && selected && (
+          <div className="absolute inset-0 bg-primary/15 pointer-events-none rounded-xl" />
+        )}
+
+        {/* 删除按钮 - 仅非批量模式 */}
+        {!batchMode && onDelete && (
+          <button
+            onClick={handleDeleteClick}
+            className="absolute top-2 right-2 z-10 w-8 h-8 rounded-full bg-black/60 hover:bg-red-600 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-200 border border-white/20 shadow-md cursor-pointer"
+            title="删除"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
         )}
       </div>
       <div className="pt-2 px-1">
@@ -114,17 +198,22 @@ export const AllListSection = memo(({ materialGroupId }: AllListSectionProps) =>
   const currentPlan = usePlanDetailStore(state => state.currentPlan)
   const openDraftDetailDialog = usePlanDetailStore(state => state.openDraftDetailDialog)
 
-  const { mergedList, loading, initialized, allExhausted } = useMediaTabStore(
+  const { mergedList, loading, initialized, allExhausted, batchMode, selectedIds } = useMediaTabStore(
     useShallow(state => ({
       mergedList: state.all.mergedList,
       loading: state.all.loading,
       initialized: state.all.initialized,
       allExhausted: state.all.allExhausted,
+      batchMode: state.batchMode,
+      selectedIds: state.selectedIds,
     })),
   )
 
   const fetchAllList = useMediaTabStore(state => state.fetchAllList)
   const loadMoreAll = useMediaTabStore(state => state.loadMoreAll)
+  const toggleSelection = useMediaTabStore(state => state.toggleSelection)
+
+  const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds])
 
   // 媒体预览状态
   const { previewOpen, previewIndex, previewType } = useMediaTabStore(
@@ -235,6 +324,16 @@ export const AllListSection = memo(({ materialGroupId }: AllListSectionProps) =>
                 key={`draft-${item.id}`}
                 material={material}
                 onClick={() => openDraftDetailDialog(material)}
+                onDelete={() => {
+                  if (materialGroupId && currentPlan) {
+                    fetchAllList(materialGroupId, currentPlan.id)
+                    // 同步刷新草稿箱以同步顶栏 Tab 数量与草稿箱内容
+                    usePlanDetailStore.getState().fetchMaterials(currentPlan.id, 1)
+                  }
+                }}
+                batchMode={batchMode}
+                selected={selectedSet.has(item.id)}
+                onToggleSelect={() => toggleSelection(item.id)}
               />
             )
           }
@@ -245,6 +344,14 @@ export const AllListSection = memo(({ materialGroupId }: AllListSectionProps) =>
                 key={`${item.source}-${item.id}`}
                 media={media}
                 onClick={handleMediaClick}
+                onDelete={() => {
+                  if (materialGroupId && currentPlan) {
+                    fetchAllList(materialGroupId, currentPlan.id)
+                  }
+                }}
+                batchMode={batchMode}
+                selected={selectedSet.has(item.id)}
+                onToggleSelect={() => toggleSelection(item.id)}
               />
             )
           }

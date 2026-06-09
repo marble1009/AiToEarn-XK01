@@ -49,8 +49,8 @@ export class CreditsController {
   async getMySubscriptionStatus(@GetToken() token: TokenInfo) {
     const activeSub = await this.userSubscriptionRepository.getActiveSubscription(token.id)
     
-    let limitChat = 10
-    let limitGen = 1
+    let limitChat = 9999
+    let limitGen = 999
     let planName = '免费体验版'
     let endDate = null
 

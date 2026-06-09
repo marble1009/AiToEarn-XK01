@@ -59,7 +59,7 @@ export default function DataProtectionContent() {
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>1. Data Controller Information</h2>
               <p className={styles.sectionContent}>
-                Aitoearn, Inc. acts as the data controller for personal data collected through our
+                aiautoedit, Inc. acts as the data controller for personal data collected through our
                 services. We are responsible for determining the purposes and means of processing
                 your personal data.
               </p>

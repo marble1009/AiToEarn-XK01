@@ -234,6 +234,7 @@ export const usePlanDetailStore = create(
       updateMaterial: async (
         materialId: string,
         data: {
+          type?: string
           title?: string
           desc?: string
           mediaList?: any[]
@@ -275,14 +276,22 @@ export const usePlanDetailStore = create(
       /**
        * 为特定草稿生成 AI 视频
        */
-      generateVideoForDraft: async (material: PromotionMaterial) => {
+      generateVideoForDraft: async (
+        material: PromotionMaterial,
+        customOptions?: {
+          prompt?: string
+          model?: string
+          image?: string
+        },
+      ) => {
         const { generateVideo, getVideoTaskStatus } = await import('@/api/ai')
 
         try {
           // 1. 发起生成请求
           const res = await generateVideo({
-            model: 'doubao-seedance-pro', // Using the pro model for better quality
-            prompt: material.desc || material.title || '',
+            model: customOptions?.model || (customOptions?.image ? 'wan2.7-i2v-2026-04-25' : 'wan2.7-t2v-2026-04-25'),
+            prompt: customOptions?.prompt || material.desc || material.title || '',
+            image: customOptions?.image || undefined,
             metadata: { materialId: material.id },
           })
 
@@ -301,8 +310,9 @@ export const usePlanDetailStore = create(
               if (statusRes?.data?.status === 'succeeded' && statusRes.data.content?.video_url) {
                 const videoUrl = statusRes.data.content.video_url
 
-                // 3. 更新素材 - Prepend the new video so it becomes the featured one
+                // 3. 更新素材 - Prepend the new video so it becomes the featured one and set type to 'video'
                 const success = await methods.updateMaterial(material.id, {
+                  type: 'video',
                   mediaList: [
                     { url: videoUrl, type: 'video' },
                     ...(material.mediaList || []),

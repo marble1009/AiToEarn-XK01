@@ -13,8 +13,8 @@ export async function generateMetadata({ params }: PageParams) {
 
   return getMetadata(
     {
-      title: 'AiToEarn Hub - Premium AI Agent Platform',
-      description: 'Discover the power of AiToEarn: Monetize, Publish, Engage, and Create with our AI content marketing agents.',
+      title: 'aiautoedit Hub - Premium AI Agent Platform',
+      description: 'Discover the power of aiautoedit: Monetize, Publish, Engage, and Create with our AI content marketing agents.',
     },
     lng,
     '/hub'

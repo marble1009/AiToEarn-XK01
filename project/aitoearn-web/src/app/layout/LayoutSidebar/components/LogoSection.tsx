@@ -34,9 +34,9 @@ export function LogoSection({ collapsed, onToggle }: LogoSectionProps) {
             className="flex items-center justify-center transition-opacity group-hover:opacity-0"
             data-testid="sidebar-logo-link"
           >
-            <div className="relative flex size-8 items-center justify-center rounded bg-black border border-[#39FF14]/40 shadow-[0_0_10px_rgba(57,255,20,0.3)]">
-              <span className="text-[#39FF14] text-xs font-black">A</span>
-              <span className="absolute -top-0.5 -right-0.5 size-1.5 rounded-full bg-[#FF007F] animate-ping" />
+            <div className="relative flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#D2232A] to-[#A80B1E] text-white shadow-[0_3px_10px_rgba(210,35,42,0.3)]">
+              <span className="text-xs font-bold leading-none select-none">客</span>
+              <span className="absolute -top-0.5 -right-0.5 size-1.5 rounded-full bg-[#E5B25D]" />
             </div>
           </Link>
           {/* 展开按钮 - 默认隐藏，hover 时显示 */}
@@ -55,12 +55,12 @@ export function LogoSection({ collapsed, onToggle }: LogoSectionProps) {
             className="flex items-center gap-2 text-foreground no-underline hover:opacity-85"
             data-testid="sidebar-logo-link"
           >
-            <div className="relative flex size-8 items-center justify-center rounded bg-black border border-[#39FF14]/40 shadow-[0_0_10px_rgba(57,255,20,0.3)]">
-              <span className="text-[#39FF14] text-xs font-black">A</span>
-              <span className="absolute -top-0.5 -right-0.5 size-1.5 rounded-full bg-[#FF007F] animate-ping" />
+            <div className="relative flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#D2232A] to-[#A80B1E] text-white shadow-[0_3px_10px_rgba(210,35,42,0.3)]">
+              <span className="text-xs font-bold leading-none select-none">客</span>
+              <span className="absolute -top-0.5 -right-0.5 size-1.5 rounded-full bg-[#E5B25D]" />
             </div>
-            <span className="text-sm font-black tracking-widest text-[#39FF14] drop-shadow-[0_0_8px_rgba(57,255,20,0.6)]">
-              Aura<span className="text-[#FF007F] drop-shadow-[0_0_8px_rgba(255,0,127,0.6)]">String</span>
+            <span className="text-base font-bold tracking-tight text-[#2A2A2A] dark:text-[#FDFBF7]">
+              {lng === 'zh-CN' ? '爱易客' : 'aiautoedit'}<span className="text-[10px] font-normal text-[#D2232A] bg-[#D2232A]/10 px-1.5 py-0.5 rounded-full ml-1.5">{lng === 'zh-CN' ? '智能' : 'Beta'}</span>
             </span>
           </Link>
           <button

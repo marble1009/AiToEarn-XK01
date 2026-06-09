@@ -10,6 +10,7 @@ import type { IPubParams } from '@/components/PublishDialog/publishDialog.type'
 import { useCallback, useEffect, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import { useShallow } from 'zustand/react/shallow'
+import { Sparkles } from 'lucide-react'
 import { usePlanDetailStore } from '@/app/[lng]/brand-promotion/planDetailStore'
 import { AccountPlatInfoMap, isPlatformAvailable } from '@/app/config/platConfig'
 import { PubType } from '@/app/config/publishConfig'
@@ -78,6 +79,14 @@ function DraftContentModule() {
       if (selectedPlanId) {
         silentRefreshMaterials(selectedPlanId)
         useMediaTabStore.getState().silentRefresh(selectedPlanId)
+        useMediaTabStore.getState().silentRefreshAll(selectedPlanId, selectedPlanId)
+
+        // 1.5 秒后进行二次刷新，防止由于数据库索引或写入延迟导致的首次查询为空
+        setTimeout(() => {
+          silentRefreshMaterials(selectedPlanId)
+          useMediaTabStore.getState().silentRefresh(selectedPlanId)
+          useMediaTabStore.getState().silentRefreshAll(selectedPlanId, selectedPlanId)
+        }, 1500)
       }
       useUserStore.getState().fetchCreditsBalance()
     },
@@ -213,11 +222,34 @@ function DraftContentModule() {
 
   return (
     <>
-      <div className="space-y-6 p-4 md:p-6">
-        {/* AI 批量生成输入栏 */}
-        <AiBatchGenerateBar groupId={selectedPlanId || undefined} />
-        {/* 内容 Tabs：草稿箱 / 视频 / 图片 */}
-        <DraftListSection materialGroupId={selectedPlanId || undefined} />
+      <div className="max-w-[1600px] mx-auto p-4 md:p-6 flex flex-col xl:flex-row gap-6 items-start">
+        {/* Left Control Column: AI Content Generator Panel */}
+        <div className="w-full xl:w-[480px] xl:sticky xl:top-6 flex-shrink-0 bg-white dark:bg-[#202C24] rounded-[2rem] border border-[#5F7A61]/15 p-6 shadow-[0_8px_30px_rgba(95,122,97,0.06)] relative overflow-hidden">
+          <div className="absolute top-0 right-0 pointer-events-none opacity-20">
+            <div className="w-32 h-32 rounded-full bg-[radial-gradient(circle,#F3A390_0%,transparent_70%)] blur-2xl" />
+          </div>
+          
+          <div className="mb-6">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#5F7A61]/10 text-[#5F7A61] dark:text-[#7FA382] font-semibold text-xs border border-[#5F7A61]/15 mb-3 shadow-[0_2px_8px_rgba(95,122,97,0.05)]">
+              <Sparkles size={12} className="text-[#F3A390] animate-pulse" />
+              <span>AI 自动引流助手</span>
+            </div>
+            <h2 className="text-xl font-bold text-[#2A2A2A] dark:text-[#FDFBF7] tracking-tight">AI 自动获客创作室</h2>
+            <p className="text-xs text-[#2A2A2A]/60 dark:text-[#FDFBF7]/60 mt-1.5 leading-relaxed">
+              只需一步：在此输入您的招牌特色、新品或促销活动，AI 即刻一键批量做出精美的短视频/图文海报草稿。配合获客二维码，到店顾客扫码一键即可帮您代发至抖音或小红书，源源不断吸引同城食客进店消费！
+            </p>
+          </div>
+          <AiBatchGenerateBar groupId={selectedPlanId || undefined} />
+        </div>
+
+        {/* Right Gallery Column: Drafts & Publishing Workstation */}
+        <div className="flex-1 w-full min-w-0 bg-white/60 dark:bg-[#1C261F]/60 backdrop-blur-xl rounded-[2rem] border border-[#5F7A61]/12 p-6 shadow-[0_8px_30px_rgba(95,122,97,0.04)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.15)]">
+          <div className="mb-4 border-b border-[#5F7A61]/10 pb-4">
+            <h3 className="text-lg font-bold text-[#2A2A2A] dark:text-[#FDFBF7] tracking-tight">内容工作台</h3>
+            <p className="text-xs text-muted-foreground mt-1">管理并一键安全分发至多平台草稿箱</p>
+          </div>
+          <DraftListSection materialGroupId={selectedPlanId || undefined} />
+        </div>
       </div>
 
       {/* 创建草稿弹窗 */}

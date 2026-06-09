@@ -16,29 +16,80 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 
-const DraftListToolbar = memo(() => {
+import { useMediaTabStore } from '../ContentTabs/mediaTabStore'
+
+interface DraftListToolbarProps {
+  activeTab: 'all' | 'drafts' | 'video' | 'img'
+}
+
+const DraftListToolbar = memo(({ activeTab }: DraftListToolbarProps) => {
   const { t } = useTransClient('brandPromotion')
+  const isDrafts = activeTab === 'drafts'
 
   const {
-    batchMode,
+    draftBatchMode,
     selectedMaterialIds,
     materials,
     materialsFilter,
   } = usePlanDetailStore(
     useShallow(state => ({
-      batchMode: state.batchMode,
+      draftBatchMode: state.batchMode,
       selectedMaterialIds: state.selectedMaterialIds,
       materials: state.materials,
       materialsFilter: state.materialsFilter,
     })),
   )
 
+  const {
+    mediaBatchMode,
+    selectedIds,
+    videoList,
+    imgList,
+    mergedList,
+  } = useMediaTabStore(
+    useShallow(state => ({
+      mediaBatchMode: state.batchMode,
+      selectedIds: state.selectedIds,
+      videoList: state.video.list,
+      imgList: state.img.list,
+      mergedList: state.all.mergedList,
+    })),
+  )
+
+  const batchMode = isDrafts ? draftBatchMode : mediaBatchMode
+  const selectedCount = isDrafts ? selectedMaterialIds.length : selectedIds.length
+
+  const currentListLength = useMemo(() => {
+    if (isDrafts) return materials.length
+    if (activeTab === 'all') return mergedList.length
+    if (activeTab === 'video') return videoList.length
+    return imgList.length
+  }, [isDrafts, activeTab, materials, mergedList, videoList, imgList])
+
   const setMaterialsFilter = usePlanDetailStore(state => state.setMaterialsFilter)
-  const enterBatchMode = usePlanDetailStore(state => state.enterBatchMode)
-  const exitBatchMode = usePlanDetailStore(state => state.exitBatchMode)
-  const selectAllLoadedMaterials = usePlanDetailStore(state => state.selectAllLoadedMaterials)
-  const deselectAllMaterials = usePlanDetailStore(state => state.deselectAllMaterials)
-  const openConditionalDeleteDialog = usePlanDetailStore(state => state.openConditionalDeleteDialog)
+
+  const enterBatchMode = isDrafts 
+    ? usePlanDetailStore.getState().enterBatchMode 
+    : useMediaTabStore.getState().enterBatchMode
+  const exitBatchMode = isDrafts 
+    ? usePlanDetailStore.getState().exitBatchMode 
+    : useMediaTabStore.getState().exitBatchMode
+
+  const selectAllLoadedMaterials = useCallback(() => {
+    if (isDrafts) {
+      usePlanDetailStore.getState().selectAllLoadedMaterials()
+    } else {
+      useMediaTabStore.getState().selectAllLoaded(activeTab)
+    }
+  }, [isDrafts, activeTab])
+
+  const deselectAllMaterials = isDrafts 
+    ? usePlanDetailStore.getState().deselectAllMaterials 
+    : useMediaTabStore.getState().deselectAll
+
+  const openConditionalDeleteDialog = isDrafts 
+    ? usePlanDetailStore.getState().openConditionalDeleteDialog 
+    : useMediaTabStore.getState().openConditionalDeleteDialog
 
   const [searchValue, setSearchValue] = useState(materialsFilter.title || '')
 
@@ -63,7 +114,7 @@ const DraftListToolbar = memo(() => {
     })
   }, [])
 
-  const allSelected = materials.length > 0 && selectedMaterialIds.length === materials.length
+  const allSelected = currentListLength > 0 && selectedCount === currentListLength
 
   const handleToggleSelectAll = useCallback(() => {
     if (allSelected) {
@@ -82,7 +133,7 @@ const DraftListToolbar = memo(() => {
           <span className="text-sm">{t('draftManage.selectAll')}</span>
         </div>
         <span className="text-sm text-muted-foreground">
-          {t('draftManage.selectedCount', { count: selectedMaterialIds.length })}
+          {t('draftManage.selectedCount', { count: selectedCount })}
         </span>
         <div className="flex-1" />
         <Button data-testid="draftbox-batch-cancel-btn" variant="ghost" size="sm" onClick={exitBatchMode} className="cursor-pointer">
@@ -94,17 +145,19 @@ const DraftListToolbar = memo(() => {
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
-      {/* 第一行：搜索框 */}
-      <div className="relative w-full sm:max-w-[300px]">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          data-testid="draftbox-search-input"
-          value={searchValue}
-          onChange={handleSearchChange}
-          placeholder={t('draftManage.searchPlaceholder')}
-          className="pl-9 h-9"
-        />
-      </div>
+      {/* 第一行：搜索框 - 仅草稿箱渲染 */}
+      {isDrafts && (
+        <div className="relative w-full sm:max-w-[300px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            data-testid="draftbox-search-input"
+            value={searchValue}
+            onChange={handleSearchChange}
+            placeholder={t('draftManage.searchPlaceholder')}
+            className="pl-9 h-9"
+          />
+        </div>
+      )}
       {/* 第二行：按钮组 */}
       <div className="flex items-center gap-3 flex-wrap sm:ml-auto">
         <Button

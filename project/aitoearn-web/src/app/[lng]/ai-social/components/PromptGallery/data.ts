@@ -7,24 +7,24 @@
 /** 提示词画廊静态资源配置 */
 export const promptGalleryAssets = [
   {
-    title: 'Blacklock Canary Wharf Check-in Vlog',
-    cover: '/assets/promptGallery/cover01.png',
+    title: '四川麻辣火锅深夜打卡 Vlog',
+    cover: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&q=80&w=800',
     video: '/assets/promptGallery/video01.mp4',
-    materials: ['/assets/promptGallery/material01-1.png', '/assets/promptGallery/material01-2.png'],
-    prompt: `Create an 8s vertical video (9:16), restaurant check-in vlog style at Blacklock Canary Wharf. Selfie/talking-head format for TikTok/Reels. Use provided images as reference.`,
+    materials: ['https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&q=80&w=200'],
+    prompt: `制作一个8秒竖屏短视频（9:16），深夜探店四川麻辣火锅，特写镜头展现红油翻滚、肥牛下锅的诱人画面，搭配欢快动感背景音乐与深夜吃货专属文案。`,
   },
   {
-    title: 'Restaurant Discovery Short Video',
-    cover: '/assets/promptGallery/cover02.png',
+    title: '国潮新茶饮芝芝莓莓新品探店',
+    cover: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=800',
     video: '/assets/promptGallery/video02.mp4',
-    materials: ['/assets/promptGallery/material02.png'],
-    prompt: `8s 9:16 vlog. VO: "Just found this place, everyone says it's great. Going in—wish me luck!" Exterior→walk→enter. Useref imgs.`,
+    materials: ['https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&q=80&w=200'],
+    prompt: `制作一个8秒竖屏小红书探店Vlog（9:16），展示喜茶新品“芝芝莓莓”，镜头捕捉阳光下粉嫩果肉与芝士拉丝特写，配音：“芝士控必冲！满口草莓果肉，太治愈了！”`,
   },
   {
-    title: 'The Shed British Restaurant Promo',
-    cover: '/assets/promptGallery/cover03.png',
+    title: '老字号手作鲜虾云吞面美味安利',
+    cover: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&q=80&w=800',
     video: '/assets/promptGallery/video03.mp4',
-    materials: ['/assets/promptGallery/material03.png'],
-    prompt: `8s 9:16 The Shed video. VO: "The Shed blew my mind! Fish & chips perfection. You have to check it out!" Warm tones. Use refs.`,
+    materials: ['https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&q=80&w=200'],
+    prompt: `制作一个8秒竖屏抖音短视频（9:16），展现百年老字号手作鲜虾云吞面的制作过程与热气腾腾的饱满云吞，配音：“皮薄馅大，整颗大虾仁，这才是正宗广式云吞面！”`,
   },
 ]

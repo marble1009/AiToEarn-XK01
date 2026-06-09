@@ -1,6 +1,6 @@
 /**
  * TermsOfServicePage - 服务条款页面
- * 展示 AiToEarn 平台服务条款和用户协议
+ * 展示 aiautoedit 平台服务条款和用户协议
  */
 import type { Metadata } from 'next'
 import { useTranslation } from '@/app/i18n'
@@ -43,22 +43,22 @@ export default function TermsOfServicePage() {
           <div className={styles.content}>
             <section className={styles.section}>
               <p className={styles.introduction}>
-                The following sets forth Aitoearn's Terms of Use. We know how tempting it is to skip
+                The following sets forth aiautoedit's Terms of Use. We know how tempting it is to skip
                 these Terms of Use, but it's important to establish what you can expect from us as
-                you use Aitoearn's Service, and what we expect from you. The Terms of Use is a
+                you use aiautoedit's Service, and what we expect from you. The Terms of Use is a
                 binding legal document, and you are required to read and accept it in full in order
                 to use our Service.
               </p>
             </section>
 
             <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Aitoearn, Inc Terms of Use</h2>
+              <h2 className={styles.sectionTitle}>aiautoedit, Inc Terms of Use</h2>
               <p className={styles.sectionContent}>
-                Welcome, and thank you for your interest in Aitoearn, Inc. ("Aitoearn," "we," or
-                "us") and our website at aitoearn.ai, along with our related websites, networks,
+                Welcome, and thank you for your interest in aiautoedit, Inc. ("aiautoedit," "we," or
+                "us") and our website at aiautoedit.art, along with our related websites, networks,
                 hosted applications, mobile or other downloadable applications, and other services
                 provided by us (collectively, the "Service"). These Terms of Use are a legally
-                binding contract between you and Aitoearn regarding your use of the Service.
+                binding contract between you and aiautoedit regarding your use of the Service.
               </p>
               <p className={styles.sectionContent}>
                 <strong>PLEASE READ THE FOLLOWING TERMS CAREFULLY:</strong>
@@ -66,16 +66,16 @@ export default function TermsOfServicePage() {
                 BY CLICKING "I ACCEPT,"OR BY DOWNLOADING, INSTALLING, OR OTHERWISE ACCESSING OR
                 USING THE SERVICE, YOU AGREE THAT YOU HAVE READ AND UNDERSTOOD, AND, AS A CONDITION
                 TO YOUR USE OF THE SERVICE, YOU AGREE TO BE BOUND BY, THE FOLLOWING TERMS AND
-                CONDITIONS, INCLUDING Aitoearn'S PRIVACY POLICY
-                https://aitoearn.ai/en/websit/privacy-policy AND ANY ADDITIONAL TERMS AND POLICIES
-                Aitoearn MAY PROVIDE FROM TIME TO TIME (TOGETHER, THESE "TERMS").
+                CONDITIONS, INCLUDING aiautoedit'S PRIVACY POLICY
+                https://aiautoedit.art/en/websit/privacy-policy AND ANY ADDITIONAL TERMS AND POLICIES
+                aiautoedit MAY PROVIDE FROM TIME TO TIME (TOGETHER, THESE "TERMS").
               </p>
               <p className={styles.sectionContent}>
                 <strong>Arbitration NOTICE.</strong>
                 {' '}
                 Except for certain kinds of disputes described
                 in Section 14, you agree that disputes arising under these Terms will be resolved by
-                binding, individual arbitration, and BY ACCEPTING THESE TERMS, YOU AND Aitoearn ARE
+                binding, individual arbitration, and BY ACCEPTING THESE TERMS, YOU AND aiautoedit ARE
                 EACH WAIVING THE RIGHT TO A TRIAL BY JURY OR TO PARTICIPATE IN ANY CLASS ACTION OR
                 REPRESENTATIVE PROCEEDING.
               </p>
@@ -91,9 +91,9 @@ export default function TermsOfServicePage() {
               </p>
               <h3 className={styles.subSectionTitle}>1.2 Modification of the Service</h3>
               <p className={styles.sectionContent}>
-                Aitoearn reserves the right to modify or discontinue all or any portion of the
+                aiautoedit reserves the right to modify or discontinue all or any portion of the
                 Service at any time (including by limiting or discontinuing certain features of the
-                Service), temporarily or permanently, without notice to you. Aitoearn will have no
+                Service), temporarily or permanently, without notice to you. aiautoedit will have no
                 liability for any change to the Service, including any paid-for functionalities of
                 the Service, or any suspension or termination of your access to or use of the
                 Service. Service fees are not refundable.
@@ -125,7 +125,7 @@ export default function TermsOfServicePage() {
                 maintaining the confidentiality of your account and password, and you accept
                 responsibility for all activities that occur under your account. If you believe that
                 your account is no longer secure, then you should immediately notify us at
-                hello@aitoearn.ai.
+                hello@aiautoedit.art.
               </p>
             </section>
 
@@ -141,27 +141,27 @@ export default function TermsOfServicePage() {
               </p>
               <h3 className={styles.subSectionTitle}>4.1 Price</h3>
               <p className={styles.sectionContent}>
-                Aitoearn reserves the right to determine pricing for the Service. Aitoearn will make
+                aiautoedit reserves the right to determine pricing for the Service. aiautoedit will make
                 reasonable efforts to keep pricing information published on our website up to date.
                 We encourage you to check our pricing page periodically for current pricing
                 information. If you cancel your subscription you may forego your current price.
               </p>
               <h3 className={styles.subSectionTitle}>4.2 Authorization</h3>
               <p className={styles.sectionContent}>
-                You authorize Aitoearn to charge all sums for the orders that you make and any level
-                of Service you select as described in these Terms or published by Aitoearn,
+                You authorize aiautoedit to charge all sums for the orders that you make and any level
+                of Service you select as described in these Terms or published by aiautoedit,
                 including all applicable taxes, to the payment method specified in your account. If
-                you pay any fees with a credit card, then Aitoearn may seek pre-authorization of
+                you pay any fees with a credit card, then aiautoedit may seek pre-authorization of
                 your credit card account prior to your purchase to verify that the credit card is
                 valid and has the necessary funds or credit available to cover your purchase.
               </p>
             </section>
 
             <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>5. LICENSE TO Aitoearn SERVICES</h2>
+              <h2 className={styles.sectionTitle}>5. LICENSE TO aiautoedit SERVICES</h2>
               <h3 className={styles.subSectionTitle}>5.1 Limited License</h3>
               <p className={styles.sectionContent}>
-                Subject to your complete and ongoing compliance with these Terms, Aitoearn grants
+                Subject to your complete and ongoing compliance with these Terms, aiautoedit grants
                 you, solely for your a limited, non-exclusive, non-transferable, non-sublicensable,
                 and revocable license to: (a) install and use one object code copy of any mobile or
                 other downloadable application associated with the Service obtained from a
@@ -183,13 +183,13 @@ export default function TermsOfServicePage() {
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>6. Ownership; Proprietary Rights</h2>
               <p className={styles.sectionContent}>
-                The Service is owned and operated by Aitoearn. The visual interfaces, graphics,
+                The Service is owned and operated by aiautoedit. The visual interfaces, graphics,
                 design, compilation, information, data, computer code (including source code or
                 object code), products, software, services, domain names, templates, and all other
-                elements of the Service provided by Aitoearn ("Materials") are protected by
+                elements of the Service provided by aiautoedit ("Materials") are protected by
                 intellectual property and other laws. All Materials included in the Service are the
-                property of Aitoearn or its third-party licensors. Except as expressly authorized by
-                Aitoearn, you may not make use of the Materials.
+                property of aiautoedit or its third-party licensors. Except as expressly authorized by
+                aiautoedit, you may not make use of the Materials.
               </p>
             </section>
 
@@ -229,7 +229,7 @@ export default function TermsOfServicePage() {
                   access, search, or otherwise use any portion of the Service through the use of any
                   engine, software, tool, agent, device, or mechanism (including spiders, robots,
                   crawlers, and data mining tools) other than the software or search agents provided
-                  by Aitoearn;
+                  by aiautoedit;
                 </li>
                 <li>interfere with security-related features of the Service;</li>
                 <li>
@@ -243,7 +243,7 @@ export default function TermsOfServicePage() {
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>9. INTELLECTUAL PROPERTY PROTECTION</h2>
               <p className={styles.sectionContent}>
-                Aitoearn respects the intellectual property rights of others, takes the protection
+                aiautoedit respects the intellectual property rights of others, takes the protection
                 of intellectual property rights very seriously, and asks users of the Service to do
                 the same. Infringing activity will not be tolerated on or through the Service.
               </p>
@@ -255,7 +255,7 @@ export default function TermsOfServicePage() {
                 These Terms are effective beginning when you accept the Terms or first download,
                 install, access, or use the Service, and ending when terminated as described in this
                 section. If you violate any provision of these Terms, then your authorization to
-                access the Service and these Terms automatically terminate. In addition, Aitoearn
+                access the Service and these Terms automatically terminate. In addition, aiautoedit
                 may, at its sole discretion, terminate these Terms or your account on the Service,
                 or suspend or terminate your access to the Service, at any time for any reason or no
                 reason, with or without notice.
@@ -265,7 +265,7 @@ export default function TermsOfServicePage() {
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>11. LIMITATION OF LIABILITY</h2>
               <p className={styles.sectionContent}>
-                TO THE FULLEST EXTENT PERMITTED BY LAW, IN NO EVENT WILL THE Aitoearn ENTITIES BE
+                TO THE FULLEST EXTENT PERMITTED BY LAW, IN NO EVENT WILL THE aiautoedit ENTITIES BE
                 LIABLE TO YOU FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE
                 DAMAGES (INCLUDING DAMAGES FOR LOSS OF PROFITS, GOODWILL, OR ANY OTHER INTANGIBLE
                 LOSS) ARISING OUT OF OR RELATING TO YOUR ACCESS TO OR USE OF, OR YOUR INABILITY TO
@@ -278,12 +278,12 @@ export default function TermsOfServicePage() {
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>12. Dispute Resolution and Arbitration</h2>
               <p className={styles.sectionContent}>
-                In the interest of resolving disputes between you and Aitoearn in the most expedient
+                In the interest of resolving disputes between you and aiautoedit in the most expedient
                 and cost effective manner, and except as described in the Arbitration provisions,
-                you and Aitoearn agree that every dispute arising in connection with these Terms,
+                you and aiautoedit agree that every dispute arising in connection with these Terms,
                 the Service, and communications from us will be resolved by binding arbitration.
                 Arbitration is less formal than a lawsuit in court. YOU UNDERSTAND AND AGREE THAT,
-                BY ENTERING INTO THESE TERMS, YOU AND Aitoearn ARE EACH WAIVING THE RIGHT TO A TRIAL
+                BY ENTERING INTO THESE TERMS, YOU AND aiautoedit ARE EACH WAIVING THE RIGHT TO A TRIAL
                 BY JURY OR TO PARTICIPATE IN A CLASS ACTION.
               </p>
             </section>
@@ -293,7 +293,7 @@ export default function TermsOfServicePage() {
               <p className={styles.sectionContent}>
                 These Terms, including the Privacy Policy and any other agreements expressly
                 incorporated by reference into these Terms, are the entire and exclusive
-                understanding and agreement between you and Aitoearn regarding your use of the
+                understanding and agreement between you and aiautoedit regarding your use of the
                 Service. These Terms are governed by the laws of the State of California without
                 regard to conflict of law principles.
               </p>
@@ -302,8 +302,8 @@ export default function TermsOfServicePage() {
             <section className={styles.section}>
               <h2 className={styles.sectionTitle}>14. Contact Information</h2>
               <p className={styles.sectionContent}>
-                The Service is offered by Aitoearn, Inc. You may contact us by emailing us at
-                hello@aitoearn.ai.
+                The Service is offered by aiautoedit, Inc. You may contact us by emailing us at
+                hello@aiautoedit.art.
               </p>
             </section>
           </div>

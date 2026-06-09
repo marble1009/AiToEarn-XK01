@@ -377,7 +377,7 @@ export class AssetsService {
 
     if (finalMimeType?.startsWith('video/')) {
       try {
-        const videoUrl = this.storage.buildUrl(asset.path)
+        const videoUrl = this.storage.buildInternalUrl(asset.path)
         const videoMetadata = await this.videoMetadataService.probeVideoMetadata(videoUrl)
         updateData.metadata = {
           ...asset.metadata,

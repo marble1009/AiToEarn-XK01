@@ -30,6 +30,15 @@ const {
   GEMINI_API_KEY,
   GEMINI_BASE_URL,
   AI_NVIDIA_API_KEY,
+  // 文本生成（minimax-M3）专用配置 —— 与阿里百炼 Key 严格隔离
+  MINIMAX_API_KEY,
+  MINIMAX_BASE_URL,
+  // 阿里百炼 Wanxiang 专用配置 —— 用于图片 / 视频生成
+  DASHSCOPE_API_KEY,
+  DASHSCOPE_BASE_URL,
+  // 兜底：DeepSeek 文本兜底（可选，建议在主服务不可用时启用）
+  DEEPSEEK_API_KEY,
+  DEEPSEEK_BASE_URL,
 } = process.env
 
 const {
@@ -103,12 +112,42 @@ module.exports = {
       accessKeyId: VOLCENGINE_ACCESS_KEY_ID,
       secretAccessKey: VOLCENGINE_SECRET_ACCESS_KEY,
       spaceName: VOLCENGINE_VOD_SPACE_NAME,
-      playbackBaseUrl: 'http://vod.assets.aitoearn.ai',
+      playbackBaseUrl: process.env.VOLCENGINE_PLAYBACK_BASE_URL || 'http://vod.assets.aitoearn.ai',
       urlAuthPrimaryKey: 'd8eea018341d4e9687ead69bea628271',
     },
+    /**
+     * 文本 / 关键词 / 文案 / 推理的默认通道：minimax-M3
+     * 通过 OpenAI 兼容协议调用 minimax 网关，baseUrl 形如 https://api.minimaxi.com/v1
+     * 历史包袱：旧版本曾用 OPENAI_API_KEY + dashscope baseUrl 同时跑文本和图像，
+     *          导致文本被改写到 qwen-plus。新版本要求 OPENAI_* 与 MINIMAX_* 严格隔离。
+     */
     openai: {
-      baseUrl: OPENAI_BASE_URL,
-      apiKey: OPENAI_API_KEY,
+      baseUrl: OPENAI_BASE_URL || MINIMAX_BASE_URL || 'https://api.openai.com/v1',
+      apiKey: OPENAI_API_KEY || MINIMAX_API_KEY,
+    },
+    /**
+     * 阿里百炼 Wanxiang 通道：图片（wanx / virtualmodel）+ 视频（wan2.7 / wanx2.1）
+     * 与 openai.* 严格分离，auth 走 DASHSCOPE_API_KEY。
+     */
+    dashscope: {
+      baseUrl: DASHSCOPE_BASE_URL || 'https://dashscope.aliyuncs.com/api/v1',
+      apiKey: DASHSCOPE_API_KEY,
+    },
+    /**
+     * minimax 单独配置（用于明确指定文本通道）。
+     * 若同时设置 OPENAI_API_KEY 与 MINIMAX_API_KEY，以 MINIMAX_* 为准。
+     */
+    minimax: {
+      baseUrl: MINIMAX_BASE_URL || 'https://api.minimaxi.com/v1',
+      apiKey: MINIMAX_API_KEY,
+    },
+    /**
+     * DeepSeek 兜底通道（可选）。
+     * 主通道（minimax-M3）连续失败 N 次后启用，避免全部流量被熔断。
+     */
+    deepseek: {
+      baseUrl: DEEPSEEK_BASE_URL || 'https://api.deepseek.com/v1',
+      apiKey: DEEPSEEK_API_KEY,
     },
     grok: {
       baseUrl: 'https://api.x.ai',
@@ -232,6 +271,20 @@ module.exports = {
           },
         },
         {
+          name: 'gpt-5.1-all',
+          description: 'GPT 5.1 All',
+          inputModalities: ['text', 'image'],
+          outputModalities: ['text'],
+          pricing: {
+            tiers: [
+              {
+                input: { text: '0', image: '0' },
+                output: { text: '0' },
+              },
+            ],
+          },
+        },
+        {
           name: 'gemini-3.1-flash-image-preview',
           description: 'Nano Banana 2',
           inputModalities: ['text', 'image'],
@@ -319,8 +372,16 @@ module.exports = {
       image: {
         generation: [
           {
-            name: 'gpt-image-1.5',
-            description: 'gpt-image-1.5',
+            name: 'wan2.7-image',
+            description: '阿里万相 2.7 标准版',
+            sizes: ['1024x1024', '1536x1024', '1024x1536', 'auto'],
+            qualities: ['high', 'medium', 'low'],
+            styles: [],
+            pricing: '0',
+          },
+          {
+            name: 'wan2.7-image-pro',
+            description: '阿里万相 2.7 专业版 (4K)',
             sizes: ['1024x1024', '1536x1024', '1024x1536', 'auto'],
             qualities: ['high', 'medium', 'low'],
             styles: [],
@@ -329,135 +390,166 @@ module.exports = {
         ],
         edit: [
           {
-            name: 'gpt-image-1.5',
-            description: 'gpt-image-1.5',
+            name: 'wan2.7-image',
+            description: '阿里万相 2.7 图像编辑',
             sizes: ['1024x1024', '1536x1024', '1024x1536', 'auto'],
             qualities: ['high', 'medium', 'low'],
             styles: [],
             pricing: '0',
             maxInputImages: 16,
           },
+          {
+            name: 'wanx-background-generation-v2',
+            description: '阿里万相 智能背景生成',
+            sizes: ['auto'],
+            qualities: ['high', 'medium', 'low'],
+            styles: [],
+            pricing: '0',
+            maxInputImages: 2,
+          },
+          {
+            name: 'virtualmodel-v2',
+            description: '阿里万相 虚拟模特持物/试衣',
+            sizes: ['auto'],
+            qualities: ['high', 'medium', 'low'],
+            styles: [],
+            pricing: '0',
+            maxInputImages: 2,
+          },
         ],
       },
       video: {
         generation: [
           {
-            name: 'grok-imagine-video',
-            description: 'Grok Video',
-            channel: 'grok',
-            modes: ['text2video', 'image2video', 'video2video'],
-            resolutions: ['720p'],
-            durations: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
-            maxInputImages: 1,
-            aspectRatios: ['1:1', '16:9', '9:16', '4:3', '3:4', '3:2', '2:3'],
+            name: 'wan2.7-t2v-2026-04-25',
+            description: '阿里万相 2.7 文生视频-标准版',
+            channel: 'openai',
+            modes: ['text2video'],
+            resolutions: ['720p', '1080p'],
+            durations: [5, 10, 15],
+            maxInputImages: 0,
+            aspectRatios: ['16:9', '9:16', '1:1'],
             defaults: {
-              duration: 8,
+              resolution: '720p',
               aspectRatio: '9:16',
+              duration: 5,
             },
             pricing: [
-              { duration: 1, price: 0 },
-              { duration: 2, price: 0 },
-              { duration: 3, price: 0 },
-              { duration: 4, price: 0 },
               { duration: 5, price: 0 },
-              { duration: 6, price: 0 },
-              { duration: 7, price: 0 },
-              { duration: 8, price: 0 },
-              { duration: 9, price: 0 },
               { duration: 10, price: 0 },
-              { duration: 11, price: 0 },
-              { duration: 12, price: 0 },
-              { duration: 13, price: 0 },
-              { duration: 14, price: 0 },
-              { duration: 15, price: 0 },
-              { mode: 'video2video', duration: 1, price: 0 },
-              { mode: 'video2video', duration: 2, price: 0 },
-              { mode: 'video2video', duration: 3, price: 0 },
-              { mode: 'video2video', duration: 4, price: 0 },
-              { mode: 'video2video', duration: 5, price: 0 },
-              { mode: 'video2video', duration: 6, price: 0 },
-              { mode: 'video2video', duration: 7, price: 0 },
-              { mode: 'video2video', duration: 8, price: 0 },
+              { duration: 15, price: 0 }
             ],
           },
           {
-            name: 'veo-3.1-fast-generate-preview',
-            description: 'Google Veo 3.1 Fast Preview',
-            channel: 'gemini',
-            modes: ['text2video', 'image2video', 'video2video'],
+            name: 'wan2.7-i2v-2026-04-25',
+            description: '阿里万相 2.7 图生视频-标准版',
+            channel: 'openai',
+            modes: ['image2video'],
             resolutions: ['720p', '1080p'],
-            durations: [5, 6, 7, 8],
-            maxInputImages: 3,
-            aspectRatios: ['16:9', '9:16'],
-            defaults: {
-              duration: 8,
-              aspectRatio: '9:16',
-            },
-            pricing: [
-              { duration: 5, price: 0 },
-              { duration: 6, price: 0 },
-              { duration: 7, price: 0 },
-              { duration: 8, price: 0 },
-            ],
-          },
-          {
-            name: 'veo-3.1-generate-preview',
-            description: 'Google Veo 3.1 Standard Preview',
-            channel: 'gemini',
-            modes: ['text2video', 'image2video', 'video2video'],
-            resolutions: ['720p', '1080p'],
-            durations: [5, 6, 7, 8],
-            maxInputImages: 3,
-            aspectRatios: ['16:9', '9:16'],
-            defaults: {
-              duration: 8,
-              aspectRatio: '9:16',
-            },
-            pricing: [
-              { duration: 5, price: 0 },
-              { duration: 6, price: 0 },
-              { duration: 7, price: 0 },
-              { duration: 8, price: 0 },
-            ],
-          },
-          {
-            name: 'veo-3.1-fast-generate-001',
-            description: 'Google Veo 3.1 Fast Direct',
-            channel: 'gemini',
-            modes: ['text2video', 'image2video'],
-            resolutions: ['720p', '1080p'],
-            durations: [5, 6, 7, 8],
+            durations: [5, 10, 15],
             maxInputImages: 1,
-            aspectRatios: ['16:9', '9:16'],
+            aspectRatios: ['16:9', '9:16', '1:1'],
             defaults: {
-              duration: 8,
+              resolution: '720p',
               aspectRatio: '9:16',
+              duration: 5,
             },
             pricing: [
               { duration: 5, price: 0 },
-              { duration: 6, price: 0 },
-              { duration: 7, price: 0 },
-              { duration: 8, price: 0 },
+              { duration: 10, price: 0 },
+              { duration: 15, price: 0 }
             ],
           },
           {
-            name: 'veo-3.1-generate-001',
-            description: 'Google Veo 3.1 Standard Direct',
-            channel: 'gemini',
-            modes: ['text2video', 'image2video'],
+            name: 'wan2.7-r2v',
+            description: '阿里万相 2.7 参考视频-角色音色一致',
+            channel: 'dashscope',
+            modes: ['reference2video'],
             resolutions: ['720p', '1080p'],
-            durations: [5, 6, 7, 8],
-            maxInputImages: 1,
-            aspectRatios: ['16:9', '9:16'],
+            durations: [5, 10, 15],
+            maxInputImages: 5,
+            aspectRatios: ['16:9', '9:16', '1:1'],
             defaults: {
-              duration: 8,
+              resolution: '720p',
               aspectRatio: '9:16',
+              duration: 5,
             },
             pricing: [
               { duration: 5, price: 0 },
-              { duration: 6, price: 0 },
-              { duration: 7, price: 0 },
-              { duration: 8, price: 0 },
+              { duration: 10, price: 0 },
+              { duration: 15, price: 0 }
+            ],
+          },
+          {
+            name: 'wanx2.1-t2v-plus',
+            description: '阿里万相 2.1 文生视频-专业版',
+            channel: 'dashscope',
+            modes: ['text2video'],
+            resolutions: ['720p'],
+            durations: [5],
+            maxInputImages: 0,
+            aspectRatios: ['16:9', '9:16', '1:1'],
+            defaults: {
+              resolution: '720p',
+              aspectRatio: '9:16',
+              duration: 5,
+            },
+            pricing: [
+              { duration: 5, price: 0 }
+            ],
+          },
+          {
+            name: 'wanx2.1-t2v-turbo',
+            description: '阿里万相 2.1 文生视频-极速版',
+            channel: 'openai',
+            modes: ['text2video'],
+            resolutions: ['720p'],
+            durations: [5],
+            maxInputImages: 0,
+            aspectRatios: ['16:9', '9:16', '1:1'],
+            defaults: {
+              resolution: '720p',
+              aspectRatio: '9:16',
+              duration: 5,
+            },
+            pricing: [
+              { duration: 5, price: 0 }
+            ],
+          },
+          {
+            name: 'wanx2.1-i2v-plus',
+            description: '阿里万相 2.1 图生视频-专业版',
+            channel: 'openai',
+            modes: ['image2video'],
+            resolutions: ['720p'],
+            durations: [5],
+            maxInputImages: 1,
+            aspectRatios: ['16:9', '9:16', '1:1'],
+            defaults: {
+              resolution: '720p',
+              aspectRatio: '9:16',
+              duration: 5,
+            },
+            pricing: [
+              { duration: 5, price: 0 }
+            ],
+          },
+          {
+            name: 'wanx2.1-i2v-turbo',
+            description: '阿里万相 2.1 图生视频-极速版',
+            channel: 'dashscope',
+            modes: ['image2video'],
+            resolutions: ['720p'],
+            durations: [5],
+            maxInputImages: 1,
+            aspectRatios: ['16:9', '9:16', '1:1'],
+            defaults: {
+              resolution: '720p',
+              aspectRatio: '9:16',
+              duration: 5,
+            },
+            pricing: [
+              { duration: 5, price: 0 }
             ],
           },
         ],
@@ -466,21 +558,19 @@ module.exports = {
     draftGeneration: {
       imageModels: [
         {
-          model: 'gemini-3.1-flash-image-preview',
-          displayName: 'NanoBanana 2',
-          supportedAspectRatios: ['1:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9'],
-          maxInputImages: 14,
+          model: 'wan2.7-image',
+          displayName: '万相 2.7 标准版',
+          supportedAspectRatios: ['1:1', '9:16', '16:9'],
+          maxInputImages: 16,
           pricing: [
             { resolution: '1K', pricePerImage: 0 },
-            { resolution: '2K', pricePerImage: 0 },
-            { resolution: '4K', pricePerImage: 0 },
           ],
         },
         {
-          model: 'gemini-3-pro-image-preview',
-          displayName: 'NanoBanana Pro',
-          supportedAspectRatios: ['1:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9'],
-          maxInputImages: 14,
+          model: 'wan2.7-image-pro',
+          displayName: '万相 2.7 专业版 (4K)',
+          supportedAspectRatios: ['1:1', '9:16', '16:9'],
+          maxInputImages: 16,
           pricing: [
             { resolution: '1K', pricePerImage: 0 },
             { resolution: '2K', pricePerImage: 0 },

@@ -11,6 +11,7 @@ const imageGenerationSchema = z.object({
   size: z.string().optional().describe('图片尺寸'),
   style: z.string().optional().describe('图片风格'),
   user: z.string().optional().describe('用户标识符'),
+  imageUrls: z.array(z.string()).optional().describe('参考图片列表'),
 })
 
 export class ImageGenerationDto extends createZodDto(imageGenerationSchema) {}

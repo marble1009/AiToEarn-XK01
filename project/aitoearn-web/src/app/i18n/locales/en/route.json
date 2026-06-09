@@ -1,7 +1,7 @@
 {
   "home": "Home",
-  "tasksHistory": "Task History",
-  "accounts": "Publish",
+  "tasksHistory": "Payout History",
+  "accounts": "Link Accounts",
   "publish": "Publish",
   "hotContent": "Hot Content",
   "hotContentNew": "Hot Content New",
@@ -17,8 +17,12 @@
   "addChannel": "Add Channel",
   "sidebar.more": "More",
   "uptime": "Status",
-  "aiSocial": "AI Publish",
+  "aiSocial": "AI Traffic Agent",
+  "missionSquare": "Mission Square",
   "taskSquare": "Gold Rush Square",
   "myTasks": "My Tasks",
-  "createTask": "Create Task"
+  "createTask": "Create Task",
+  "academy": "Local Academy",
+  "ecommerceStudio": "E-commerce Studio",
+  "vipCenter": "VIP & Quotas"
 }

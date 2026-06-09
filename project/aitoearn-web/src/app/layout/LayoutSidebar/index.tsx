@@ -1,6 +1,6 @@
 /**
  * LayoutSidebar - 左侧侧边栏布局组件
- * 包含 Logo、主导航、底部功能区（余额、插件）、用户下拉菜单
+ * 包含 Logo、主导航、底部功能区（余额、插件）、用户下拉菜单与快捷语言切换
  * 支持展开/收缩两种状态
  */
 'use client'
@@ -16,6 +16,12 @@ import { cn } from '@/lib/utils'
 import { useUserStore } from '@/store/user'
 import { BottomSection, LogoSection, NavSection, UserDropdownMenu } from './components'
 import { MyChannelsEntry } from './components/BottomSection/MyChannelsEntry'
+import { Globe } from 'lucide-react'
+import { useGetClientLng } from '@/hooks/useSystem'
+import { useRouter } from 'next/navigation'
+import { setCookie } from 'cookies-next'
+import { cookieName } from '@/app/i18n/settings'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 /**
  * 侧边栏主组件
@@ -23,6 +29,18 @@ import { MyChannelsEntry } from './components/BottomSection/MyChannelsEntry'
 function LayoutSidebar() {
   const { currRouter, isAuthPage } = useNavigationLogic()
   const { unreadCount } = useNotification()
+  const lng = useGetClientLng()
+  const router = useRouter()
+
+  const toggleLanguage = () => {
+    const newLng = lng === 'zh-CN' ? 'en' : 'zh-CN'
+    setCookie(cookieName, newLng, { path: '/' })
+    const currentPath = window.location.pathname
+    const pathWithoutLang = currentPath.replace(`/${lng}`, '') || '/'
+    const newPath = `/${newLng}${pathWithoutLang}`
+    router.push(newPath)
+    router.refresh()
+  }
 
   // 获取侧边栏状态和设置方法
   const { sidebarCollapsed: collapsed, setSidebarCollapsed: setCollapsed } = useUserStore(
@@ -67,6 +85,42 @@ function LayoutSidebar() {
 
         {/* 底部固定区域 - 不随滚动 */}
         <div className="flex-shrink-0">
+          {/* 极简快捷中英文切换 */}
+          {collapsed ? (
+            <div className="pb-2 flex justify-center w-full">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={toggleLanguage}
+                      className="flex h-9 w-9 items-center justify-center rounded-xl border border-sidebar-border bg-background text-[#5F7A61] hover:bg-[#5F7A61]/10 transition-all cursor-pointer shadow-sm active:scale-95"
+                    >
+                      <Globe size={18} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">
+                    <p>{lng === 'zh-CN' ? 'Switch to English' : '切换至中文'}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+          ) : (
+            <div className="pb-2 px-1">
+              <button
+                onClick={toggleLanguage}
+                className="flex w-full items-center gap-3 rounded-xl border border-[#5F7A61]/15 bg-background hover:bg-[#5F7A61]/10 px-3 py-2 text-xs font-semibold text-foreground transition-all cursor-pointer shadow-sm active:scale-[0.98]"
+              >
+                <Globe size={16} className="text-[#5F7A61]" />
+                <span className="flex-1 text-left select-none">
+                  {lng === 'zh-CN' ? '系统语言 / Language' : 'System Language'}
+                </span>
+                <span className="text-[10px] font-bold text-[#FAF7F2] bg-[#5F7A61] px-2 py-0.5 rounded-full select-none shadow-sm">
+                  {lng === 'zh-CN' ? '中' : 'EN'}
+                </span>
+              </button>
+            </div>
+          )}
+
           {/* 我的频道入口 */}
           <div className="pb-1 flex flex-1">
             <MyChannelsEntry collapsed={collapsed} />

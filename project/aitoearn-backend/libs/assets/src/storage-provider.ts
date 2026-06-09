@@ -31,6 +31,10 @@ export abstract class StorageProvider {
     return buildUrl(this.publicEndpoint, objectPath)
   }
 
+  buildInternalUrl(objectPath: string): string {
+    return buildUrl(this.endpoint, objectPath)
+  }
+
   parsePathFromUrl(url: string): string {
     if (!url.startsWith('http'))
       return url.replace(/^\/+/, '')

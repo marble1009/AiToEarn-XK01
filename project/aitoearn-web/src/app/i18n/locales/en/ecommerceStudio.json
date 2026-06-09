@@ -1,0 +1,79 @@
+{
+  "seoTitle": "E-commerce AI Studio - DashScope Wan Series AIGC Panel",
+  "seoDescription": "Visual content generation studio for e-commerce. Replace product backgrounds, generate virtual model try-ons, and synthesize consistent character videos.",
+  "seoKeywords": "Wan model, DashScope, background generation, virtual model, R2V consistent video, e-commerce AIGC",
+  "title": "E-commerce AI Studio",
+  "subtitle": "Powered by Alibaba Cloud DashScope Wan models",
+  "tabs": {
+    "background": "Background Replacement",
+    "model": "Virtual Model Try-on",
+    "video": "Consistent Video (Wan2.7 R2V)"
+  },
+  "fields": {
+    "subjectImage": "Subject / Product Image",
+    "subjectImagePlaceholder": "Drag & drop or click to upload subject",
+    "maskImage": "Mask Image (Mask)",
+    "maskImagePlaceholder": "Upload mask to highlight try-on or redrawn area",
+    "refVideo": "Reference Video",
+    "refVideoPlaceholder": "Drag & drop or click to upload reference video",
+    "prompt": "Creative Generation Prompt",
+    "promptPlaceholder": "Describe the desired background or action, e.g. marble table, soft sunlight...",
+    "presets": "Preset Scene Styles",
+    "facePrompt": "Model Face Prompt",
+    "facePromptPlaceholder": "Optional, to refine facial features: e.g. smiling model",
+    "resolution": "Output Resolution / Size",
+    "duration": "Duration (Seconds)",
+    "aspectRatio": "Aspect Ratio"
+  },
+  "presetsList": {
+    "studio": "Studio Light",
+    "marble": "Luxury Marble",
+    "wood": "Minimalist Wood Table",
+    "outdoor": "Sunlight Garden",
+    "neon": "Cyberpunk Neon",
+    "silk": "Soft Silk"
+  },
+  "actions": {
+    "generate": "Generate with AI",
+    "generating": "Generating...",
+    "download": "Download Asset",
+    "push": "Send to Draft Box",
+    "viewDraft": "View Drafts",
+    "uploading": "Uploading file...",
+    "copy": "Copy URL",
+    "selectPlan": "Select Promotion Plan",
+    "createNewPlan": "Create New Plan",
+    "planSelectPlaceholder": "Select a Promotion Plan (Material Group)",
+    "newPlanName": "New Plan Name",
+    "newPlanNamePlaceholder": "Enter plan name",
+    "draftTitle": "Draft Title",
+    "draftTitlePlaceholder": "Enter draft title",
+    "draftDesc": "Draft Description",
+    "draftDescPlaceholder": "Enter draft description",
+    "cancel": "Cancel",
+    "confirmPush": "Confirm Send"
+  },
+  "messages": {
+    "imageRequired": "Please upload a subject/product image first!",
+    "maskRequired": "A mask image is required for virtual model try-on!",
+    "videoRequired": "A reference video is required for character-consistent video generation!",
+    "promptRequired": "Please enter a creative generation prompt!",
+    "generatingTask": "Task submitted! Rendering on the cloud, please wait...",
+    "pushSuccess": "Successfully sent to plan: ",
+    "pushFailed": "Failed to send to Draft Box. Please try again.",
+    "loadFailed": "Failed to load plan list!"
+  },
+  "history": {
+    "title": "Generation History (Cloud Records)",
+    "empty": "No generation history. Input settings on the left to start your first creation!",
+    "taskName": "Cloud Render Task",
+    "status": "Task Status",
+    "points": "Points",
+    "time": "Submitted At",
+    "statusMap": {
+      "generating": "Rendering",
+      "success": "Succeeded",
+      "failed": "Failed"
+    }
+  }
+}

@@ -58,7 +58,8 @@ export const LazyImage = memo(({
 
       {/* 图片 */}
       <Image
-        src={error ? '/images/placeholder.png' : src}
+        unoptimized
+        src={error ? 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100%" height="100%" fill="%23f3f4f6"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="12" fill="%239ca3af">图片加载失败</text></svg>' : src}
         alt={alt}
         className={cn(
           'transition-opacity duration-300',

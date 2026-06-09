@@ -27,7 +27,10 @@ export enum AiLogChannel {
   /** @deprecated Removed feature, kept for DB backward compatibility */
   Kling = 'kling',
   Volcengine = 'volcengine',
-  /** @deprecated Removed feature, kept for DB backward compatibility */
+  /**
+   * 阿里百炼 Dashscope / Wanxiang 通道
+   * 用于图片（wanx / virtualmodel）和视频（wan2.7-* / wanx2.1-*）生成
+   */
   Dashscope = 'dashscope',
   /** @deprecated Removed feature, kept for DB backward compatibility */
   Sora2 = 'sora2',

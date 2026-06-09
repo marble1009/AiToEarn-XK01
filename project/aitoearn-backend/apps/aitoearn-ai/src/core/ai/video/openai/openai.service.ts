@@ -42,10 +42,19 @@ export class OpenAIVideoService {
     const defaults = modelConfig.defaults || {}
     const finalDuration = duration || defaults.duration
 
-    const pricingConfig = modelConfig.pricing.find((pricing) => {
+    let pricingConfig = modelConfig.pricing.find((pricing) => {
       const durationMatch = !pricing.duration || !finalDuration || pricing.duration === finalDuration
       return durationMatch
     })
+
+    if (!pricingConfig && finalDuration) {
+      const sortedConfigs = [...modelConfig.pricing].sort((a, b) => {
+        const aDiff = a.duration ? Math.abs(a.duration - finalDuration) : Infinity
+        const bDiff = b.duration ? Math.abs(b.duration - finalDuration) : Infinity
+        return aDiff - bDiff
+      })
+      pricingConfig = sortedConfigs[0]
+    }
 
     if (!pricingConfig) {
       throw new AppException(ResponseCode.InvalidModel)
@@ -58,7 +67,7 @@ export class OpenAIVideoService {
    * OpenAI 视频创建
    */
   async createVideo(request: UserOpenAIVideoCreateRequestDto) {
-    const { userId, userType, model, prompt, input_reference, seconds, size } = request
+    const { userId, userType, model, prompt, input_reference, video_url, seconds, size } = request
 
     const pricing = await this.calculatePrice({
       userId,
@@ -78,21 +87,34 @@ export class OpenAIVideoService {
 
     // 如果 input_reference 是 URL，需要先 fetch 后传入 Response
     let inputReferenceUploadable: Response | undefined
+    let imageUrls: string[] | undefined = undefined
+    let videoUrls: string[] | undefined = undefined
+
     if (input_reference) {
-      const response = await fetch(input_reference)
-      if (!response.ok) {
-        throw new AppException(ResponseCode.S3DownloadFileFailed)
+      if (Array.isArray(input_reference)) {
+        imageUrls = input_reference
+      } else {
+        const response = await fetch(input_reference)
+        if (!response.ok) {
+          throw new AppException(ResponseCode.S3DownloadFileFailed)
+        }
+        inputReferenceUploadable = response
+        imageUrls = [input_reference]
       }
-      inputReferenceUploadable = response
+    }
+
+    if (video_url) {
+      videoUrls = [video_url]
     }
 
     const result = await this.openaiLibService.createVideo({
       prompt,
       input_reference: inputReferenceUploadable,
-      model: model as 'sora-2' | 'sora-2-pro',
-      // SDK 类型定义有误，实际支持 '10' | '15' | '25'
-      seconds: seconds as '4' | '8' | '12' | undefined,
+      model: model as any,
+      seconds: seconds as any,
       size,
+      imageUrls,
+      videoUrls,
     })
 
     if (userType === UserType.User) {
@@ -116,6 +138,7 @@ export class OpenAIVideoService {
       request: {
         prompt,
         input_reference,
+        video_url,
         model,
         seconds,
         size,

@@ -1,0 +1,18 @@
+2026/05/30-11:34:26.837 1590 Reusing MANIFEST C:\Users\Admin\Desktop\github\aiautoedit\puppeteer_workspace\chrome-debug-profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/05/30-11:34:26.840 1590 Recovering log #235
+2026/05/30-11:34:26.841 1590 Reusing old log C:\Users\Admin\Desktop\github\aiautoedit\puppeteer_workspace\chrome-debug-profile\Default\Local Storage\leveldb/000235.log 
+2026/05/30-11:34:36.983 471c Level-0 table #239: started
+2026/05/30-11:34:36.988 471c Level-0 table #239: 53584 bytes OK
+2026/05/30-11:34:36.991 471c Delete type=0 #235
+2026/05/30-11:34:36.991 1590 Compacting 4@0 + 1@1 files
+2026/05/30-11:34:36.997 1590 Generated table #240@0: 387 keys, 162382 bytes
+2026/05/30-11:34:36.997 1590 Compacted 4@0 + 1@1 files => 162382 bytes
+2026/05/30-11:34:37.000 1590 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/05/30-11:34:37.000 1590 Delete type=2 #230
+2026/05/30-11:34:37.000 1590 Delete type=2 #232
+2026/05/30-11:34:37.000 1590 Delete type=2 #234
+2026/05/30-11:34:37.000 1590 Delete type=2 #236
+2026/05/30-11:34:37.000 1590 Delete type=2 #239
+2026/05/30-11:35:26.862 471c Level-0 table #242: started
+2026/05/30-11:35:27.003 471c Level-0 table #242: 40543 bytes OK
+2026/05/30-11:35:27.055 471c Delete type=0 #238

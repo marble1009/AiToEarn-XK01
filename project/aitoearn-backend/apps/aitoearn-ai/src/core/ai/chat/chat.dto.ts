@@ -32,7 +32,7 @@ export class ChatMessageDto extends createZodDto(chatMessageSchema) {}
 
 export const chatCompletionDtoSchema = z.object({
   messages: z.array(chatMessageSchema).min(1).describe('消息列表'),
-  model: z.string().describe('模型'),
+  model: z.string().optional().describe('模型'),
   temperature: z.number().min(0).max(2).optional().describe('温度参数'),
   maxTokens: z.number().int().min(1).optional().describe('最大输出token数'),
   maxCompletionTokens: z.number().optional(),

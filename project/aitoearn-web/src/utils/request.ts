@@ -18,7 +18,7 @@ type RequestParamsWithSilent = RequestParams & {
 
 const API_URL = typeof window !== 'undefined'
   ? '/api'
-  : (process.env.NEXT_PUBLIC_API_URL || 'http://aitoearn-server:3002');
+  : (process.env.NEXT_PUBLIC_API_URL || 'http://aiautoedit-server:3002');
 
 const fetchService = new FetchService({
   baseURL: `${API_URL}/`,

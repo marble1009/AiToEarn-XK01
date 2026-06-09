@@ -118,7 +118,7 @@ export const aiModelsConfigSchema = z.object({
       tags: z.array(z.object({ 'en-US': z.string(), 'zh-CN': z.string() })).default([]),
       mainTag: z.string().optional(),
       channel: z.enum(AiLogChannel),
-      modes: z.array(z.enum(['text2video', 'image2video', 'flf2video', 'lf2video', 'multi-image2video', 'video2video'])),
+      modes: z.array(z.enum(['text2video', 'image2video', 'flf2video', 'lf2video', 'multi-image2video', 'video2video', 'reference2video'])),
       resolutions: z.array(z.string()),
       durations: z.array(z.number()),
       maxInputImages: z.number().int().min(0),

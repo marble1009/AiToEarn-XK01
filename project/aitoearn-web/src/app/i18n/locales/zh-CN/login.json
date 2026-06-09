@@ -1,11 +1,11 @@
 {
   "seo": {
     "loginTitle": "登录 - 进入您的AI内容创作工作台",
-    "loginKeywords": "登录, 注册, AuraString账号, AI平台登录, 创作者登录, 社媒管理登录",
-    "loginDescription": "登录 AuraString 账户，启动您的赛博内容引擎。"
+    "loginKeywords": "登录, 注册, 爱易客账号, AI智能创作, 创作者登录, 获客推广登录",
+    "loginDescription": "登录 爱易客 账户，启动您的智能获客推广面板。"
   },
   "welcomeBack": "登录",
-  "loginSubtitle": "和 AuraString 一起启动赛博内容引擎",
+  "loginSubtitle": "和 爱易客 一起开启智能宣发推广之旅",
   "emailPlaceholder": "请输入邮箱地址",
   "login": "登录",
   "or": "或者",

@@ -1,0 +1,79 @@
+{
+  "seoTitle": "电商智能创作工坊 - 阿里万相 AI 背景生成 & 虚拟模特试衣",
+  "seoDescription": "专为电商卖家与门店主设计的视觉内容生成中心。支持智能商品背景替换、虚拟模特试衣、以及角色一致视频生成。",
+  "seoKeywords": "阿里万相,背景生成,虚拟模特,试衣,R2V,角色一致视频,电商智能创作",
+  "title": "电商智能创作工坊",
+  "subtitle": "Alibaba Cloud DashScope 万相大模型驱动",
+  "tabs": {
+    "background": "智能背景替换",
+    "model": "虚拟模特试衣",
+    "video": "角色一致视频 (Wan2.7 R2V)"
+  },
+  "fields": {
+    "subjectImage": "主体/商品图片",
+    "subjectImagePlaceholder": "拖拽或点击上传主体图片",
+    "maskImage": "蒙版图片 (Mask)",
+    "maskImagePlaceholder": "上传蒙版图片，指出试衣/重绘区域",
+    "refVideo": "参考视频",
+    "refVideoPlaceholder": "拖拽或点击上传参考视频 (用于克隆形象/声音)",
+    "prompt": "创意生成提示词",
+    "promptPlaceholder": "描述您想要的背景、模特动作、场景等，如：大理石桌面，阳光洒下...",
+    "presets": "场景预设风格",
+    "facePrompt": "模特面部提示词",
+    "facePromptPlaceholder": "可选，用于精修模特五官，如：甜美亚洲女性，微笑",
+    "resolution": "输出分辨率 / 尺寸",
+    "duration": "生成时长 (秒)",
+    "aspectRatio": "画面比例"
+  },
+  "presetsList": {
+    "studio": "电商摄影棚 (Studio Light)",
+    "marble": "奢华大理石 (Luxury Marble)",
+    "wood": "原木极简 (Wooden Table)",
+    "outdoor": "户外明媚 (Sunlight Garden)",
+    "neon": "赛博都市 (Cyberpunk Neon)",
+    "silk": "丝绸柔和 (Soft Silk)"
+  },
+  "actions": {
+    "generate": "立即智能生成",
+    "generating": "正在生成中...",
+    "download": "下载素材",
+    "push": "推送至草稿箱",
+    "viewDraft": "前往草稿箱",
+    "uploading": "正在上传文件...",
+    "copy": "复制链接",
+    "selectPlan": "选择推广计划",
+    "createNewPlan": "创建新计划",
+    "planSelectPlaceholder": "请选择已有推广计划 (Material Group)",
+    "newPlanName": "新计划名称",
+    "newPlanNamePlaceholder": "请输入新计划名称",
+    "draftTitle": "草稿标题",
+    "draftTitlePlaceholder": "请输入此草稿的标题",
+    "draftDesc": "草稿描述",
+    "draftDescPlaceholder": "请输入对素材的描述",
+    "cancel": "取消",
+    "confirmPush": "确定推送"
+  },
+  "messages": {
+    "imageRequired": "请先上传商品/主体图片！",
+    "maskRequired": "使用虚拟模特试衣必须上传蒙版图片！",
+    "videoRequired": "使用角色一致视频必须上传参考视频！",
+    "promptRequired": "请输入创意生成提示词！",
+    "generatingTask": "已提交生成任务，正在云端渲染，请稍候...",
+    "pushSuccess": "已成功将素材推送到草稿计划：",
+    "pushFailed": "推送草稿箱失败，请重试！",
+    "loadFailed": "加载计划列表失败！"
+  },
+  "history": {
+    "title": "工坊创作历史 (云端生成记录)",
+    "empty": "暂无生成历史，在左侧输入参数开始您的第一次创作吧！",
+    "taskName": "云端渲染任务",
+    "status": "任务状态",
+    "points": "消耗积分",
+    "time": "提交时间",
+    "statusMap": {
+      "generating": "渲染中",
+      "success": "生成成功",
+      "failed": "生成失败"
+    }
+  }
+}

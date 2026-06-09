@@ -31,6 +31,11 @@ const {
 } = process.env
 
 const {
+  PLAT_API_URI,
+  XHS_CREATOR_URI,
+} = process.env
+
+const {
   MAIL_USER,
   MAIL_PASS,
   MAIL_SECURE,

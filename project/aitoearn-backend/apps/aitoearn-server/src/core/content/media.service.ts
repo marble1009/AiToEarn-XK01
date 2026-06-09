@@ -84,15 +84,17 @@ export class MediaService {
     userId: string,
     inFilter: {
       groupId?: string
+      materialGroupId?: string
       type?: MediaType
       useCount?: number
     },
   ) {
-    const { groupId, type, useCount } = inFilter
+    const { groupId, materialGroupId, type, useCount } = inFilter
     const filter = {
       userId,
       userType: UserType.User,
       ...(groupId && { groupId }),
+      ...(materialGroupId && { materialGroupId }),
       ...(type && { type }),
       ...(useCount !== undefined && { useCount: { $gte: useCount } }),
     }

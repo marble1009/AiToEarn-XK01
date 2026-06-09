@@ -53,11 +53,18 @@ export class RedisService {
   }
 
   /**
-   * 设置过期时间
+   * 设置过期时间（秒级）
    */
-  async expire(key: string, times = 0): Promise<boolean> {
-    const data = await this.client.pexpire(key, times)
+  async expire(key: string, seconds = 0): Promise<boolean> {
+    const data = await this.client.expire(key, seconds)
     return data === 1
+  }
+
+  /**
+   * 计数增加
+   */
+  async incr(key: string): Promise<number> {
+    return await this.client.incr(key)
   }
 
   /**

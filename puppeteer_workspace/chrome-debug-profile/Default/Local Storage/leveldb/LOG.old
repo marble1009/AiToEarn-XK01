@@ -1,0 +1,66 @@
+2026/05/29-23:16:47.653 6c68 Reusing MANIFEST C:\Users\Admin\Desktop\github\AiToEarn-main\puppeteer_workspace\chrome-debug-profile\Default\Local Storage\leveldb/MANIFEST-000001
+2026/05/29-23:16:47.656 6c68 Recovering log #207
+2026/05/29-23:16:47.658 6c68 Reusing old log C:\Users\Admin\Desktop\github\AiToEarn-main\puppeteer_workspace\chrome-debug-profile\Default\Local Storage\leveldb/000207.log 
+2026/05/29-23:17:47.670 64f4 Level-0 table #211: started
+2026/05/29-23:17:47.684 64f4 Level-0 table #211: 50456 bytes OK
+2026/05/29-23:17:47.686 64f4 Delete type=0 #207
+2026/05/29-23:17:47.687 64f4 Compacting 4@0 + 1@1 files
+2026/05/29-23:17:47.692 64f4 Generated table #212@0: 335 keys, 162970 bytes
+2026/05/29-23:17:47.692 64f4 Compacted 4@0 + 1@1 files => 162970 bytes
+2026/05/29-23:17:47.694 64f4 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/05/29-23:17:47.694 64f4 Delete type=2 #202
+2026/05/29-23:17:47.694 64f4 Delete type=2 #204
+2026/05/29-23:17:47.694 64f4 Delete type=2 #206
+2026/05/29-23:17:47.694 64f4 Delete type=2 #208
+2026/05/29-23:17:47.694 64f4 Delete type=2 #211
+2026/05/29-23:20:44.825 64f4 Level-0 table #214: started
+2026/05/29-23:20:44.838 64f4 Level-0 table #214: 42382 bytes OK
+2026/05/29-23:20:44.840 64f4 Delete type=0 #210
+2026/05/29-23:23:48.278 64f4 Level-0 table #216: started
+2026/05/29-23:23:48.289 64f4 Level-0 table #216: 44597 bytes OK
+2026/05/29-23:23:48.291 64f4 Delete type=0 #213
+2026/05/29-23:25:48.282 64f4 Level-0 table #218: started
+2026/05/29-23:25:48.293 64f4 Level-0 table #218: 42738 bytes OK
+2026/05/29-23:25:48.297 64f4 Delete type=0 #215
+2026/05/29-23:34:48.276 64f4 Level-0 table #220: started
+2026/05/29-23:34:48.288 64f4 Level-0 table #220: 49825 bytes OK
+2026/05/29-23:34:48.290 64f4 Delete type=0 #217
+2026/05/29-23:34:48.291 64f4 Compacting 4@0 + 1@1 files
+2026/05/29-23:34:48.297 64f4 Generated table #221@0: 352 keys, 163419 bytes
+2026/05/29-23:34:48.297 64f4 Compacted 4@0 + 1@1 files => 163419 bytes
+2026/05/29-23:34:48.298 64f4 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/05/29-23:34:48.299 64f4 Delete type=2 #212
+2026/05/29-23:34:48.299 64f4 Delete type=2 #214
+2026/05/29-23:34:48.299 64f4 Delete type=2 #216
+2026/05/29-23:34:48.299 64f4 Delete type=2 #218
+2026/05/29-23:34:48.299 64f4 Delete type=2 #220
+2026/05/29-23:36:48.276 64f4 Level-0 table #223: started
+2026/05/29-23:36:48.287 64f4 Level-0 table #223: 42952 bytes OK
+2026/05/29-23:36:48.290 64f4 Delete type=0 #219
+2026/05/29-23:37:48.283 64f4 Level-0 table #225: started
+2026/05/29-23:37:48.294 64f4 Level-0 table #225: 42681 bytes OK
+2026/05/29-23:37:48.296 64f4 Delete type=0 #222
+2026/05/29-23:39:48.277 64f4 Level-0 table #227: started
+2026/05/29-23:39:48.287 64f4 Level-0 table #227: 43037 bytes OK
+2026/05/29-23:39:48.291 64f4 Delete type=0 #224
+2026/05/29-23:40:48.276 64f4 Level-0 table #229: started
+2026/05/29-23:40:48.288 64f4 Level-0 table #229: 42638 bytes OK
+2026/05/29-23:40:48.290 64f4 Delete type=0 #226
+2026/05/29-23:40:48.291 64f4 Compacting 4@0 + 1@1 files
+2026/05/29-23:40:48.297 64f4 Generated table #230@0: 368 keys, 163778 bytes
+2026/05/29-23:40:48.297 64f4 Compacted 4@0 + 1@1 files => 163778 bytes
+2026/05/29-23:40:48.298 64f4 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/05/29-23:40:48.298 64f4 Delete type=2 #221
+2026/05/29-23:40:48.298 64f4 Delete type=2 #223
+2026/05/29-23:40:48.298 64f4 Delete type=2 #225
+2026/05/29-23:40:48.298 64f4 Delete type=2 #227
+2026/05/29-23:40:48.298 64f4 Delete type=2 #229
+2026/05/29-23:41:48.282 64f4 Level-0 table #232: started
+2026/05/29-23:41:48.293 64f4 Level-0 table #232: 42532 bytes OK
+2026/05/29-23:41:48.296 64f4 Delete type=0 #228
+2026/05/29-23:44:48.286 64f4 Level-0 table #234: started
+2026/05/29-23:44:48.297 64f4 Level-0 table #234: 44584 bytes OK
+2026/05/29-23:44:48.299 64f4 Delete type=0 #231
+2026/05/29-23:47:48.288 64f4 Level-0 table #236: started
+2026/05/29-23:47:48.301 64f4 Level-0 table #236: 42702 bytes OK
+2026/05/29-23:47:48.304 64f4 Delete type=0 #233

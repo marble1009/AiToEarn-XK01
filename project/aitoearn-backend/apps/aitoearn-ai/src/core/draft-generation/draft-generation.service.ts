@@ -574,8 +574,8 @@ export class DraftGenerationService implements OnModuleDestroy {
     userType: UserType,
     imageUrls: string[],
     userPrompt?: string,
+    retryModelName: string = 'MiniMax/MiniMax-M3',
   ): Promise<{ plan: V2PlanResult, points: number }> {
-    const modelName = 'gemini-3-flash-preview'
     const startedAt = new Date()
 
     const userPromptSection = userPrompt
@@ -592,50 +592,67 @@ ${imageUrls.map((url, i) => `- Image ${i + 1}: ${url}`).join('\n')}
 ## Instructions
 
 Generate TikTok metadata for a video based on the user's prompt and images:
-- **title**: Catchy title under 30 characters, in the language matching the user's prompt or images
-- **description**: Engaging description with call-to-action, under 2200 characters, in the language matching the user's prompt or images.
+- **title**: Catchy title under 30 characters, in Simplified Chinese (简体中文)
+- **description**: Engaging description with call-to-action, under 2200 characters, in Simplified Chinese (简体中文)
 - **topics**: 3-5 relevant hashtags (without # prefix)
 - **IMPORTANT**: Do NOT generate any content featuring children, minors, or anyone appearing under 18. If the user's prompt mentions minors, replace them with adults in the output.
 Return the result as JSON.`
 
-    const useNvidia = !!config.ai.nvidia.apiKey
-    const plannerModel = useNvidia ? 'meta/llama-3.1-405b-instruct' : modelName
+    let actualModelName = retryModelName
+    if (config.ai.openai.baseUrl && config.ai.openai.baseUrl.includes('dashscope')) {
+      if (actualModelName.includes('MiniMax') || actualModelName.includes('abab') || actualModelName.includes('gpt')) {
+        actualModelName = 'qwen-plus'
+      }
+    }
 
-    const model = useNvidia
-      ? new ChatOpenAI({
-          modelName: plannerModel,
-          apiKey: config.ai.nvidia.apiKey,
-          configuration: {
-            baseURL: config.ai.nvidia.baseUrl,
+    let model = new ChatOpenAI({
+      modelName: actualModelName,
+      apiKey: config.ai.openai.apiKey,
+      configuration: {
+        baseURL: config.ai.openai.baseUrl,
+      },
+      temperature: 0.7,
+    })
+
+    const messageContent: any[] = []
+
+    if (imageUrls.length > 0) {
+      for (const url of imageUrls) {
+        const fullUrl = FileUtil.buildUrl(url)
+        messageContent.push({
+          type: 'image_url',
+          image_url: {
+            url: fullUrl,
           },
-          temperature: 0.7,
         })
-      : new ChatGoogleGenerativeAI({
-          model: modelName,
-          apiKey: config.ai.gemini.apiKey,
-          baseUrl: config.ai.gemini.baseUrl,
-          temperature: 1.2, // 提高创意多样性
-        })
-
-    const messageContent: Array<{ type: 'image_url', image_url: string } | { type: 'text', text: string }> = []
-
-    for (const url of imageUrls) {
-      const fullUrl = FileUtil.buildUrl(url)
-      const { base64, mimeType } = await this.fetchImageAsBase64(fullUrl)
-      messageContent.push({
-        type: 'image_url',
-        image_url: `data:${mimeType};base64,${base64}`,
-      })
+      }
     }
     messageContent.push({ type: 'text', text: prompt })
 
-    const structuredModel = model.withStructuredOutput(z.toJSONSchema(V2PlanResultSchema), { includeRaw: true })
-    const { raw, parsed: structuredResult } = await structuredModel.invoke([
-      new HumanMessage({ content: messageContent }),
-    ])
+    let structuredResult: any
+    let raw: any
 
-    if (!structuredResult) {
-      throw new Error('V2: No response from Gemini planning step')
+    try {
+      const structuredModel = model.withStructuredOutput(z.toJSONSchema(V2PlanResultSchema), { includeRaw: true })
+      const res = await structuredModel.invoke([
+        new HumanMessage({ content: messageContent }),
+      ])
+      raw = res.raw
+      structuredResult = res.parsed
+      
+      if (!structuredResult) {
+        throw new Error('Structured output parser returned empty result')
+      }
+    } catch (e) {
+      const errMessage = e instanceof Error ? e.message : String(e)
+      this.logger.warn({ error: errMessage, model: retryModelName }, `planWithGemini with model ${retryModelName} failed.`)
+      
+      if (retryModelName === 'MiniMax/MiniMax-M3' || (config.ai.openai.baseUrl && config.ai.openai.baseUrl.includes('dashscope') && retryModelName === 'qwen-plus')) {
+        const fallbackModel = (config.ai.openai.baseUrl && config.ai.openai.baseUrl.includes('dashscope')) ? 'qwen-turbo' : 'MiniMax/MiniMax-M2.7'
+        this.logger.log(`Retrying planWithGemini with ${fallbackModel}...`)
+        return await this.planWithGemini(userId, userType, imageUrls, userPrompt, fallbackModel)
+      }
+      throw e
     }
 
     const parsed = z.safeParse(V2PlanResultSchema, structuredResult)
@@ -645,7 +662,7 @@ Return the result as JSON.`
 
     // 记录用量和扣费
     const usage = AIMessage.isInstance(raw) ? raw.usage_metadata : undefined
-    const chatModel = config.ai.models.chat.find(m => m.name === modelName)
+    const chatModel = config.ai.models.chat.find(m => m.name === 'MiniMax-M2.7')
     if (chatModel && usage) {
       const pricing = chatModel.pricing as ChatPricing
       const consumedPoints = calculatePricingPoints(pricing, usage)
@@ -655,8 +672,8 @@ Return the result as JSON.`
         userId,
         userType,
         type: AiLogType.Agent,
-        model: modelName,
-        channel: AiLogChannel.Gemini,
+        model: retryModelName,
+        channel: AiLogChannel.OpenAI,
         startedAt,
         duration,
         points: consumedPoints,
@@ -720,7 +737,7 @@ Return the result as JSON.`
     const imageModels = config.ai.draftGeneration.imageModels
 
     const videoModels = config.ai.models.video.generation
-      .filter(v => v.channel === AiLogChannel.Grok)
+      .filter(v => v.channel === AiLogChannel.Grok || v.channel === AiLogChannel.OpenAI || v.channel === AiLogChannel.Gemini)
 
     return { imageModels, videoModels }
   }
@@ -971,7 +988,7 @@ Return the result as JSON.`
     userPrompt: string,
     imageCount: number,
   ): Promise<{ plan: ImageTextPlanResult, points: number }> {
-    const modelName = 'gemini-3-flash-preview'
+    const modelName = 'gemini-1.5-flash'
     const startedAt = new Date()
 
     const prompt = `You are a social media content generation assistant.
@@ -987,10 +1004,10 @@ ${imageUrls.map((url, i) => `- Image ${i + 1}: ${url}`).join('\n') || 'No refere
 ## Instructions
 
 Generate metadata and ${imageCount} image prompts for a social media image-text post:
-- **title**: Catchy title under 30 characters, in the language matching the user's prompt
-- **description**: Engaging description with call-to-action, under 2200 characters, in the language matching the user's prompt
+- **title**: Catchy title under 30 characters, in Simplified Chinese (简体中文)
+- **description**: Engaging description with call-to-action, under 2200 characters, in Simplified Chinese (简体中文)
 - **topics**: 3-5 relevant hashtags (without # prefix)
-- **imagePrompts**: Exactly ${imageCount} detailed image generation prompts in English. Each prompt should:
+- **imagePrompts**: Exactly ${imageCount} detailed image generation prompts in Simplified Chinese. Each prompt should:
   - Be self-contained and descriptive (the image generator has no context of other images)
   - Describe visual style, composition, colors, and mood
   - Be suitable for AI image generation (100-500 characters each)
@@ -999,44 +1016,111 @@ Generate metadata and ${imageCount} image prompts for a social media image-text 
 
 Return the result as JSON.`
 
-    const useNvidia = !!config.ai.nvidia.apiKey
-    const plannerModel = useNvidia ? 'meta/llama-3.1-405b-instruct' : modelName
+    const isGeminiValid = config.ai.gemini.apiKey && !config.ai.gemini.apiKey.includes('placeholder')
+    const isNvidiaValid = config.ai.nvidia.apiKey && !config.ai.nvidia.apiKey.includes('placeholder')
 
-    const model = useNvidia
-      ? new ChatOpenAI({
-          modelName: plannerModel,
-          apiKey: config.ai.nvidia.apiKey,
-          configuration: {
-            baseURL: config.ai.nvidia.baseUrl,
-          },
-          temperature: 0.7,
-        })
-      : new ChatGoogleGenerativeAI({
-          model: modelName,
-          apiKey: config.ai.gemini.apiKey,
-          baseUrl: config.ai.gemini.baseUrl,
-          temperature: 1.2,
-        })
+    let model: any
+    let isFallback = false
 
-    const messageContent: Array<{ type: 'image_url', image_url: string } | { type: 'text', text: string }> = []
-
-    for (const url of imageUrls) {
-      const fullUrl = FileUtil.buildUrl(url)
-      const { base64, mimeType } = await this.fetchImageAsBase64(fullUrl)
-      messageContent.push({
-        type: 'image_url',
-        image_url: `data:${mimeType};base64,${base64}`,
+    if (imageUrls.length > 0 && isGeminiValid) {
+      model = new ChatGoogleGenerativeAI({
+        model: modelName,
+        apiKey: config.ai.gemini.apiKey,
+        baseUrl: config.ai.gemini.baseUrl,
+        temperature: 1.2,
       })
+    } else if (isNvidiaValid) {
+      model = new ChatOpenAI({
+        modelName: 'meta/llama-3.3-70b-instruct',
+        apiKey: config.ai.nvidia.apiKey,
+        configuration: {
+          baseURL: config.ai.nvidia.baseUrl,
+        },
+        temperature: 0.7,
+      })
+    } else if (isGeminiValid) {
+      model = new ChatGoogleGenerativeAI({
+        model: modelName,
+        apiKey: config.ai.gemini.apiKey,
+        baseUrl: config.ai.gemini.baseUrl,
+        temperature: 1.2,
+      })
+      isFallback = true
+      let actualModelName = 'abab6.5g-chat'
+      if (config.ai.openai.baseUrl && config.ai.openai.baseUrl.includes('dashscope')) {
+        actualModelName = 'qwen-plus'
+      }
+      model = new ChatOpenAI({
+        modelName: actualModelName,
+        apiKey: config.ai.openai.apiKey,
+        configuration: {
+          baseURL: config.ai.openai.baseUrl,
+        },
+        temperature: 0.7,
+      })
+    }
+
+    const messageContent: any[] = []
+
+    const isMultimodal = model instanceof ChatGoogleGenerativeAI
+
+    if (isMultimodal && imageUrls.length > 0) {
+      for (const url of imageUrls) {
+        const fullUrl = FileUtil.buildUrl(url)
+        const { base64, mimeType } = await this.fetchImageAsBase64(fullUrl)
+        messageContent.push({
+          type: 'image_url',
+          image_url: {
+            url: `data:${mimeType};base64,${base64}`,
+          },
+        })
+      }
     }
     messageContent.push({ type: 'text', text: prompt })
 
-    const structuredModel = model.withStructuredOutput(z.toJSONSchema(ImageTextPlanResultSchema), { includeRaw: true })
-    const { raw, parsed: structuredResult } = await structuredModel.invoke([
-      new HumanMessage({ content: messageContent }),
-    ])
+    let structuredResult: any
+    let raw: any
+
+    if (!isFallback) {
+      try {
+        const structuredModel = model.withStructuredOutput(z.toJSONSchema(ImageTextPlanResultSchema), { includeRaw: true })
+        const res = await structuredModel.invoke([
+          new HumanMessage({ content: messageContent }),
+        ])
+        raw = res.raw
+        structuredResult = res.parsed
+      } catch (e) {
+        this.logger.warn({ error: e }, 'Structured output failed, falling back to manual parsing')
+      }
+    }
 
     if (!structuredResult) {
-      throw new Error('ImageText: No response from Gemini planning step')
+      // Fallback text query to get JSON
+      const systemMsg = `You are a social media content generation assistant.
+Analyze the user's prompt and reference images, then generate post metadata and ${imageCount} image prompts in Simplified Chinese (简体中文).
+Return the result strictly as a valid JSON object matching this schema:
+{
+  "title": "catchy title under 30 chars in Simplified Chinese",
+  "description": "engaging description under 2200 chars in Simplified Chinese",
+  "topics": ["hashtag1", "hashtag2"],
+  "imagePrompts": ["detailed prompt in Simplified Chinese for image 1", "detailed prompt in Simplified Chinese for image 2"]
+}
+Do not return any other text, markdown wrapper blocks, or explanations. Just return raw JSON.`
+      
+      const textResponse = await model.invoke([
+        new HumanMessage({ content: [
+          ...messageContent,
+          { type: 'text', text: systemMsg }
+        ] })
+      ])
+      raw = textResponse
+      const text = textResponse.content as string
+      const jsonMatch = text.match(/\{[\s\S]*\}/)
+      if (jsonMatch) {
+        structuredResult = JSON.parse(jsonMatch[0])
+      } else {
+        throw new Error('Failed to parse JSON from text fallback response')
+      }
     }
 
     const parsed = z.safeParse(ImageTextPlanResultSchema, structuredResult)
@@ -1082,7 +1166,12 @@ Return the result as JSON.`
     aspectRatio?: string,
     imageSize?: string,
   ): Promise<{ urls: string[], points: number }> {
-    return this.generateImagesWithGemini(userId, userType, imageModel, imagePrompts, referenceImageUrls, aspectRatio, imageSize)
+    const isGeminiModel = imageModel.startsWith('gemini-')
+    if (isGeminiModel) {
+      return this.generateImagesWithGemini(userId, userType, imageModel, imagePrompts, referenceImageUrls, aspectRatio, imageSize)
+    } else {
+      return this.generateImagesWithGeneral(userId, userType, imageModel, imagePrompts, referenceImageUrls, aspectRatio, imageSize)
+    }
   }
 
   /**
@@ -1151,5 +1240,66 @@ Return the result as JSON.`
       base64: buffer.toString('base64'),
       mimeType: contentType,
     }
+  }
+
+  private async generateImagesWithGeneral(
+    userId: string,
+    userType: UserType,
+    model: string,
+    imagePrompts: string[],
+    referenceImageUrls: string[],
+    aspectRatio?: string,
+    imageSize?: string,
+  ): Promise<{ urls: string[], points: number }> {
+    const urls: string[] = []
+    let totalPoints = 0
+
+    let size = '1024x1024'
+    if (aspectRatio === '9:16') {
+      size = '1024x1536'
+    } else if (aspectRatio === '16:9') {
+      size = '1536x1024'
+    }
+
+    for (const [index, prompt] of imagePrompts.entries()) {
+      this.logger.log(
+        { model, promptIndex: index, promptLength: prompt.length, aspectRatio, size },
+        'ImageText: Generating image with general model (wan2.7)',
+      )
+
+      const result = await retry(
+        () => this.imageService.userGeneration({
+          userId,
+          userType,
+          model,
+          prompt,
+          n: 1,
+          size,
+          imageUrls: referenceImageUrls.length > 0 ? referenceImageUrls : undefined,
+        }),
+        {
+          maxRetries: 3,
+          delayMs: 2000,
+          onRetry: (error: any, attempt: number) => {
+            this.logger.warn(
+              { promptIndex: index, attempt, error: error.message || error },
+              'ImageText: General image generation failed, retrying',
+            )
+          },
+        },
+      )
+
+      if (result?.list && result.list.length > 0) {
+        const generatedUrl = result.list[0].url
+        if (generatedUrl) {
+          urls.push(generatedUrl)
+        }
+      }
+      
+      const points = await this.imageService['getImageModelPricing'](model, 'generation', userId, userType).catch(() => 0)
+      totalPoints += points
+    }
+
+    return { urls, points: totalPoints }
   }
 }

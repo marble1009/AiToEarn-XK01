@@ -50,11 +50,25 @@ export class GrokVideoService {
     const defaults = modelConfig.defaults || {}
     const finalDuration = duration || defaults.duration
 
-    const pricingConfig = modelConfig.pricing.find((pricing) => {
+    let pricingConfig = modelConfig.pricing.find((pricing) => {
       const durationMatch = !pricing.duration || !finalDuration || pricing.duration === finalDuration
       const modeMatch = mode ? pricing.mode === mode : !pricing.mode
       return durationMatch && modeMatch
     })
+
+    if (!pricingConfig && finalDuration) {
+      const matchingModeConfigs = modelConfig.pricing.filter((pricing) => {
+        return mode ? pricing.mode === mode : !pricing.mode
+      })
+      if (matchingModeConfigs.length > 0) {
+        matchingModeConfigs.sort((a, b) => {
+          const aDiff = a.duration ? Math.abs(a.duration - finalDuration) : Infinity
+          const bDiff = b.duration ? Math.abs(b.duration - finalDuration) : Infinity
+          return aDiff - bDiff
+        })
+        pricingConfig = matchingModeConfigs[0]
+      }
+    }
 
     if (!pricingConfig) {
       throw new AppException(ResponseCode.InvalidModel)

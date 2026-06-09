@@ -50,7 +50,7 @@ const videoGenerationModelSchema = z.object({
   tags: z.array(zodI18nString()).default([]),
   mainTag: z.string().optional(),
   channel: z.enum(AiLogChannel).describe('渠道'),
-  modes: z.array(z.enum(['text2video', 'image2video', 'flf2video', 'lf2video', 'multi-image2video', 'video2video'])).describe('支持的模式'),
+  modes: z.array(z.enum(['text2video', 'image2video', 'flf2video', 'lf2video', 'multi-image2video', 'video2video', 'reference2video'])).describe('支持的模式'),
   resolutions: z.array(z.string()).describe('支持的尺寸'),
   durations: z.array(z.number()).describe('支持的时长'),
   maxInputImages: z.number().describe('最大输入图片数'),

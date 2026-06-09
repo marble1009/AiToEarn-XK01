@@ -11,11 +11,13 @@ import type { MediaPreviewItem } from '@/components/common/MediaPreview'
 import { ImageIcon, Video } from 'lucide-react'
 import { memo, useCallback, useEffect, useMemo, useRef } from 'react'
 import Masonry from 'react-masonry-css'
+import { cn } from '@/lib/utils'
 import { useShallow } from 'zustand/react/shallow'
 import { useTransClient } from '@/app/i18n/client'
 import { MediaPreview } from '@/components/common/MediaPreview'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getOssUrl } from '@/utils/oss'
+import { usePlanDetailStore } from '@/app/[lng]/brand-promotion/planDetailStore'
 import { useMediaTabStore } from '../ContentTabs/mediaTabStore'
 import { MediaCard } from '../MediaCard'
 
@@ -59,17 +61,23 @@ LoadingIndicator.displayName = 'LoadingIndicator'
 
 export const MediaListSection = memo(({ type, materialGroupId }: MediaListSectionProps) => {
   const { t } = useTransClient('material')
+  const currentPlan = usePlanDetailStore(state => state.currentPlan)
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
-  const { list, loading, hasMore, initialized, total } = useMediaTabStore(
+  const { list, loading, hasMore, initialized, total, batchMode, selectedIds } = useMediaTabStore(
     useShallow(state => ({
       list: state[type].list,
       loading: state[type].loading,
       hasMore: state[type].hasMore,
       initialized: state[type].initialized,
       total: state[type].total,
+      batchMode: state.batchMode,
+      selectedIds: state.selectedIds,
     })),
   )
+
+  const toggleSelection = useMediaTabStore(state => state.toggleSelection)
+  const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds])
 
   const { previewOpen, previewIndex, previewType } = useMediaTabStore(
     useShallow(state => ({
@@ -173,6 +181,18 @@ export const MediaListSection = memo(({ type, materialGroupId }: MediaListSectio
             key={media._id}
             media={media}
             onClick={handleMediaClick}
+            onDelete={() => {
+              if (materialGroupId) {
+                fetchMediaList(materialGroupId, type)
+                // 同步刷新“全部” Tab 数据源，使顶部 Badge 数量保持一致
+                if (currentPlan) {
+                  useMediaTabStore.getState().fetchAllList(materialGroupId, currentPlan.id)
+                }
+              }
+            }}
+            batchMode={batchMode}
+            selected={selectedSet.has(media._id)}
+            onToggleSelect={() => toggleSelection(media._id)}
           />
         ))}
       </Masonry>

@@ -1,8 +1,8 @@
 {
   "seo": {
     "title": "AI品牌推广 - 二维码营销与数据分析",
-    "description": "使用AiToEarn创建和管理品牌推广计划。AI批量生成推广视频和图片素材，通过推广二维码让顾客一键发布内容，实时追踪浏览量、点赞、评论、分享等数据表现。支持AI艺术二维码生成、草稿管理、发布记录追踪，一站式推广管理后台助力品牌曝光增长。",
-    "keywords": "品牌推广, AI推广素材生成, 推广计划管理, 二维码营销, AI视频生成, 推广素材, 社交媒体推广, 内容发布, 营销数据分析, AI营销工具, 品牌曝光, 线下推广, AiToEarn"
+    "description": "使用爱易客创建和管理品牌推广计划。AI批量生成推广视频和图片素材，通过推广二维码让顾客一键发布内容，实时追踪浏览量、点赞、评论、分享等数据表现。支持AI艺术二维码生成、草稿管理、发布记录追踪，一站式推广管理后台助力品牌曝光增长。",
+    "keywords": "品牌推广, AI推广素材生成, 推广计划管理, 二维码营销, AI视频生成, 推广素材, 社交媒体推广, 内容发布, 营销数据分析, AI营销工具, 品牌曝光, 线下推广, 爱易客"
   },
   "header": {
     "title": "线下推广",
@@ -10,12 +10,12 @@
     "createPlan": "新建推广计划"
   },
   "empty": {
-    "title": "暂无推广计划",
-    "description": "创建您的第一个推广计划，开始线下推广之旅",
-    "createButton": "创建推广计划"
+    "title": "您还没有创建引流活动呢！",
+    "description": "立即创建一个『扫码发视频送福利/可乐』的引流活动，让每一位来店消费的顾客都成为您的免费同城宣传员吧！",
+    "createButton": "新建引流活动"
   },
   "plan": {
-    "title": "推广计划",
+    "title": "引流活动",
     "materials": "{{count}} 个草稿",
     "publishCount": "发布 {{count}} 次",
     "views": "浏览 {{count}}",
@@ -23,14 +23,14 @@
     "enter": "进入",
     "edit": "编辑",
     "delete": "删除",
-    "emptyTitle": "暂无推广计划",
-    "emptyDesc": "创建您的第一个推广计划，开始线下推广之旅",
-    "totalCount": "共 {{count}} 个计划",
-    "deleteConfirmTitle": "删除推广计划",
-    "deleteConfirmDesc": "确定要删除\"{{name}}\"吗？删除后无法恢复。",
+    "emptyTitle": "暂无引流活动",
+    "emptyDesc": "立即创建一个『扫码发视频送福利/可乐』的引流活动，让每一位来店消费的顾客都成为您的免费同城宣传员吧！",
+    "totalCount": "共 {{count}} 个活动",
+    "deleteConfirmTitle": "删除引流活动",
+    "deleteConfirmDesc": "确定要删除该引流活动吗？删除后该活动的顾客扫码内容将被清空且不可恢复。",
     "deleteSuccess": "删除成功",
     "deleteFailed": "删除失败",
-    "fetchFailed": "获取推广计划失败"
+    "fetchFailed": "获取引流活动失败"
   },
   "planType": {
     "article": "图文",
@@ -59,8 +59,8 @@
     },
     "pointsConsumed": "消耗 {{points}} 积分",
     "noGenerationTasks": "暂无生成任务",
-    "agentGeneratePrompt": "为我的餐厅生成10篇视频草稿",
-    "promptPlaceholder": "指定您生成草稿的额外要求，如：生成的草稿要体现餐厅用餐高峰期的热闹氛围，座无虚席",
+    "agentGeneratePrompt": "为我的店铺生成10篇抖音引流视频草稿",
+    "promptPlaceholder": "指定您的额外生成要求。例如：我们家的招牌是老北京脆皮烤鸭，视频特写镜头中要突出鸭皮金黄酥脆、滋滋流油的画面，配音文案要极具深夜美食诱惑力！",
     "modelType": "模型",
     "aspectRatio": "比例",
     "duration": "视频时长",
@@ -73,7 +73,7 @@
     "storeNotActive": "店铺正在初始化中，请稍后再试",
     "storeNotLinked": "您未关联店铺，请先关联店铺再试用AI批量生成草稿",
     "promptTitle": "自定义提示词",
-    "creditsPerSecond": "{{credits}}积分1s",
+    "creditsPerSecond": "积分/s",
     "totalCredits": "预计消耗 {{total}} 积分",
     "insufficientBalance": "本次生成预计消耗{{total}}积分，您剩余{{balance}}积分，余额不足，请充值后重试！",
     "linkStoreFirst": "请先关联店铺",
@@ -92,15 +92,14 @@
     "creditsDoubled": "上传视频后积分翻倍",
     "mediaUploading": "媒体上传中，请稍候",
     "exploreMorePrompts": "探索更多提示词",
-    "defaultPrompt": "为位于{{position}}的{{name}}创建一个探店打卡内容，展示专业的探店体验",
-    "defaultPromptNoPosition": "为{{name}}创建一个探店打卡内容，展示专业的探店体验",
+    "defaultPrompt": "为位于{{position}}的{{name}}生成一篇爆款探店打卡图文，文案中要突出招牌推荐、店铺限时福利以及精美的用餐环境实拍",
+    "defaultPromptNoPosition": "为{{name}}创建一个吃喝玩乐宣发内容，突出本店新品上市折扣以及优惠买单，号召附近消费者到店打卡",
     "promptRequired": "请输入提示词后再生成",
     "contentTypeVideo": "视频",
     "contentTypeImageText": "图文",
     "imageModel": "图片模型",
     "imageCount": "图片数",
     "creditsPerImage": "{{credits}} 积分/张",
-    "creditsPerSecond": "积分/s",
     "imageResolution": "分辨率",
     "imageTextGenerated": "图文生成任务已创建",
     "videoEditMode": "视频编辑",

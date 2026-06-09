@@ -10,7 +10,7 @@ import type { PromotionMaterial } from '@/app/[lng]/brand-promotion/brandPromoti
 import type { PlatType } from '@/app/config/platConfig'
 import { Calendar, Edit, Image as ImageIcon, Loader2, Send, Sparkles, Trash2, Video } from 'lucide-react'
 import NextImage from 'next/image'
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useState, useEffect } from 'react'
 import { Navigation, Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { useShallow } from 'zustand/react/shallow'
@@ -18,6 +18,7 @@ import { usePlanDetailStore } from '@/app/[lng]/brand-promotion/planDetailStore'
 
 import { AccountPlatInfoMap } from '@/app/config/platConfig'
 import { useTransClient } from '@/app/i18n/client'
+import { getOssUrl } from '@/utils/oss'
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -38,6 +39,16 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { toast } from '@/lib/toast'
 import { cn } from '@/lib/utils'
 import { formatDate } from '@/utils/format'
+import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { aiChatStream } from '@/api/ai'
 import styles from './DraftDetailDialog.module.scss'
 import { LazyImage } from './LazyImage'
 import 'swiper/css'
@@ -86,7 +97,7 @@ const MediaPreview = memo(({ material }: { material: PromotionMaterial }) => {
     return (
       <div className="relative w-full h-full rounded-lg overflow-hidden bg-muted">
         <LazyImage
-          src={material.coverUrl}
+          src={getOssUrl(material.coverUrl)}
           alt={material.title || '草稿封面'}
           fill
           className="object-cover"
@@ -132,18 +143,18 @@ const MediaPreview = memo(({ material }: { material: PromotionMaterial }) => {
             {media.type === 'video'
               ? (
                   <video
-                    src={media.url}
+                    src={getOssUrl(media.url)}
                     controls
                     autoPlay
                     loop
                     playsInline
                     className="w-full h-full object-contain bg-white"
-                    poster={material.coverUrl}
+                    poster={getOssUrl(material.coverUrl)}
                   />
                 )
               : (
                   <MediaImage
-                    src={media.url}
+                    src={getOssUrl(media.url)}
                     alt={material.title || `媒体 ${index + 1}`}
                   />
                 )}
@@ -232,15 +243,111 @@ const DraftDetailContent = memo(({ onClose }: { onClose: () => void }) => {
   }, [selectedDraft, deleteMaterial, closeDraftDetailDialog, t])
 
   const [isVideoGenerating, setIsVideoGenerating] = useState(false)
+  const [showGenConfig, setShowGenConfig] = useState(false)
+  const [prompt, setPrompt] = useState('')
+  const [autoOptimize, setAutoOptimize] = useState(false)
+  const [isOptimizing, setIsOptimizing] = useState(false)
 
-  const handleGenerateVideo = useCallback(async () => {
+  const hasImage = !!(selectedDraft?.mediaList?.some(m => m.type === 'image') || selectedDraft?.coverUrl)
+  const defaultModel = hasImage ? 'wan2.7-i2v-2026-04-25' : 'wan2.7-t2v-2026-04-25'
+  const [model, setModel] = useState(defaultModel)
+
+  useEffect(() => {
+    if (selectedDraft) {
+      setPrompt(selectedDraft.desc || selectedDraft.title || '')
+      const hasImg = !!(selectedDraft.mediaList?.some(m => m.type === 'image') || selectedDraft.coverUrl)
+      setModel(hasImg ? 'wan2.7-i2v-2026-04-25' : 'wan2.7-t2v-2026-04-25')
+      setShowGenConfig(false)
+    }
+  }, [selectedDraft])
+
+  const actionKeywords = ['微微一笑', '转头微笑', '轻轻挥手', '漫步前行', '喝一口饮料', '点头致意', '手持产品展示']
+
+  const handleAddAction = useCallback((act: string) => {
+    setPrompt(prev => {
+      const trimmed = prev.trim()
+      if (!trimmed) return act
+      if (trimmed.endsWith('。') || trimmed.endsWith('；') || trimmed.endsWith('，') || trimmed.endsWith(';')) {
+        return `${trimmed}${act}`
+      }
+      return `${trimmed}，${act}`
+    })
+  }, [])
+
+  const optimizePromptContent = useCallback(async (currentPrompt: string): Promise<string> => {
+    const systemPrompt = `你是一个资深的电商获客和内容创意大师。你必须使用简体中文进行回复，绝对不能使用英文或翻译成英文。
+你需要将用户输入的简单提示词（无论输入是中文还是英文），翻译、扩写并优化成更具吸引力、视觉感、商业卖点和同城热度的爆款视频/图文提示词。
+要求：
+1. 必须使用简体中文回复，绝对不要翻译成英文，也不要输出任何英文。
+2. 即使输入是英文，也必须将其全部翻译成简体中文并按照中文要求进行扩写，绝对不要原样保留英文。
+3. 补充画面视觉细节（画面构成、运镜方式、灯光氛围、镜头焦距等，适合AI生图生视频）。
+4. 强调核心商业卖点，增加引流吸引力。
+5. 请只输出优化后的提示词内容本身，不要有任何前言、解释或旁白，误区或引号。`
+
+    const res = await aiChatStream({
+      model: 'gpt-5.1-all',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: `${currentPrompt}\n\n注意：请确保使用简体中文输出优化后的提示词，不要输出任何英文，只返回优化后的提示词本身。` }
+      ],
+      stream: false
+    })
+    const data = await res.json()
+    if (data && data.content) {
+      return data.content
+    }
+    throw new Error('未返回有效内容')
+  }, [])
+
+  const handleOptimizePrompt = useCallback(async (currentPrompt: string) => {
+    if (!currentPrompt.trim()) return
+    setIsOptimizing(true)
+    try {
+      const optimized = await optimizePromptContent(currentPrompt)
+      setPrompt(optimized)
+      toast.success('提示词已智能优化！')
+    } catch (error) {
+      console.error(error)
+      toast.error('AI 优化出错')
+    } finally {
+      setIsOptimizing(false)
+    }
+  }, [optimizePromptContent])
+
+  const onSubmitGeneration = useCallback(async () => {
     if (selectedDraft) {
       setIsVideoGenerating(true)
-      await generateVideoForDraft(selectedDraft)
+      let finalPrompt = prompt
+      if (autoOptimize) {
+        setIsOptimizing(true)
+        try {
+          finalPrompt = await optimizePromptContent(prompt)
+          setPrompt(finalPrompt)
+        } catch (error) {
+          console.error('Auto optimization failed, using original prompt:', error)
+        } finally {
+          setIsOptimizing(false)
+        }
+      }
+
+      // 获取草稿内的图片路径（如果适用）
+      let imagePath: string | undefined = undefined
+      if (hasImage) {
+        const imageMedia = selectedDraft.mediaList?.find(m => m.type === 'image')
+        imagePath = imageMedia?.url || selectedDraft.coverUrl || undefined
+      }
+
+      await generateVideoForDraft(selectedDraft, {
+        prompt: finalPrompt,
+        model,
+        image: imagePath,
+      })
+      
+      setShowGenConfig(false)
       // We don't wait for polling here as the store handles it async
       setTimeout(() => setIsVideoGenerating(false), 2000)
     }
-  }, [selectedDraft, generateVideoForDraft])
+  }, [selectedDraft, prompt, autoOptimize, model, hasImage, generateVideoForDraft, optimizePromptContent])
 
   if (!selectedDraft)
     return null
@@ -388,40 +495,152 @@ const DraftDetailContent = memo(({ onClose }: { onClose: () => void }) => {
             </Button>
           </div>
 
-          {/* AI 增强操作 - 一键成片 */}
-          <div className="mt-4">
-            <Button
-              className="w-full h-12 cursor-pointer bg-gradient-to-r from-[#39FF14] to-[#FF007F] text-black font-black hover:opacity-90 transition-all border-none shadow-[0_0_15px_rgba(57,255,20,0.4)] group"
-              onClick={handleGenerateVideo}
-              disabled={isVideoGenerating}
-            >
-              {isVideoGenerating ? (
-                <Loader2 className="h-5 w-5 animate-spin mr-2" />
-              ) : (
-                <Sparkles className="h-5 w-5 mr-2 animate-pulse group-hover:rotate-12 transition-transform" />
-              )}
-              {isVideoGenerating ? 'AI 智体视频引擎处理中...' : '一键生成 AI 灵光视频'}
-            </Button>
-            <p className="text-[10px] text-center text-muted-foreground mt-2 italic">
-              由 NVIDIA ACE 与 字节跳动火山引擎 提供超强算力支持
-            </p>
+          {/* AI 增强操作 - 一键成片 / 配置面板 */}
+          <div className="mt-4 border border-[#5F7A61]/20 rounded-xl p-3 bg-muted/30 space-y-3">
+            {showGenConfig ? (
+              <div className="space-y-3 text-[#2A2A2A] dark:text-[#FDFBF7]">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-muted-foreground">AI 视频生成配置</span>
+                  <Button 
+                    size="sm" 
+                    variant="ghost" 
+                    onClick={() => setShowGenConfig(false)}
+                    className="h-7 text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+                  >
+                    返回
+                  </Button>
+                </div>
+
+                {/* 提示词输入框 */}
+                <div className="space-y-1">
+                  <div className="flex justify-between items-center">
+                    <label className="text-xs font-medium">画面描述关键词</label>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => handleOptimizePrompt(prompt)}
+                      disabled={isOptimizing}
+                      className="h-6 px-2 text-[10px] text-primary hover:text-primary/80 flex items-center gap-1 cursor-pointer"
+                    >
+                      {isOptimizing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                      智能优化
+                    </Button>
+                  </div>
+                  <Textarea
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="输入要生成的画面描述..."
+                    className="text-xs min-h-[60px] bg-background border-[#5F7A61]/20 focus-visible:ring-primary focus-visible:border-primary"
+                  />
+                </div>
+
+                {/* 人物动作预选 */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium">人物动作预选</label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {actionKeywords.map((act) => (
+                      <Badge
+                        key={act}
+                        variant="secondary"
+                        onClick={() => handleAddAction(act)}
+                        className="text-[10px] cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors py-0.5 px-1.5"
+                      >
+                        {act}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 场景自适应关键词优化开关 & 模型选择 */}
+                <div className="space-y-2 pt-1 border-t border-[#5F7A61]/10">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium">自适应关键词优化 (提交时)</span>
+                    <Switch
+                      checked={autoOptimize}
+                      onCheckedChange={setAutoOptimize}
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium">生成模型</label>
+                    <Select value={model} onValueChange={setModel}>
+                      <SelectTrigger className="w-full h-8 text-xs bg-background border-[#5F7A61]/20">
+                        <SelectValue placeholder="选择生成模型" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {hasImage ? (
+                          <>
+                            <SelectItem value="wan2.7-i2v-2026-04-25">万相 2.7 图生视频 (推荐)</SelectItem>
+                            <SelectItem value="wanx2.1-i2v-plus">万相 2.1 图生视频-专业版</SelectItem>
+                            <SelectItem value="wanx2.1-i2v-turbo">万相 2.1 图生视频-极速版</SelectItem>
+                          </>
+                        ) : (
+                          <>
+                            <SelectItem value="wan2.7-t2v-2026-04-25">万相 2.7 文生视频 (推荐)</SelectItem>
+                            <SelectItem value="wanx2.1-t2v-plus">万相 2.1 文生视频-专业版</SelectItem>
+                            <SelectItem value="wanx2.1-t2v-turbo">万相 2.1 文生视频-极速版</SelectItem>
+                          </>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* 确认生成按钮 */}
+                <Button
+                  className="w-full h-10 cursor-pointer bg-gradient-to-r from-[#E5B25D] to-[#F3A390] text-[#FAF7F2] font-bold text-xs hover:opacity-90 transition-all border-none"
+                  onClick={onSubmitGeneration}
+                  disabled={isVideoGenerating || isOptimizing}
+                >
+                  {isVideoGenerating ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      AI 视频引擎处理中...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4 mr-2" />
+                      开始生成 AI 灵感视频
+                    </>
+                  )}
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Button
+                  className="w-full h-12 cursor-pointer bg-gradient-to-r from-[#E5B25D] to-[#F3A390] text-[#FAF7F2] font-extrabold hover:opacity-90 transition-all border-none shadow-[0_4px_12px_rgba(229,178,93,0.2)] group"
+                  onClick={() => setShowGenConfig(true)}
+                  disabled={isVideoGenerating}
+                >
+                  {isVideoGenerating ? (
+                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                  ) : (
+                    <Sparkles className="h-5 w-5 mr-2 animate-pulse group-hover:rotate-12 transition-transform" />
+                  )}
+                  {isVideoGenerating ? 'AI 智体视频引擎处理中...' : '一键生成 AI 灵感视频'}
+                </Button>
+                <p className="text-[10px] text-center text-muted-foreground italic">
+                  由 NVIDIA ACE 与 字节跳动火山引擎 提供超强算力支持
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* 删除确认弹窗 */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <AlertDialogContent className="bg-[#09090b]/95 border border-[#FF007F]/40 shadow-[0_0_25px_rgba(255,0,127,0.2)] text-foreground backdrop-blur-md">
+        <AlertDialogContent className="bg-[#FAF7F2] dark:bg-[#1C261F] border border-[#5F7A61]/35 shadow-[0_10px_30px_rgba(95,122,97,0.1)] text-[#2A2A2A] dark:text-[#FDFBF7] backdrop-blur-md rounded-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>{t('plan.deleteConfirmTitle')}</AlertDialogTitle>
-            <AlertDialogDescription className="text-muted-foreground">
+            <AlertDialogDescription className="text-[#2A2A2A]/70 dark:text-[#FDFBF7]/70">
               {t('plan.deleteConfirmDesc', { name: selectedDraft.title || '未命名草稿' })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="cursor-pointer bg-black/60 border border-[#39FF14]/30 text-[#39FF14] hover:bg-[#39FF14]/15">{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogCancel className="cursor-pointer border border-[#5F7A61]/30 text-[#5F7A61] hover:bg-[#5F7A61]/10 bg-transparent">{t('common.cancel')}</AlertDialogCancel>
             <Button
-              className="cursor-pointer bg-[#FF007F] text-white hover:bg-[#FF007F]/90 border-none shadow-[0_0_10px_rgba(255,0,127,0.3)] font-bold"
+              className="cursor-pointer bg-red-500 text-white hover:bg-red-600 border-none shadow-sm font-bold"
               onClick={handleDelete}
               disabled={isSubmitting}
             >
@@ -453,7 +672,7 @@ export const DraftDetailDialog = memo(() => {
 
   return (
     <Dialog open onOpenChange={closeDraftDetailDialog}>
-      <DialogContent data-testid="draftbox-detail-dialog" className="sm:max-w-md md:max-w-6xl bg-[#09090b]/95 border border-[#39FF14]/30 shadow-[0_0_25px_rgba(57,255,20,0.25)] text-foreground backdrop-blur-md">
+      <DialogContent data-testid="draftbox-detail-dialog" className="sm:max-w-md md:max-w-6xl bg-[#FAF7F2] dark:bg-[#18221B] border border-[#5F7A61]/35 shadow-[0_10px_30px_rgba(95,122,97,0.1)] text-[#2A2A2A] dark:text-[#FDFBF7] backdrop-blur-md rounded-3xl overflow-hidden">
         <DraftDetailContent onClose={closeDraftDetailDialog} />
       </DialogContent>
     </Dialog>

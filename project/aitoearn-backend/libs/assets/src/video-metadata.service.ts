@@ -92,7 +92,7 @@ export class VideoMetadataService {
     thumbnailUrl: string
   }> {
     const timeInSeconds = options?.timeInSeconds ?? 1
-    const videoUrl = this.storage.buildUrl(asset.path)
+    const videoUrl = this.storage.buildInternalUrl(asset.path)
 
     this.logger.debug({ assetId: asset.id, videoUrl, timeInSeconds }, 'Extracting thumbnail from video')
 

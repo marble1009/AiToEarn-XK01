@@ -164,7 +164,7 @@ export async function aiChatStream(data: {
 
   const apiBase = typeof window !== 'undefined'
     ? '/api'
-    : (process.env.NEXT_PUBLIC_API_URL || 'https://aitoearn.ai/api')
+    : (process.env.NEXT_PUBLIC_API_URL || 'https://aiautoedit.art/api')
 
   const response = await fetch(`${apiBase}/ai/chat`, {
     method: 'POST',
@@ -175,7 +175,6 @@ export async function aiChatStream(data: {
     },
     body: JSON.stringify({
       stream: false, // 使用非流式响应
-      model: 'gpt-5.1-all',
       temperature: 1,
       presence_penalty: 0,
       frequency_penalty: 0,

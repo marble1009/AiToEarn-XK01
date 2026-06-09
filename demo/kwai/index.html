@@ -2,16 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Title</title>
+  <title>快手开放能力 Demo</title>
+  <!--
+    ⚠️ 安全提示
+    本文件仅作 aiautoedit 离线开发演示使用，请勿部署到公网。
+    下方的 appId / appSecret / state 等真凭据已替换为占位符，
+    本地调试时请在自己的未提交 .env 中注入真实值。
+  -->
 </head>
 <body>
   <button onclick="loginClick()">登录</button>
   <script>
-    const appId = "ks715790869885446758";
-    const appSecret = "cqSvJvBSPJjd-4pBH_4N0Q";
+    // 占位符：从 window.__KWAI_CONFIG__ 注入
+    const CONFIG = window.__KWAI_CONFIG__ || {
+      appId: 'YOUR_KWAI_APP_ID',
+      appSecret: 'YOUR_KWAI_APP_SECRET',
+      redirectUri: 'https://aiautoedit.art/api/plat/kwai/auth/back',
+      state: 'YOUR_CSRF_STATE',
+    }
 
     function loginClick() {
-      window.href = `https://open.kuaishou.com/oauth2/authorize?app_id=${appId}&scope=user_info,user_video_publish&response_type=code&ua=pc&redirect_uri=your_callback_url&state=your_state`
+      const url = new URL('https://open.kuaishou.com/oauth2/authorize')
+      url.searchParams.set('app_id', CONFIG.appId)
+      url.searchParams.set('scope', 'user_info,user_video_publish')
+      url.searchParams.set('response_type', 'code')
+      url.searchParams.set('ua', 'pc')
+      url.searchParams.set('redirect_uri', CONFIG.redirectUri)
+      url.searchParams.set('state', CONFIG.state)
+      window.location.href = url.toString()
     }
   </script>
 </body>

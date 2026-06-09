@@ -1,5 +1,6 @@
 import { AIMessage, BaseMessage } from '@langchain/core/messages'
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
+import { ChatOpenAI } from '@langchain/openai'
 import { MultiServerMCPClient } from '@langchain/mcp-adapters'
 import { Injectable, Logger } from '@nestjs/common'
 import { AccountType, AppException, CreditsType, ResponseCode, UserType } from '@yikart/common'
@@ -179,7 +180,7 @@ export class MaterialAdaptationService {
     headers?: Record<string, string>,
   ): Promise<Record<string, Record<string, unknown>>> {
     const mcpClient = await this.createMcpClient(headers || {})
-    const modelName = 'gemini-3-flash-preview'
+    const modelName = 'gemini-1.5-flash'
     const startedAt = new Date()
 
     try {
@@ -187,11 +188,39 @@ export class MaterialAdaptationService {
         return ['getYoutubeContentCategories', 'getBilibiliContentCategories'].includes(tool.getName())
       })
 
-      const model = new ChatGoogleGenerativeAI({
-        model: modelName,
-        apiKey: config.ai.gemini.apiKey,
-        baseUrl: config.ai.gemini.baseUrl,
-      })
+      const isGeminiValid = config.ai.gemini.apiKey && !config.ai.gemini.apiKey.includes('placeholder')
+      const isNvidiaValid = config.ai.nvidia.apiKey && !config.ai.nvidia.apiKey.includes('placeholder')
+
+      let model: any
+      if (isNvidiaValid) {
+        model = new ChatOpenAI({
+          modelName: 'meta/llama-3.3-70b-instruct',
+          apiKey: config.ai.nvidia.apiKey,
+          configuration: {
+            baseURL: config.ai.nvidia.baseUrl,
+          },
+          temperature: 0.7,
+        })
+      } else if (isGeminiValid) {
+        model = new ChatGoogleGenerativeAI({
+          model: modelName,
+          apiKey: config.ai.gemini.apiKey,
+          baseUrl: config.ai.gemini.baseUrl,
+        })
+      } else {
+        let actualModelName = 'abab6.5g-chat'
+        if (config.ai.openai.baseUrl && config.ai.openai.baseUrl.includes('dashscope')) {
+          actualModelName = 'qwen-plus'
+        }
+        model = new ChatOpenAI({
+          modelName: actualModelName,
+          apiKey: config.ai.openai.apiKey,
+          configuration: {
+            baseURL: config.ai.openai.baseUrl,
+          },
+          temperature: 0.7,
+        })
+      }
 
       // 只生成配置的 schema
       const configSchema = buildConfigOnlySchema(platforms)
@@ -311,7 +340,7 @@ ${optionRulesText}
     headers?: Record<string, string>,
   ): Promise<MaterialAdaptationVo[]> {
     const mcpClient = await this.createMcpClient(headers || {})
-    const modelName = 'gemini-3-flash-preview'
+    const modelName = 'gemini-1.5-flash'
     const startedAt = new Date()
 
     try {
@@ -319,11 +348,39 @@ ${optionRulesText}
         return ['getYoutubeContentCategories', 'getBilibiliContentCategories', 'publishRestrictions'].includes(tool.getName())
       })
 
-      const model = new ChatGoogleGenerativeAI({
-        model: modelName,
-        apiKey: config.ai.gemini.apiKey,
-        baseUrl: config.ai.gemini.baseUrl,
-      })
+      const isGeminiValid = config.ai.gemini.apiKey && !config.ai.gemini.apiKey.includes('placeholder')
+      const isNvidiaValid = config.ai.nvidia.apiKey && !config.ai.nvidia.apiKey.includes('placeholder')
+
+      let model: any
+      if (isNvidiaValid) {
+        model = new ChatOpenAI({
+          modelName: 'meta/llama-3.3-70b-instruct',
+          apiKey: config.ai.nvidia.apiKey,
+          configuration: {
+            baseURL: config.ai.nvidia.baseUrl,
+          },
+          temperature: 0.7,
+        })
+      } else if (isGeminiValid) {
+        model = new ChatGoogleGenerativeAI({
+          model: modelName,
+          apiKey: config.ai.gemini.apiKey,
+          baseUrl: config.ai.gemini.baseUrl,
+        })
+      } else {
+        let actualModelName = 'abab6.5g-chat'
+        if (config.ai.openai.baseUrl && config.ai.openai.baseUrl.includes('dashscope')) {
+          actualModelName = 'qwen-plus'
+        }
+        model = new ChatOpenAI({
+          modelName: actualModelName,
+          apiKey: config.ai.openai.apiKey,
+          configuration: {
+            baseURL: config.ai.openai.baseUrl,
+          },
+          temperature: 0.7,
+        })
+      }
 
       const outputSchema = buildDynamicOutputSchema(platforms)
 

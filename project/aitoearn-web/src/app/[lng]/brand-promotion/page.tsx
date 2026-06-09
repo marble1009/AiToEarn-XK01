@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: PageParams) {
 
   return getMetadata(
     {
-      title: 'Brand Promotion - AiToEarn',
+      title: 'Brand Promotion - aiautoedit',
       description: 'Manage your brand promotion plans and monetize your content.',
     },
     lng,

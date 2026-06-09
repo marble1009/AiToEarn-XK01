@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { GlassCard } from '@/components/ui/glass-card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Users, Calendar, TrendingUp, ChevronRight } from 'lucide-react'
+import { Users, Calendar, ChevronRight } from 'lucide-react'
 import { Mission, RewardType } from '../mission.type'
 
 interface MissionCardProps {
@@ -17,9 +17,9 @@ interface MissionCardProps {
 export function MissionCard({ mission, onClick }: MissionCardProps) {
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'Easy': return 'text-[#39FF14] bg-[#39FF14]/10 border border-[#39FF14]/20'
-      case 'Medium': return 'text-[#FF007F] bg-[#FF007F]/10 border border-[#FF007F]/20'
-      case 'Hard': return 'text-red-500 bg-red-950/40 border border-red-500/20'
+      case 'Easy': return 'text-[#5F7A61] bg-[#5F7A61]/10 border border-[#5F7A61]/25'
+      case 'Medium': return 'text-[#E5B25D] bg-[#E5B25D]/10 border border-[#E5B25D]/25'
+      case 'Hard': return 'text-[#E07A5F] bg-[#E07A5F]/10 border border-[#E07A5F]/25'
       default: return 'text-muted-foreground bg-muted/20 border border-muted-foreground/20'
     }
   }
@@ -45,83 +45,88 @@ export function MissionCard({ mission, onClick }: MissionCardProps) {
     }
   }
 
+  // 汉化平台文本
+  const translatePlatform = (plat: string) => {
+    switch (plat) {
+      case 'RED': return '小红书'
+      case 'DY': return '抖音'
+      case 'KS': return '快手'
+      case 'WX': return '视频号'
+      default: return plat === 'All' ? '全部渠道' : plat
+    }
+  }
+
   return (
     <motion.div
       whileHover={{ y: -5 }}
       transition={{ duration: 0.2 }}
     >
       <GlassCard 
-        className="h-full flex flex-col group overflow-hidden border-[#39FF14]/20 bg-black/80 hover:border-[#FF007F]/40 hover:shadow-[0_0_18px_rgba(255,0,127,0.2)] transition-all duration-300 cursor-pointer"
+        className="h-full flex flex-col group overflow-hidden border-[#5F7A61]/15 dark:border-[#2C3A30]/50 bg-white/70 dark:bg-[#202C24]/60 hover:border-[#F3A390]/40 dark:hover:border-[#F3A390]/40 hover:shadow-[0_6px_20px_rgba(95,122,97,0.06)] dark:hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] transition-all duration-300 cursor-pointer p-5 rounded-3xl"
         onClick={() => onClick(mission)}
       >
         {/* Cover Image */}
-        <div className="relative h-48 w-full overflow-hidden rounded-xl mb-4">
+        <div className="relative h-44 w-full overflow-hidden rounded-2xl mb-4">
           <Image
             src={mission.coverImage}
             alt={mission.title}
             fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute top-3 left-3 flex gap-2">
-            <Badge className="bg-black/80 backdrop-blur-md border border-white/20 text-white px-2 py-0.5 font-bold">
-              {mission.platform === 'RED' ? '小红书' : mission.platform}
+            <Badge className="bg-[#FAF7F2]/90 dark:bg-[#18221B]/90 backdrop-blur-md border border-[#5F7A61]/15 text-[#2A2A2A] dark:text-[#FDFBF7] px-2.5 py-0.5 font-semibold text-[10px]">
+              {translatePlatform(mission.platform)}
             </Badge>
           </div>
           <div className="absolute bottom-3 right-3">
-            <Badge className={`border font-bold ${getDifficultyColor(mission.difficulty)}`}>
+            <Badge className={`border font-semibold text-[10px] ${getDifficultyColor(mission.difficulty)}`}>
               {translateDifficulty(mission.difficulty)}
             </Badge>
           </div>
         </div>
 
-        {/* Brand & Title */}
-        <div className="flex items-center gap-2 mb-2">
-          <div className="relative w-6 h-6 rounded-full overflow-hidden border border-[#39FF14]/30 shadow-[0_0_4px_rgba(57,255,20,0.2)]">
-            <Image src={mission.brandLogo} alt={mission.brand} fill className="object-cover" />
-          </div>
-          <span className="text-sm font-medium text-muted-foreground">{mission.brand}</span>
-        </div>
+
         
-        <h3 className="text-xl font-extrabold text-foreground mb-2 line-clamp-1 group-hover:text-[#39FF14] drop-shadow-[0_0_4px_rgba(57,255,20,0.15)] transition-colors">
+        <h3 className="text-lg font-bold text-[#2A2A2A] dark:text-[#FDFBF7] mb-2 line-clamp-1 group-hover:text-[#5F7A61] dark:group-hover:text-[#7FA382] transition-colors">
           {mission.title}
         </h3>
 
         {/* Reward Section */}
-        <div className="bg-[#09090b] rounded-xl p-3 mb-4 border border-[#39FF14]/20 shadow-[inset_0_0_10px_rgba(57,255,20,0.05)]">
+        <div className="bg-[#FAF7F2]/80 dark:bg-[#1C261F]/80 rounded-2xl p-3 mb-4 border border-[#5F7A61]/10">
           <div className="flex justify-between items-end">
             <div>
-              <p className="text-[10px] text-[#39FF14] font-black uppercase tracking-wider mb-1 drop-shadow-[0_0_4px_rgba(57,255,20,0.3)]">预估收益</p>
-              <p className="text-lg font-black text-[#39FF14] drop-shadow-[0_0_8px_rgba(57,255,20,0.5)]">{mission.estimatedEarnings}</p>
+              <p className="text-[9px] text-[#5F7A61] dark:text-[#7FA382] font-bold uppercase tracking-wide mb-0.5">预估收益</p>
+              <p className="text-base font-extrabold text-[#5F7A61] dark:text-[#7FA382]">{mission.estimatedEarnings}</p>
             </div>
             <div className="text-right">
-              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider mb-1">{translateRewardType(mission.rewardType)} 奖励</p>
-              <p className="text-sm font-extrabold text-[#FF007F] drop-shadow-[0_0_6px_rgba(255,0,127,0.3)]">{mission.rewardValue}</p>
+              <p className="text-[9px] text-[#2A2A2A]/50 dark:text-[#FDFBF7]/50 font-medium uppercase tracking-wide mb-0.5">{translateRewardType(mission.rewardType)} 奖励</p>
+              <p className="text-xs font-bold text-[#F3A390] dark:text-[#F6B4A5]">{mission.rewardValue}</p>
             </div>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Users size={14} className="text-[#39FF14]/60" />
-            <span className="text-xs">{mission.totalParticipants} 人已参与</span>
+        <div className="grid grid-cols-2 gap-2 mb-5">
+          <div className="flex items-center gap-1.5 text-[#2A2A2A]/50 dark:text-[#FDFBF7]/50">
+            <Users size={12} className="text-[#5F7A61]" />
+            <span className="text-[10px]">{mission.totalParticipants} 人已参与</span>
           </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Calendar size={14} className="text-[#FF007F]/60" />
-            <span className="text-xs">截止：{new Date(mission.deadline).toLocaleDateString('zh-CN')}</span>
+          <div className="flex items-center gap-1.5 text-[#2A2A2A]/50 dark:text-[#FDFBF7]/50">
+            <Calendar size={12} className="text-[#F3A390]" />
+            <span className="text-[10px] truncate">截止：{new Date(mission.deadline).toLocaleDateString('zh-CN')}</span>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="mt-auto flex items-center justify-between pt-4 border-t border-[#39FF14]/15">
-          <div className="flex gap-1">
+        <div className="mt-auto flex items-center justify-between pt-3 border-t border-[#5F7A61]/10">
+          <div className="flex gap-1.5">
             {mission.tags.slice(0, 2).map(tag => (
-              <span key={tag} className="text-[10px] text-[#39FF14]/60">#{tag}</span>
+              <span key={tag} className="text-[9px] font-medium text-[#5F7A61]/80 dark:text-[#7FA382]/80">#{tag}</span>
             ))}
           </div>
-          <Button variant="ghost" size="sm" className="text-[#39FF14] font-bold group/btn p-0 hover:bg-transparent hover:text-[#FF007F] transition-all">
+          <Button variant="ghost" size="sm" className="text-[#5F7A61] dark:text-[#7FA382] font-bold group/btn p-0 hover:bg-transparent hover:text-[#F3A390] dark:hover:text-[#F6B4A5] transition-all h-auto">
             立即参与
-            <ChevronRight size={16} className="ml-1 transition-transform group-hover/btn:translate-x-1" />
+            <ChevronRight size={14} className="ml-0.5 transition-transform group-hover/btn:translate-x-1" />
           </Button>
         </div>
       </GlassCard>

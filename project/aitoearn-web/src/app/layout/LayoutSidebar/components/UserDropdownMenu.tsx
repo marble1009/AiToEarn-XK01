@@ -25,6 +25,10 @@ import { cn } from '@/lib/utils'
 import { useUserStore } from '@/store/user'
 import { navigateToLogin } from '@/utils/auth'
 import { getOssUrl } from '@/utils/oss'
+import { useGetClientLng } from '@/hooks/useSystem'
+import { useRouter } from 'next/navigation'
+import { setCookie } from 'cookies-next'
+import { cookieName } from '@/app/i18n/settings'
 
 /** GitHub SVG 图标 */
 function GitHubIcon({ className }: { className?: string }) {
@@ -120,6 +124,19 @@ function LoggedInMenuContent({
   const userInfo = useUserStore(state => state.userInfo)
   const logout = useUserStore(state => state.logout)
   const starCount = useGitHubStars()
+  const lng = useGetClientLng()
+  const router = useRouter()
+
+  const handleLanguageChange = (newLng: string) => {
+    if (newLng === lng) return
+    setCookie(cookieName, newLng, { path: '/' })
+    const currentPath = window.location.pathname
+    const pathWithoutLang = currentPath.replace(`/${lng}`, '') || '/'
+    const newPath = `/${newLng}${pathWithoutLang}`
+    router.push(newPath)
+    router.refresh()
+    onClose()
+  }
 
   const handleLogout = () => {
     logout()
@@ -141,38 +158,58 @@ function LoggedInMenuContent({
       <div className="flex flex-col gap-1 p-2">
         {/* 用户信息区域 */}
         <div className="flex items-center gap-3 px-3 py-2">
-          <Avatar className="h-10 w-10 shrink-0 border border-[#39FF14]/40 shadow-[0_0_8px_rgba(57,255,20,0.2)]">
+          <Avatar className="h-10 w-10 shrink-0 border border-[#5F7A61]/35">
             <AvatarImage src={getOssUrl(userInfo?.avatar) || ''} alt={userInfo?.name || t('common:unknownUser')} />
-            <AvatarFallback className="bg-muted-foreground font-semibold text-background">
+            <AvatarFallback className="bg-[#5F7A61]/10 font-bold text-[#5F7A61]">
               {userInfo?.name?.charAt(0)?.toUpperCase() || 'U'}
             </AvatarFallback>
           </Avatar>
           <div className="flex min-w-0 flex-1 flex-col">
-            <span className="truncate text-sm font-semibold text-[#39FF14] drop-shadow-[0_0_6px_rgba(57,255,20,0.4)]" data-testid="sidebar-user-name">
+            <span className="truncate text-sm font-bold text-[#5F7A61]" data-testid="sidebar-user-name">
               {userInfo?.name || t('common:unknownUser')}
             </span>
           </div>
         </div>
 
-        <div className="my-1 h-px bg-white/10" />
+        <div className="my-1 h-px bg-[#5F7A61]/15" />
 
-        {/* 低频：外部链接 */}
-        <MenuItem
-          icon={Globe}
-          label={t('common:goToWebsite')}
-          href="/welcome"
-        />
-        <MenuItem
-          icon={GitHubIcon}
-          label="GitHub"
-          rightContent={
-            <span className="text-xs text-muted-foreground">{starCount}</span>
-          }
-          href={`https://github.com/${GITHUB_REPO}`}
-          external
-        />
+        {/* Language switcher group */}
+        <div className="group/lang relative">
+          <div className="flex w-full cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm text-[#2A2A2A] dark:text-[#FDFBF7] transition-colors hover:bg-[#5F7A61]/10 select-none">
+            <Globe size={16} className="shrink-0 text-[#E5B25D]" />
+            <span className="flex-1 text-left">
+              {lng === 'zh-CN' ? '切换语言 / Language' : 'Language / Switch'}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {lng === 'zh-CN' ? '简体中文' : 'English'}
+            </span>
+            <ChevronRight size={14} className="text-muted-foreground" />
+          </div>
+          <div className="invisible absolute left-full top-0 z-50 pl-1 opacity-0 transition-all group-hover/lang:visible group-hover/lang:opacity-100">
+            <div className="w-32 rounded-md border border-[#5F7A61]/25 bg-[#FAF7F2] dark:bg-[#202C24] p-1 shadow-md text-[#2A2A2A] dark:text-[#FDFBF7]">
+              <button
+                onClick={() => handleLanguageChange('zh-CN')}
+                className={cn(
+                  'flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs font-semibold transition-colors border-none bg-transparent',
+                  lng === 'zh-CN' ? 'bg-[#5F7A61]/20 text-[#5F7A61]' : 'text-[#2A2A2A] dark:text-[#FDFBF7] hover:bg-[#5F7A61]/10'
+                )}
+              >
+                简体中文
+              </button>
+              <button
+                onClick={() => handleLanguageChange('en')}
+                className={cn(
+                  'flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-xs font-semibold transition-colors mt-1 border-none bg-transparent',
+                  lng === 'en' ? 'bg-[#5F7A61]/20 text-[#5F7A61]' : 'text-[#2A2A2A] dark:text-[#FDFBF7] hover:bg-[#5F7A61]/10'
+                )}
+              >
+                English
+              </button>
+            </div>
+          </div>
+        </div>
 
-        <div className="my-1 h-px bg-border" />
+        <div className="my-1 h-px bg-[#5F7A61]/15" />
 
         {/* 中频：文档 + 联系我们 */}
         <div className="group/docs relative">
@@ -185,7 +222,6 @@ function LoggedInMenuContent({
           {/* 右侧飞出面板 */}
           <div className="invisible absolute left-full top-0 z-50 pl-1 opacity-0 transition-all group-hover/docs:visible group-hover/docs:opacity-100">
             <div className="w-48 rounded-md border bg-popover p-1 shadow-md">
-              <MenuItem icon={FileText} label={t('common:helpDocs')} href={DOCS_URL} external />
               <MenuItem icon={FileText} label={t('common:pluginGuide')} href="/websit/plugin-guide" />
               <MenuItem icon={Shield} label={t('common:privacyPolicy')} href="/websit/privacy-policy" />
               <MenuItem icon={ScrollText} label={t('common:termsOfService')} href="/websit/terms-of-service" />
@@ -277,7 +313,7 @@ export function UserDropdownMenu({
               <Button
                 onClick={handleLogin}
                 size="icon"
-                className="h-9 w-9 border border-[#39FF14]/40 bg-black text-[#39FF14] hover:bg-[#39FF14]/15 hover:text-[#39FF14] shadow-[0_0_8px_rgba(57,255,20,0.2)]"
+                className="h-9 w-9 border border-[#5F7A61]/40 bg-[#FAF7F2] text-[#5F7A61] hover:bg-[#5F7A61]/10 hover:text-[#5F7A61] shadow-sm"
                 data-testid="sidebar-login-btn"
               >
                 <LogIn className="h-4 w-4" />
@@ -294,7 +330,7 @@ export function UserDropdownMenu({
     return (
       <Button
         onClick={handleLogin}
-        className="mt-2 w-full border border-[#39FF14]/40 bg-black text-[#39FF14] hover:bg-[#39FF14]/15 hover:text-[#39FF14] shadow-[0_0_8px_rgba(57,255,20,0.2)]"
+        className="mt-2 w-full border border-[#5F7A61]/40 bg-[#FAF7F2] text-[#5F7A61] hover:bg-[#5F7A61]/10 hover:text-[#5F7A61] shadow-sm"
         data-testid="sidebar-login-btn"
       >
         {t('login')}
@@ -330,16 +366,16 @@ export function UserDropdownMenu({
                     collapsed ? 'justify-center' : 'gap-2',
                   )}
                 >
-                  <Avatar className="h-8 w-8 shrink-0 border border-[#39FF14]/40 shadow-[0_0_8px_rgba(57,255,20,0.2)]">
+                  <Avatar className="h-8 w-8 shrink-0 border border-[#5F7A61]/35">
                     <AvatarImage src={getOssUrl(userInfo?.avatar) || ''} alt={userInfo?.name || t('unknownUser')} />
-                    <AvatarFallback className="bg-muted-foreground font-semibold text-background">
+                    <AvatarFallback className="bg-[#5F7A61]/10 font-bold text-[#5F7A61]">
                       {userInfo?.name?.charAt(0)?.toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
 
                   {!collapsed && (
                     <div className="flex min-w-0 flex-1 flex-col items-start">
-                      <span className="w-full truncate text-left text-sm font-medium text-foreground group-hover:text-[#39FF14] transition-colors">
+                      <span className="w-full truncate text-left text-sm font-medium text-foreground group-hover:text-[#5F7A61] transition-colors">
                         {userInfo?.name || t('unknownUser')}
                       </span>
                     </div>
@@ -347,7 +383,7 @@ export function UserDropdownMenu({
 
                   {/* 未读通知指示器 */}
                   {unreadCount > 0 && (
-                    <div className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-destructive shadow-[0_0_8px_#ff0000]" />
+                    <div className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-destructive shadow-sm" />
                   )}
                 </button>
               </TooltipTrigger>
@@ -363,7 +399,7 @@ export function UserDropdownMenu({
         <PopoverContent
           side={collapsed ? 'right' : 'top'}
           align={collapsed ? 'end' : 'start'}
-          className="w-64 p-0 bg-[#09090b]/95 border border-[#39FF14]/30 shadow-[0_0_20px_rgba(57,255,20,0.2)] text-foreground backdrop-blur-md"
+          className="w-64 p-0 bg-[#FAF7F2] dark:bg-[#202C24] border border-[#5F7A61]/35 shadow-[0_10px_30px_rgba(95,122,97,0.1)] text-[#2A2A2A] dark:text-[#FDFBF7] rounded-2xl overflow-hidden"
           sideOffset={4}
           data-testid="sidebar-user-menu"
           onMouseEnter={() => setOpen(true)}

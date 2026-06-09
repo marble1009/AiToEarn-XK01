@@ -4,7 +4,8 @@ import { z } from 'zod'
 // OpenAI 视频创建请求DTO
 const openAIVideoCreateBaseSchema = z.object({
   prompt: z.string().min(1).describe('提示词'),
-  input_reference: z.string().optional().describe('参考图片URL或base64'),
+  input_reference: z.string().or(z.array(z.string())).optional().describe('参考图片URL或base64，支持数组'),
+  video_url: z.string().optional().describe('参考视频URL'),
   model: z.string().optional().describe('模型名称'),
   seconds: z.string().optional().describe('视频时长（秒）'),
   size: z.enum(['720x1280', '1280x720', '1024x1792', '1792x1024']).optional().describe('视频尺寸'),

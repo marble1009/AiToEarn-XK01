@@ -7,7 +7,7 @@ const S3_ENDPOINT = 'http://127.0.0.1:9000';
 const S3_BUCKET = 'aitoearn';
 
 // 真实 MiniMax 中国版 API 密钥及视频模型配置
-const MINIMAX_API_KEY = 'sk-cp-r3IWPmKXUM9NAJ6EFfi3kAd8W_I0Vlj9JS39kfgSoOmnDgBpxkf9HBrleRAzUcD5L8eAtNv6ZgQXe1iwBx83mDWkt7kXwC-j6vQNtSgts6Ep7AnklEq1lz8';
+const MINIMAX_API_KEY = 'sk-cp-vVYM7B9nZGff1HrfVBtXJ2b2UdUdbv5aQb5K_t8jPhX6_EdfQCpgTCF7--Uoq27s_ROEGm7bAZ0_8eMCHpI8OlmiX1vRG2lN7cU1T0kLC5CYi_hYEsWZSUc';
 // 中国国内版专属域名 (minimaxi.com，带 i 域名)
 const BASE_URL = 'https://api.minimaxi.com';
 const VIDEO_MODEL = 'MiniMax-Hailuo-2.3'; // 官方推荐的高级视频生成模型
